@@ -8,12 +8,12 @@ function channelInviteV1(authUserId, channelId, uId) {
 
 function channelMessagesV1(authUserId, channelId, start) {
     return {
-		messages: [ 
+		messages: [
 			{
-			messageId: 1,
-			uId: 1,
-			message: 'Hello world',
-			timeSent: 1582426789,
+				messageId: 1,
+				uId: 1,
+				message: 'Hello world',
+				timeSent: 1582426789,
 			}
 		],
 		start: 0,
