@@ -1,6 +1,6 @@
 function channelMessagesV1(authUserId, channelId, start) {
     return {
-	messages: [
+	messages: [ 
 	    {
 		messageId: 1,
 		uId: 1,
