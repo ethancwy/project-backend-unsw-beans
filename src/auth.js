@@ -1,7 +1,7 @@
 function authLoginV1(email, password) {
-    return {
-        authUserID: 1,
-    }
+	return {
+		authUserID: 1,
+	}
 }
 
 
