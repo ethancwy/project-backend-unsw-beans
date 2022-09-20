@@ -21,6 +21,7 @@ function channelMessagesV1(authUserId, channelId, start) {
   }
 }
 
+<<<<<<< HEAD
 function channelDetailsV1(authUserId, channelId) {
   return {
     name: 'Hayden',
@@ -45,3 +46,28 @@ function channelDetailsV1(authUserId, channelId) {
   };
 }
 
+=======
+function channelDetailsV1 (authUserId, channelId) {
+	return {
+		name: 'Hayden',
+  		ownerMembers: [
+    		{
+      			uId: 1,
+      			email: 'example@gmail.com',
+      			nameFirst: 'Hayden',
+      			nameLast: 'Jacobs',
+      			handleStr: 'haydenjacobs',
+    		}
+  		],
+  		allMembers: [
+    		{
+      			uId: 1,
+      			email: 'example@gmail.com',
+      			nameFirst: 'Hayden',
+      			nameLast: 'Jacobs',
+      			handleStr: 'haydenjacobs',
+    		}
+  		],
+	};
+}
+>>>>>>> a8f54652fa319dd8cd6644b9556d6a143a1f6c1e
