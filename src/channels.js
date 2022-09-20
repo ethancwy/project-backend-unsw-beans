@@ -1,5 +1,6 @@
-function channlesCreateV1( authUserId, name, IsPublic ) {
+function channelsCreateV1( authUserId, name, IsPublic ) {
     return {
         channelId: 1,
     }
 }
+
