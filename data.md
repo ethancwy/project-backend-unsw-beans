@@ -1,6 +1,6 @@
 ```javascript
 let data = {
-    users: [
+  users: [
     {
       uId: 1,
       nameFirst: 'Peter',
@@ -20,15 +20,15 @@ let data = {
       email: 'h.low@email.com,
     },
   ],
-
+  
   channels: [
     {
       channelId: 1,
       name: "Peter's Channel",
     },
     {
-    channelId: 2,
-    name: "Hugh's Channel",
+      channelId: 2,
+      name: "Hugh's Channel",
     },
     {
       channelId: 3,
