@@ -1,8 +1,8 @@
-function clear() {
+function clearV1() {
 
   return {};
 }
 
 export {
-  clear
+  clearV1
 };
