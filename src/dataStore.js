@@ -1,5 +1,25 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
-let data = {};
+
+let data = {
+  users: [
+    {
+      uId: 1,
+      nameFirst: 'Peter',
+      nameLast: 'File',
+      email: 'p.file@email.com',
+      handleStr: 'filepeter',
+    },
+  ],
+
+  channels: [
+    {
+      channelId: 1,
+      name: "Peter's Channel",
+      isPublic: true,
+    },
+  ],
+};
+
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
 
