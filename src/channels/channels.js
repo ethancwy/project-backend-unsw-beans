@@ -1,5 +1,3 @@
-import { authLoginV1, authRegisterV1 } from '../auth/auth.js';
-import { clearV1 } from '../other/other.js';
 import { getData, setData } from '../dataStore.js';
 
 
@@ -39,6 +37,7 @@ function channelsCreateV1(authUserId, name, IsPublic) {
   });
 }
 
+  setData(data);
   return { channelId: data.channels.length };
 }
 
