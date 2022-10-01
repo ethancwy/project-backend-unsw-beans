@@ -1,4 +1,5 @@
 import { authRegisterV1 } from '../auth/auth.js'
+import { userProfileV1 } from './users'
 import { clearV1 } from '../other/other.js'
 
 describe('Testing userProfileV1', () => {
@@ -7,7 +8,7 @@ describe('Testing userProfileV1', () => {
     let authUserId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
     let user = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
 
-    expect(userProfileV1(authUserId, uId)).toStrictEqual({
+    expect(userProfileV1(authUserId, user)).toStrictEqual({
       uId: expect.any(Number),
       email: 'chicken@bar.com',
       nameFirst: 'Ronald',
