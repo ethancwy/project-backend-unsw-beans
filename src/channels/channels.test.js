@@ -21,7 +21,7 @@ describe ('Testing channelListAllV1 standard', () => {
 						email: 'chocolate@bar.com',
 						nameFirst: 'Willy',
 						nameLast: 'Wonka',
-						handleStr: expect.any(String),
+						handleStr: expect.any(String), //
 					},
 				],
 				allMembers: [
