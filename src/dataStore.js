@@ -3,19 +3,19 @@
 let data = {
   users: [
     {
-      uId: 1,
-      nameFirst: 'Peter',
-      nameLast: 'File',
-      email: 'p.file@email.com',
-      handleStr: 'filepeter',
+      uId: undefined,
+      nameFirst: '',
+      nameLast: '',
+      email: '',
+      handleStr: '',
     },
   ],
 
   channels: [
     {
-      channelId: 1,
-      name: "Peter's Channel",
-      isPublic: true,
+      channelId: undefined,
+      name: "",
+      isPublic: undefined,
     },
   ],
 };
