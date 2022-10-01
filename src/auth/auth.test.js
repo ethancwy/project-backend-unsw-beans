@@ -56,33 +56,32 @@ describe('Testing for authRegisterV1: ', ()=> {
 
 
 test('Testing for authLoginV1: ', ()=> {
-
   // Valid login
-	test('Testing for Valid login: ', ()=> {
-		expect(authLoginV1('p.file@gmail.com', 'Bob100').toStrictlyEqual(
-			{
-				authUserId: expect.any(Number)
-			}
-		));
-	});
+  test('Testing for Valid login: ', ()=> {
+    expect(authLoginV1('p.file@gmail.com', 'Bob100').toStrictlyEqual(
+      {
+        authUserId: expect.any(Number)
+      }
+    ));
+  });
 
 
   // Invalid email
-	test('Testing for invalid login email: Invalid email', ()=> {
-  	expect(authLoginV1(123, 'Bob100').toStrictlyEqual({ error: expect.any(String)}));
-	});
+  test('Testing for invalid login email: Invalid email', ()=> {
+    expect(authLoginV1(123, 'Bob100').toStrictlyEqual({ error: expect.any(String)}));
+  });
 
-	test('Testing for invalid login email: Invalid email', ()=> {
-	  expect(authLoginV1('', 'Bob100').toStrictlyEqual({ error: expect.any(String)}));
-	});
+  test('Testing for invalid login email: Invalid email', ()=> {
+    expect(authLoginV1('', 'Bob100').toStrictlyEqual({ error: expect.any(String)}));
+  });
 
-	// Invalid password
-	test('Testing for invalid login password: Invalid password', ()=> {
-		expect(authLoginV1('p.file@gmail.com', 123).toStrictlyEqual({ error: expect.any(String)}));
-	});
+  // Invalid password
+  test('Testing for invalid login password: Invalid password', ()=> {
+    expect(authLoginV1('p.file@gmail.com', 123).toStrictlyEqual({ error: expect.any(String)}));
+  });
 
-	test('Testing for invalid login password: Invalid password', ()=> {
-		expect(authLoginV1('p.file@gmail.com', '').toStrictlyEqual({ error: expect.any(String)}));
-	});
+  test('Testing for invalid login password: Invalid password', ()=> {
+    expect(authLoginV1('p.file@gmail.com', '').toStrictlyEqual({ error: expect.any(String)}));
+  });
 
 });
