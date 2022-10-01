@@ -4,13 +4,13 @@ import authRegisterV1 from '../auth/auth.js'
 import clearV1 from '../other/other.js'
 
 describe ('Testing channelListAllV1 standard', () => {
-	
-	test('Test that the baseline function works', () => {	
+
+	test('Test that the baseline function works', () => {
 		clearV1();
 		let globalOwnerId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
 		let channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
 		let channelIdPublic = channelsCreateV1(channelOwnerId, 'Boost', true);
-		
+
 		expect(channelsListAllV1(channelOwnerId)).toEqual([
 			{
 				name: 'Boost',
@@ -32,16 +32,16 @@ describe ('Testing channelListAllV1 standard', () => {
 						nameLast: 'Wonka',
 						handleStr: expect.any(String),
 					},
-				],  
+				],
 			},
 		]);
 	});
-	
+
 	let memberId = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
-	
+
   test('Test that the functions works when there is more than one member', () => {
 		channelJoinV1(memberId, channelIdPublic);
-		
+
 		expect(channelOwnerId).toEqual([
 			{
 				name: 'Boost',
@@ -71,10 +71,10 @@ describe ('Testing channelListAllV1 standard', () => {
       	    handleStr: expect.any(String),
       	  }
       	],
-    	}, 
+    	},
 		]);
 	});
-	
+
 	test('test that function works with more than one channel including priv channel', () => {
 		let channelIdPrivate = channelsCreateV1(channelOwnerId, 'priv_channel', false);
 
@@ -107,7 +107,7 @@ describe ('Testing channelListAllV1 standard', () => {
       	    handleStr: expect.any(String),
       	  }
       	],
-    	}, 
+    	},
 			{
 				name: 'priv_channel',
 				isPublic: false,
@@ -117,7 +117,7 @@ describe ('Testing channelListAllV1 standard', () => {
 						email: 'chocolate@bar.com',
 						nameFirst: 'Willy',
 						nameLast: 'Wonka',
-						handleStr: expect.any(String),	
+						handleStr: expect.any(String),
 					},
 				],
 			allMembers: [
@@ -146,7 +146,7 @@ describe ('Testing the edge cases', () => {
 	test('Test for when authuserId is invalid', () => {
 		clearV1();
 		let fake_user = -20;
-		
+
 		expect(channelsListAllV1(fake_user)).toEqual(fake_user + " is invalid");
 	});
 
