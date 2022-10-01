@@ -23,7 +23,7 @@ function channelsCreateV1(authUserId, name, IsPublic) {
 
   //setting channel values and pushing channel into dataStore
   if ( data.channels[0].channelId === NaN && data.channels.length === 1 ) {
-    data.channels[0].channelId = data.channels.length + 1;
+    data.channels[0].channelId = data.channels.length - 1;
     data.channels[0].name = name;
     data.channels[0].isPublic = isPublic;
     data.channels[0].ownerIds.push(authUserId);
@@ -31,7 +31,7 @@ function channelsCreateV1(authUserId, name, IsPublic) {
   }
   else {
     data.channels.push({ 
-      channelId: data.channels.length + 1,
+      channelId: data.channels.length - 1,
       name: name,
       isPublic: IsPublic,
       ownerIds: [authUserId],
