@@ -3,19 +3,22 @@
 let data = {
   users: [
     {
-      uId: undefined,
+      uId: NaN,
       nameFirst: '',
       nameLast: '',
       email: '',
       handleStr: '',
+      isGlobalOwner: false,
     },
   ],
 
   channels: [
     {
-      channelId: undefined,
-      name: "",
-      isPublic: undefined,
+      channelId: NaN,
+      name: '',
+      isPublic: false,
+      ownerIds: [],
+      memberIds: [],
     },
   ],
 };
