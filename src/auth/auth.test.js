@@ -20,7 +20,7 @@ describe('Testing for authRegisterV1: ', ()=> {
 	});
 
 	test('Testing for invalid register: Invalid email', ()=> {
-	expect(authRegisterV1('', 'Bob100', 'Peter', 'File').toStrictlyEqual({ error: expect.any(String)}));
+		expect(authRegisterV1('', 'Bob100', 'Peter', 'File').toStrictlyEqual({ error: expect.any(String)}));
 	});
 
 
