@@ -11,28 +11,10 @@ describe ('Testing channelListAllV1 standard', () => {
     let channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     let channelIdPublic = channelsCreateV1(channelOwnerId, 'Boost', true);
 
-    expect(channelsListAllV1(globalOwnerId)).toEqual([
+    expect(channelsListAllV1(channelOwnerId)).toEqual([
       {
-        name: 'Boost',
-        isPublic: true,
-        ownerMembers: [
-          {
-            uId: channelOwnerId.uId,
-            email: 'chocolate@bar.com',
-            nameFirst: 'Willy',
-            nameLast: 'Wonka',
-            handleStr: expect.any(String), //
-          },
-        ],
-        allMembers: [
-          {
-            uId: channelOwnerId.uId,
-            email: 'chocolate@bar.com',
-            nameFirst: 'Willy',
-            nameLast: 'Wonka',
-            handleStr: expect.any(String),
-          },
-        ],
+       channelId: channelIdPublic,
+       name: 'Boost',
       },
     ]);
   });
@@ -42,7 +24,12 @@ describe ('Testing channelListAllV1 standard', () => {
   test('Test that the function does not work when a member uses it', () => {
     channelJoinV1(memberId, channelIdPublic);
 
-    expect(channelOwnerId).toEqual(channelOwnerId + " cannot use this command");
+    expect(memberId).toEqual([
+      {
+        channelId: channelIdPublic,
+        name: 'Boost',
+      },
+    ]);
   });
 
   test('test that function works with more than one channel including priv channel', () => {
@@ -50,62 +37,12 @@ describe ('Testing channelListAllV1 standard', () => {
 
     test(channelsListAllV1(globalOwnerId)).toEqual([
       {
+        channelId: channelIdPublic,
         name: 'Boost',
-        isPublic: true,
-        ownerMembers: [
-          {
-            uId: channelOwnerId.uId,
-            email: 'chocolate@bar.com',
-            nameFirst: 'Willy',
-            nameLast: 'Wonka',
-            handleStr: expect.any(String),
-          }
-        ],
-        allMembers: [
-          {
-            uId: channelOwnerId.uId,
-            email: 'chocolate@bar.com',
-            nameFirst: 'Willy',
-            nameLast: 'Wonka',
-            handleStr: expect.any(String),
-          },
-          {
-            uId: memberId.uId,
-            email: 'chicken@bar.com',
-            nameFirst: 'Ronald',
-            nameLast: 'Mcdonald',
-            handleStr: expect.any(String),
-          }
-        ],
       },
       {
+        channelId: channelIdPrivate,
         name: 'priv_channel',
-        isPublic: false,
-        ownerMembers: [
-          {
-            uId: channelOwnerId.uId,
-            email: 'chocolate@bar.com',
-            nameFirst: 'Willy',
-            nameLast: 'Wonka',
-            handleStr: expect.any(String),
-          },
-        ],
-      allMembers: [
-          {
-            uId: channelOwnerId.uId,
-            email: 'chocolate@bar.com',
-            nameFirst: 'Willy',
-            nameLast: 'Wonka',
-            handleStr: expect.any(String),
-          },
-          {
-            uId: memberId.uId,
-            email: 'chicken@bar.com',
-            nameFirst: 'Ronald',
-            nameLast: 'Mcdonald',
-            handleStr: expect.any(String),
-          },
-        ],
       },
     ]);
   });
@@ -124,7 +61,7 @@ describe ('Testing the edge cases', () => {
     clearV1();
     let user = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
 
-    expect(user).toEqual([]);
+    expect(channelsListAllV1(user)).toEqual([]);
   });
 });
 
