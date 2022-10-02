@@ -55,6 +55,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
   };
   
   setData(data);
+  return { authUserId: data.users.uId };
 }
 
 
