@@ -2,9 +2,15 @@ import { getData, setData } from '../dataStore.js';
 import validator from 'validator';
 
 function authLoginV1(email, password) {
-  return {
-    authUserId: 1,
-  }
+  let data = getData();
+
+  let mail = validEmail(email);
+  let pass = validPass(password);
+
+  for (let i = 0; i < data.users.length; i++) {
+    if (mail === data.users[i].email && pass === data.users[i].password) {
+      return { authUserId: data.users[i].uId};
+    }
 }
 
 /**
