@@ -22,7 +22,7 @@ function authLoginV1(email, password) {
 
 function authRegisterV1(email, password, nameFirst, nameLast) {
   
-  const data = getData();
+  let data = getData();
 
   // Get valid email address
   let finalEmail = validEmail(email);
@@ -36,16 +36,17 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
   let handle = getHandleStr(firstName, lastName);
   let handleStr = validHandle(handle);
 
-  if ( data.users[0].uId === NaN && data.users.length === 0 ) {
-    data.users.uId = data.users.length + 1;
-    data.users.nameFirst = firstName;
-    data.users.nameLast = lastName;
-    data.users.email = finalEmail;
-    data.users.handleStr = handleStr;
-    data.users.isGlobalOwner = true;
+  
+  if ( isNaN(data.users[0].uId) && data.users.length === 1 ) {
+    data.users[0].uId = data.users.length - 1;
+    data.users[0].nameFirst = firstName;
+    data.users[0].nameLast = lastName;
+    data.users[0].email = finalEmail;
+    data.users[0].handleStr = handleStr;
+    data.users[0].isGlobalOwner = true;
   } else {
     data.users.push({
-      uId: data.users.length + 1,
+      uId: data.users.length - 1,
       nameFirst: firstName,
       nameLast: lastName,
       email: finalEmail,
@@ -55,7 +56,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
   };
   
   setData(data);
-  return { authUserId: data.users.uId };
+  return { authUserId: data.users[data.users.length - 1].uId };
 }
 
 
@@ -130,22 +131,3 @@ function validHandle(handle) {
   handle = temp_handle;
   return handle;
 }
-
-// testing valid pass
-//let pass = validPass('Bob123');
-//console.log(pass);
-
-
-// testing valid first name and last name
-let first = validFirst('Peter123');
-let last = validLast('Fi1l! @e ');
-//console.log(first);
-//console.log(last);
-
-
-let handle = getHandleStr(first, last);
-let handleStr = validHandle(handle);
-//console.log(handleStr); 
-
-let register = authRegisterV1('p.file@gmail.com', 'bob100', 'Peter123', 'Fi!l! @e ');
-console.log(register); 
