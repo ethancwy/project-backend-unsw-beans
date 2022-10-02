@@ -48,6 +48,7 @@ describe('Testing channelJoinV1', () => {
       ],
     });
   });
+
   test('Global owner joining private channel', () => {
     let channelIdPrivate = channelsCreateV1(channelOwnerId, 'BoostPrivate', false);
     expect(channelJoinV1(globalOwnerId, channelIdPrivate)).toStrictEqual({});
