@@ -1,5 +1,5 @@
-import channelJoinV1 from './channel';
-import { channelsCreateV1, channelsListAllV1 } from '../channels/channels.js'
+import channelJoinV1 from '../channel/channel.js';
+import { channelsCreateV1, channelsListAllV1 } from './channels.js'
 import authRegisterV1 from '../auth/auth.js'
 import clearV1 from '../other/other.js'
 
@@ -19,9 +19,10 @@ describe ('Testing channelListAllV1 standard', () => {
     ]);
   });
 
-  let memberId = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
-
-  test('Test that the function does not work when a member uses it', () => {
+  
+  test('Test that the function works when a member uses it', () => {
+    let memberId = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+    
     channelJoinV1(memberId, channelIdPublic);
 
     expect(memberId).toEqual([
@@ -32,7 +33,7 @@ describe ('Testing channelListAllV1 standard', () => {
     ]);
   });
 
-  test('test that function works with more than one channel including priv channel', () => {
+  test('test that function works with more than one channel including a private channel', () => {
     let channelIdPrivate = channelsCreateV1(channelOwnerId, 'priv_channel', false);
 
     test(channelsListAllV1(globalOwnerId)).toEqual([
@@ -52,6 +53,7 @@ describe ('Testing the edge cases', () => {
 
   test('Test for when authuserId is invalid', () => {
     clearV1();
+    // not sure if we can assume that the userid cant be negative
     let fake_user = -20;
 
     expect(channelsListAllV1(fake_user)).toEqual(fake_user + " is invalid");
