@@ -22,20 +22,21 @@ function channelsListAllV1(authUserId) {
 
   // checking if user exists
   let user_check = 0;
-  for (const user in data.users) {
-    if (user === authUserId) {
+  for (const user of data.users) {
+    if (user.uId === authUserId) {
       user_check = 1;
     }
   }
 
   if (user_check === 0) {
-    return authUserId + "is invalid";
+    return authUserId + " is invalid";
   }
 
   // if there are currently no channels in existence
-  /*if (data.channels.uId === 'NaN') {
-    return {data.channels};
-  }*/
+  
+  if (data.channels.uId === 'NaN') {
+    return {[]};
+  }
 
   const array = [
     {
@@ -53,10 +54,6 @@ function channelsListAllV1(authUserId) {
    };
 
    array.push(temp_obj);
-  }
-  
-  if (array == null) {
-    return { [] };
   }
 
   return {
