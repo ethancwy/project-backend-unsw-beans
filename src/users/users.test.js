@@ -5,11 +5,11 @@ import { clearV1 } from '../other/other.js'
 describe('Testing userProfileV1', () => {
   test('Testing for valid user', () => {
     clearV1();
-    let authUserId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
-    let user = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+    let member1 = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
+    let member2 = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
 
-    expect(userProfileV1(authUserId, user)).toStrictEqual({
-      uId: expect.any(Number),
+    expect(userProfileV1(member1, member2)).toStrictEqual({
+      uId: member2.uId,
       email: 'chicken@bar.com',
       nameFirst: 'Ronald',
       nameLast: 'Mcdonald',
@@ -21,12 +21,14 @@ describe('Testing userProfileV1', () => {
 describe('Error checking userProfileV1', () => {
   test('Testing for invalid users', () => {
     clearV1();
-    let authUserId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
-    let user = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+    let member1 = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
+    let member2 = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
 
-    // using string 'eee' as invalid id's
-    expect(userProfileV1(authUserId, 'eee')).toStrictEqual({ error: 'error' });
-    expect(userProfileV1('eee', user)).toStrictEqual({ error: 'error' });
+    let invalidMember1 = member1 + 1;
+    let invalidMember2 = member2 + 1;
+
+    expect(userProfileV1(member1, invalidMember2)).toStrictEqual({ error: 'error' });
+    expect(userProfileV1(invalidMember1, member2)).toStrictEqual({ error: 'error' });
   });
 
 });
