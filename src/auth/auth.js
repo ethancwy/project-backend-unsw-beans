@@ -129,23 +129,6 @@ function validHandle(handle) {
   handle = temp_handle;
   return handle;
 }
-/*
-// Helper function to generate a valid handle string
-function getHandleStr(nameFirst, nameLast) {
-  // Given a first and last name
-  // return a handle that concats together both names
-  // without any uppercase, whitespace, and special characters 
-  let name1 = nameFirst.toLowerCase();
-  let name3 = name1.replace(/[0-9]|\W/g, '');
-  let name2 = nameLast.toLowerCase();
-  let name4 = name2.replace(/[0-9]|\W/g, '');
-
-  let result = name3.concat(name4);
-
-  let handleStr = result.substring(0,20);
-
-  return handleStr;
-} */
 
 // testing valid pass
 //let pass = validPass('Bob123');
