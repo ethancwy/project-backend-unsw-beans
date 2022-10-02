@@ -1,0 +1,1 @@
+Assume that only the global owner can use channelsListAllV1
