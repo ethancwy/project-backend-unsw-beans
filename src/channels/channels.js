@@ -5,6 +5,19 @@ function channelsCreateV1(authUserId, name, IsPublic) {
   return { channelId: 1 };
 }
 
+/*
+  *
+  * Provides an array of all channels (and their associated details) that the authorised user is part of
+  * 
+  * @param {integer} authUserId - a valid userId in dataStore
+  * ...
+  * 
+  * @returns {channels: 
+  *             channelId:
+  *             name:
+  *           } - if authuserId is valid
+  * 
+*/
 
 function channelsListV1(authUserId) {
   let data = getData();
