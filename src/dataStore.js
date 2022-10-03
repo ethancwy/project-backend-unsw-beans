@@ -20,6 +20,14 @@ let data = {
       isPublic: false,
       ownerIds: [],
       memberIds: [],
+      channelmessages: [
+      	{
+					messageId: NaN,
+					uId: NaN,
+					message: '',
+					timeSent: NaN,
+      	}
+    	],
     },
   ],
 };
