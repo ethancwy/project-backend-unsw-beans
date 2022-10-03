@@ -7,7 +7,7 @@ import { getData, setData } from '../dataStore'
   * @param {integer} authUserId - a valid authUserId from dataStore
   * @param {integer} uId - a valid uId from dataStore
   * 
-  * @returns {user: {uId: integer, email: string, nameFirst: string, 
+  * @returns {Object {uId: integer, email: string, nameFirst: string, 
   * nameLast: string, handleStr: string} } - object user details
   *
   * @returns {error} - return error object in invalid cases
