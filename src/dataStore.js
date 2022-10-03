@@ -7,6 +7,7 @@ let data = {
       nameFirst: '',
       nameLast: '',
       email: '',
+      password: '',
       handleStr: '',
       isGlobalOwner: false,
     },
@@ -19,6 +20,14 @@ let data = {
       isPublic: false,
       ownerIds: [],
       memberIds: [],
+      channelmessages: [
+        {
+          messageId: NaN,
+          uId: NaN,
+          message: '',
+          timeSent: NaN,
+        }
+      ]
     },
   ],
 };
