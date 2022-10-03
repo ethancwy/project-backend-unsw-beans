@@ -5,7 +5,7 @@ import {
 } from './channel';
 
 import { channelsCreateV1 } from '../channels/channels.js'
-import { authRegisterV1 } from '../auth/auth.js'
+import { authLoginV1, authRegisterV1 } from '../auth/auth.js'
 import { clearV1 } from '../other/other.js'
 
 describe('Testing channelJoinV1', () => {
@@ -187,5 +187,3 @@ describe('Error checking channelInviteV1', () => {
   });
 
 });
-
-
