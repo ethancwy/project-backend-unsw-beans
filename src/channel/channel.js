@@ -1,5 +1,16 @@
 import { getData, setData } from '../dataStore'
 
+/**
+  * Given a channelId of a channel that the authorised user can join, 
+  * adds them to that channel.
+  * 
+  * @param {integer} authUserId - a valid authUserId from dataStore
+  * @param {integer} channelId - a valid channelId from dataStore
+  * 
+  * @returns {} - return empty
+  * @returns {error} - return error object in invalid cases
+*/
+
 function channelJoinV1(authUserId, channelId) {
   const data = getData();
 
@@ -28,6 +39,18 @@ function channelJoinV1(authUserId, channelId) {
   return { error: 'error' };
 }
 
+/**
+  * The authUser invites a user with uId to join a channel with channelId. 
+  * Once invited, the user is added to the channel immediately.
+  * 
+  * @param {integer} authUserId - a valid authUserId from dataStore
+  * @param {integer} channelId - a valid channelId from dataStore
+  * @param {integer} uId - a valid uId from dataStore
+  * 
+  * @returns {} - return empty
+  * @returns {error} - return error object in invalid cases
+*/
+
 function channelInviteV1(authUserId, channelId, uId) {
   const data = getData();
 
@@ -50,7 +73,7 @@ function channelInviteV1(authUserId, channelId, uId) {
         return { error: 'error' };
       }
 
-      channel.memberIds.push(uId); // add member
+      channel.memberIds.push(uId); // add member // if uId doesn't work, do u uId.authUserId
       setData(data);
       return {};
     }
