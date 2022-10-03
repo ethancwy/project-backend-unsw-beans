@@ -12,7 +12,7 @@ describe('Testing that channelDetailsV1 works standard', () => {
     let channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     let channelIdPublic = channelsCreateV1(channelOwnerId, 'Boost', true);
 
-    expect(channelDetailsV1(channelOwnerId)).toEqual(
+    expect(channelDetailsV1(channelOwnerId, channelIdPublic)).toEqual(
       {
         name: 'Boost',
         isPublic: true,
@@ -22,7 +22,7 @@ describe('Testing that channelDetailsV1 works standard', () => {
             email: 'chocolate@bar.com',
             nameFirst: 'Willy',
             nameLast: 'Wonka',
-            handleStr: expect.any(String), //
+            handleStr: expect.any(String), 
           },
         ],
         allMembers: [
@@ -38,15 +38,15 @@ describe('Testing that channelDetailsV1 works standard', () => {
     );
   });
 
-  test('works with priv channel and with member', () => {
+  test('works with priv channel and member even if there are multiple channels', () => {
     let channelOwnerPrivId = authRegisterV1('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
     let channelIdPriv = channelsCreateV1(channelOwnerPrivId, 'Priv', false);
     let memberId = authRegisterV1('saul@hhm.com', 'greAtPassword34', 'James', 'McGill');
     
-    expect(channelInviteV1(channelOwnerPrivId, channelIdPriv, memberId.uId)).toEqual({});
-    expect(channelJoinV1(memberId, channelIdPriv)).toEqual({});
+    expect(channelInviteV1(channelOwnerPrivId, channelIdPriv, memberId)).toEqual({});
+    expect(channelInviteV1(channelOwnerId, channelIdPublic, memberId)).toEqual({});
 
-    expect(channelDetailsV1(memberId)).toEqual(
+    expect(channelDetailsV1(memberId, channelIdPriv)).toEqual(
       {
         name: 'Priv',
         isPublic: false,
@@ -56,7 +56,7 @@ describe('Testing that channelDetailsV1 works standard', () => {
             email: 'pollos@hhm.com',
             nameFirst: 'Gus',
             nameLast: 'Fring',
-            handleStr: expect.any(String), //
+            handleStr: expect.any(String), 
           },
         ],
         allMembers: [
@@ -71,7 +71,7 @@ describe('Testing that channelDetailsV1 works standard', () => {
             uId: memberId.uId,
             email: 'saul@hhm.com',
             nameFirst: 'James',
-            nameLast 'McGill',
+            nameLast: 'McGill',
             handleStr: expect.any(String),
           },
         ],  
