@@ -21,35 +21,28 @@ function authLoginV1(email, password) {
 */
 
 function authRegisterV1(email, password, nameFirst, nameLast) {
-  
   let data = getData();
 
-  // Get valid email address
-  let finalEmail = validEmail(email);
-  // Get valid password
-  let pass = validPass(password);
-  // Get valid first name
-  let firstName = validFirst(nameFirst);
-  // Get valid last name
-  let lastName = validLast(nameLast);
+  if (!validEmail(email) || !validPass(password) || !validName(nameFirst) || !validName(nameLast)) {
+    return { error: 'error' };
+  }
 
-  let handle = getHandleStr(firstName, lastName);
+  let handle = getHandleStr(nameFirst, nameLast);
   let handleStr = validHandle(handle);
 
-  
   if ( isNaN(data.users[0].uId) && data.users.length === 1 ) {
     data.users[0].uId = data.users.length - 1;
-    data.users[0].nameFirst = firstName;
-    data.users[0].nameLast = lastName;
-    data.users[0].email = finalEmail;
+    data.users[0].nameFirst = nameFirst;
+    data.users[0].nameLast = nameLast;
+    data.users[0].email = email;
     data.users[0].handleStr = handleStr;
     data.users[0].isGlobalOwner = true;
   } else {
     data.users.push({
       uId: data.users.length - 1,
-      nameFirst: firstName,
-      nameLast: lastName,
-      email: finalEmail,
+      nameFirst: nameFirst,
+      nameLast: nameLast,
+      email: email,
       handleStr: handleStr,
       isGlobalOwner: false,
     });
@@ -81,40 +74,24 @@ function getHandleStr(nameFirst, nameLast) {
 
 // Helper function to get valid email address
 function validEmail(email) {
-  const valid = validator.isEmail(email);
-
-  if (!valid) {
-    return console.log({ error: 'error'});
-  } else {
-    return email;
-  }
+  return validator.isEmail(email);
 } 
 
 // Helper function to get valid password
 function validPass(password) {
   if (password.match(/.{6,}/)) {
-    return password;
+    return true;
   } else {
-    return console.log({ error: 'error' });
+    return false;
   }
 }
 
 // Helper function to get valid first name
-function validFirst(nameFirst) {
-  if (nameFirst.match(/.{1,50}/)) {
-    return nameFirst;
-  } else {
-    return console.log({ error: 'error'});
+function validName(nameFirst) {
+  if (nameFirst.length < 1 || nameFirst.length > 50) {
+    return false;
   }
-}
-
-// Helpr function to get valid last name
-function validLast(nameLast) {
-  if (nameLast.match(/.{1,50}/)) {
-    return nameLast;
-  } else {
-    return console.log({ error: 'error'});
-  }
+  return true;
 }
 
 // Helper function to get valid handle string
@@ -131,3 +108,5 @@ function validHandle(handle) {
   handle = temp_handle;
   return handle;
 }
+
+
