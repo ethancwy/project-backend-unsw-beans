@@ -87,5 +87,4 @@ describe('Testing for authLoginV1: ', ()=> {
     const register = authRegisterV1('p.file@gmail.com', 'Bob100', 'Peter', 'File');
     expect(authLoginV1('p.file@gmail.com', '')).toStrictEqual({ error: 'error'});
   });
-
 });
