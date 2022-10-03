@@ -1,8 +1,23 @@
 import { clearV1 } from './other';
-import { channelsListV1 } from './channels';
+import { authRegister, authLogin } from './auth';
+import { channelsCreateV1 } from './channels';
+import { channelDetailsV1 } from './channel';
 
-test('Test the data has been clear',() => {
-	// how to pass in authid?
-    expect (channelsListV1()).toStrictEqual({});
+describe('Sample test', () => {
+	test('Test the auth has been clear',() => {
+		authRegister('tony0905@gmail.com','Tony0905', 'Tony', 'Yeung');
+  	clearV1();
+  	expect(authLogin('tony0905@gmail.com','Tony0905')).toStrictEqual(
+  		{error: 'error'});  
+	});
+	
+	
+	test('Test the channel has been clear', () => {
+	  const ninaId = authRegister('nina0803@gmail.com','Nina0803', 'Nina', 'Yeh');
+		const dogChannelId = channelsCreateV1('ninaId', 'dogFriend', true);
+		clearV1();
+		expect(channelDetailsV1('ninaId', 'dogChannelId')).toStrictEqual {
+			{error: 'error'});
+		}
+	});
 });
-

@@ -16,6 +16,17 @@ let data = {
       channelId: 1,
       name: "Peter's Channel",
       isPublic: true,
+      ownerIds: [],
+      memberIds: [],
+      channelmessages: [
+      	{
+					messageId: undefined,
+					uId: undefined,
+					message: '',
+					timeSent: undefined,
+      	}
+      	
+    	],
     },
   ],
 };

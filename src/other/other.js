@@ -1,8 +1,14 @@
-function clearV1() {
+import {getData, setData} from '../dataStore.js';
 
-  return {};
+function clearV1() {
+	let data = getData();
+	data = {
+		users = [];
+		channels = [];
+	}
+	setData(data);
 }
 
 export {
-  clearV1
+  clearV1,
 };
