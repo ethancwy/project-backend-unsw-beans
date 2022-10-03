@@ -8,7 +8,7 @@ describe('Testing for authRegisterV1: ', ()=> {
         authUserId: expect.any(Number)
       });
   });
-
+ 
   // Invalid email
   test('Testing for invalid register: Invalid email', ()=> {
     expect(authRegisterV1('Invalid email', 'Bob100', 'Peter', 'File')).toStrictEqual({ error: 'error'});
