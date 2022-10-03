@@ -21,13 +21,13 @@ let data = {
       ownerIds: [],
       memberIds: [],
       channelmessages: [
-      	{
-					messageId: NaN,
-					uId: NaN,
-					message: '',
-					timeSent: NaN,
-      	}
-    	],
+        {
+          messageId: NaN,
+          uId: NaN,
+          message: '',
+          timeSent: NaN,
+        }
+      ]
     },
   ],
 };
