@@ -43,7 +43,8 @@ function authLoginV1(email, password) {
 function authRegisterV1(email, password, nameFirst, nameLast) {
   let data = getData();
 
-  if (!validEmail(email) || !validPass(password) || !validName(nameFirst) || !validName(nameLast)) {
+  if (!validEmail(email) || !validPass(password) || !validName(nameFirst) || 
+      !validName(nameLast) || sameEmail(email)) {
     return { error: 'error' };
   }
 
@@ -128,6 +129,18 @@ function validHandle(handle) {
   }
   handle = temp_handle;
   return handle;
+}
+
+function sameEmail(email) {
+  let data = getData();
+
+  for (let i = 0; i < data.users.length; i++) {
+    if (email === data.users[i].email) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export {
