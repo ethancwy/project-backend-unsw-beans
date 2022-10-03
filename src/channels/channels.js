@@ -35,7 +35,9 @@ function channelsListAllV1(authUserId) {
   // if there are currently no channels in existence
   
   if (data.channels.uId === 'NaN') {
-    return {[]};
+    return {
+      channels: []
+    };
   }
 
   const array = [
@@ -57,7 +59,7 @@ function channelsListAllV1(authUserId) {
   }
 
   return {
-    array
+    channels: array
   };
 }
 
