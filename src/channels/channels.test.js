@@ -11,12 +11,14 @@ describe ('Testing channelListAllV1 standard', () => {
     let channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     let channelIdPublic = channelsCreateV1(channelOwnerId, 'Boost', true);
 
-    expect(channelsListAllV1(channelOwnerId)).toEqual([
-      {
-       channelId: channelIdPublic,
-       name: 'Boost',
-      },
-    ]);
+    expect(channelsListAllV1(channelOwnerId)).toEqual({
+      channel: [
+        {
+         channelId: channelIdPublic,
+        name: 'Boost',
+        },
+      ]
+    });
   });
 
   
@@ -25,27 +27,31 @@ describe ('Testing channelListAllV1 standard', () => {
     
     channelJoinV1(memberId, channelIdPublic);
 
-    expect(memberId).toEqual([
-      {
-        channelId: channelIdPublic,
-        name: 'Boost',
-      },
-    ]);
+    expect(memberId).toEqual({
+      channel: [
+        {
+          channelId: channelIdPublic,
+          name: 'Boost',
+        },
+      ]
+    });
   });
 
   test('test that function works with more than one channel including a private channel', () => {
     let channelIdPrivate = channelsCreateV1(channelOwnerId, 'priv_channel', false);
 
-    test(channelsListAllV1(globalOwnerId)).toEqual([
-      {
-        channelId: channelIdPublic,
-        name: 'Boost',
-      },
-      {
-        channelId: channelIdPrivate,
-        name: 'priv_channel',
-      },
-    ]);
+    test(channelsListAllV1(globalOwnerId)).toEqual({
+      channel: [
+        {
+          channelId: channelIdPublic,
+          name: 'Boost',
+        },
+        {
+          channelId: channelIdPrivate,
+          name: 'priv_channel',
+        },
+      ]
+    });
   });
 });
 
@@ -63,7 +69,9 @@ describe ('Testing the edge cases', () => {
     clearV1();
     let user = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
 
-    expect(channelsListAllV1(user)).toEqual([]);
+    expect(channelsListAllV1(user)).toEqual({
+      channel: []
+    });
   });
 });
 
