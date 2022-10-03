@@ -19,18 +19,18 @@ function channelJoinV1(authUserId, channelId) {
   }
 
   for (const channel of data.channels) {
-    if (channelId === channel.channelId) {
+    if (channelId.channelId === channel.channelId) {
       if (channel.isPublic === false) { // private channel
         if (user.isGlobalOwner === false) { // if not global owner
           return { error: 'error' };
         }
       }
       for (const member of channel.memberIds) {
-        if (authUserId === member) {  // already a member
+        if (authUserId.authUserId === member) {  // already a member
           return { error: 'error' };
         }
       }
-      channel.memberIds.push(authUserId); // add member
+      channel.memberIds.push(authUserId.authUserId); // add member
       setData(data);
       return {};
     }
@@ -60,12 +60,12 @@ function channelInviteV1(authUserId, channelId, uId) {
 
   let authMember = false;
   for (const channel of data.channels) {
-    if (channelId === channel.channelId) {
+    if (channelId.channelId === channel.channelId) {
       for (const member of channel.memberIds) {
-        if (uId === member) {  // already a member
+        if (uId.authUserId === member) {  // already a member
           return { error: 'error' };
         }
-        if (authUserId === member && !authMember) { // inviter not a member check
+        if (authUserId.authUserId === member && !authMember) { // inviter not a member check
           authMember = true;
         }
       }
@@ -73,7 +73,7 @@ function channelInviteV1(authUserId, channelId, uId) {
         return { error: 'error' };
       }
 
-      channel.memberIds.push(uId); // add member // if uId doesn't work, do u uId.authUserId
+      channel.memberIds.push(uId.authUserId); // add member // if uId doesn't work, do u uId.authUserId
       setData(data);
       return {};
     }
@@ -82,9 +82,9 @@ function channelInviteV1(authUserId, channelId, uId) {
 }
 
 // Helper function to check if user is valid
-function isValidUser(authUserId) {
+function isValidUser(userId) {
   for (const user of data.users) {
-    if (authUserId === user.uId) {
+    if (userId.authUserId === user.uId) {
       return true;
     }
   }
