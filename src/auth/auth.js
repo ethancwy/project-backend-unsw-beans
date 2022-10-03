@@ -21,8 +21,8 @@ function authLoginV1(email, password) {
   }
 
   for (let i = 0; i < data.users.length; i++) {
-    if (mail === data.users[i].email && pass === data.users[i].password) {
-      return { authUserId: data.users[i].uId};
+    if (email === data.users[i].email && password === data.users[i].password) {
+      return { authUserId: data.users[i].uId };
     }
   }
 }
@@ -55,6 +55,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     data.users[0].nameFirst = nameFirst;
     data.users[0].nameLast = nameLast;
     data.users[0].email = email;
+    data.users[0].password = password;
     data.users[0].handleStr = handleStr;
     data.users[0].isGlobalOwner = true;
   } else {
@@ -63,6 +64,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
       nameFirst: nameFirst,
       nameLast: nameLast,
       email: email,
+      password: password,
       handleStr: handleStr,
       isGlobalOwner: false,
     });
