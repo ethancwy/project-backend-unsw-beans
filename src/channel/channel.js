@@ -28,8 +28,8 @@ function channelDetailsV1(authUserId, channelId) {
 
   // checking if authUserId is valid
   let user_check = 0;
-  for (const users of data.users.uId) {
-    if (users === authUserId) {
+  for (const users of data.users) {
+    if (users.uId === authUserId) {
       user_check = 1;
     }
   }
@@ -41,10 +41,10 @@ function channelDetailsV1(authUserId, channelId) {
   //checking if channelId is valid
   let channel_check = 0;
   let channel_pos = 0;
-  for (const channels in data.channels.channelId) {
-    if (data.channels.channelId[channels] === channelId) {
+  for (const chans in data.channels) {
+    if (data.channels[chans].channelId === channelId) {
       channel_check = 1;
-      channel_pos = channels;
+      channel_pos = chans;
     }
   }
 
@@ -54,8 +54,8 @@ function channelDetailsV1(authUserId, channelId) {
 
   //checking if authUserId is in the channel
   user_check = 0;
-  for (const members of data.channels[channel_pos].memberIds) {
-    if (authUserId === members.uId) {
+  for (const membs of data.channels[channel_pos].memberIds) {
+    if (authUserId === membs) {
       user_check = 1;
     }
   }
