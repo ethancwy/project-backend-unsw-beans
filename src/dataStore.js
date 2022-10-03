@@ -3,11 +3,13 @@
 let data = {
   users: [
     {
-      uId: 1,
-      nameFirst: 'Peter',
-      nameLast: 'File',
-      email: 'p.file@email.com',
-      handleStr: 'filepeter',
+      uId: NaN,
+      nameFirst: '',
+      nameLast: '',
+      email: '',
+      password: '',
+      handleStr: '',
+      isGlobalOwner: false,
     },
   ],
 
