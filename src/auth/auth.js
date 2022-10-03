@@ -16,21 +16,13 @@ import validator from 'validator';
 function authLoginV1(email, password) {
   let data = getData();
 
-<<<<<<< src/auth/auth.js
-  for (let i = 0; i <data.users.length; i++) {
-    if( data.users[i].email === email) {
-      if( data.users[i].password === password)
-        return { authUserID: data.users[i].uId}
-      else
-        return {error: 'error' };  
-=======
   for (let i = 0; i < data.users.length; i++) {
-    if ( data.users[i].email === email ) {
-      if ( data.users[i].password === password )
-        return { authtUserID: data.users[i].uId }
-      else
+    if (data.users[i].email === email) {
+      if (data.users[i].password === password) {
+        return { authtUserId: data.users[i].uId };
+      } else {
         return { error: 'error' };
->>>>>>> src/auth/auth.js
+      }
     }
   }
   return { error: 'error' };
