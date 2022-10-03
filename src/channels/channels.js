@@ -1,5 +1,17 @@
 import { getData, setData } from '../dataStore.js';
 
+/*
+  *
+  * Creates a new channel with the given name, that is either a public or 
+  * private channel. The user who created it automatically joins the channel.
+  * 
+  * @param {integer} authUserId - a valid authUserId from dataStore
+  * @param {string} name - a valid name that is greater than 1 and smaller than 20
+  * @param {boolean} isPublic - deciding factor for setting if channel should be public
+  * ...
+  * 
+  * @returns {integer} - channelId of the channel created
+*/
 
 function channelsCreateV1(authUserId, name, IsPublic) {
   let data = getData();
