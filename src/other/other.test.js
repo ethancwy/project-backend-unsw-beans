@@ -1,7 +1,7 @@
-import { clearV1 } from './other';
-import { authRegister, authLogin } from './auth';
-import { channelsCreateV1 } from './channels';
-import { channelDetailsV1 } from './channel';
+import { clearV1 } from './other.js';
+import { authRegister, authLogin } from '../auth/auth.js';
+import { channelsCreateV1 } from '../channels/channels.js';
+import { channelDetailsV1 } from '../channel/channel.js';
  
 describe('Sample test', () => {
   test('Test the auth has been clear',() => {
