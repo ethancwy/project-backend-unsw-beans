@@ -1,10 +1,4 @@
-1. assuming that testing for return types should only include types that are of the original specifications.(attributes added on should not be of any importance regarding the implementation of the program).
-eg. for data only check for user :{
-    uId,
-    email, 
-    nameFirst,
-    nameLast, 
-    handleStr
-}
-
-2.
+1. Any user can create multiple channels (>1 channels)
+2. Global owner can join private channels without an invitation
+3. Global owners are not a part of ownerMembers (a key in the returning object for channelDetailsV1) in every channel they are in, unless added as a ownerMember by the channelOwner or themselves
+4. If the global owner is removed, the next user who registered after the global owner becomes the new global owner
