@@ -41,3 +41,44 @@ describe('channelsCreateV1 tests:', () => {
 		);
 	});
 });
+
+describe('channelsListV1 tests:', () => {
+	test('Testing for invalid authUserId', () => {
+		clearV1();
+		
+		const invalidId = 9999;
+
+		expect(channelsCreateV1(invalidId, '', true)).toStrictEqual({error: 'error'});
+	});
+
+	test('Testing for successful creation', () => {
+		clearV1();
+			
+		const person = authRegisterV1('hao@mail.com', '12345', 'hao', 'yang');
+		const person2 = authRegisterV1('ethan@mail.com', '56789', 'ethan', 'chew');
+		
+		const channel1 = channelsCreateV1(person, 'hao/channel1', true); 
+		const channel2 = channelsCreateV1(person, 'hao/channel2', true); 
+		const channel3 = channelsCreateV1(person, 'hao/channel3', false); 
+		const channel4 = channelsCreateV1(person2, 'ethan/channel1', true); 
+
+		expect(channelsListV1(personId)).toStrictEqual(
+			{
+				channeld: [
+					{
+						channelId: channel1,
+						name: 'hao/channel1',
+					},
+					{
+						channelId: channel2,
+						name: 'hao/channel2',
+					},
+					{
+						channelId: channel3,
+						name: 'hao/channel3',
+					},
+				]
+			}
+		);
+	});
+});
