@@ -57,10 +57,10 @@ describe('channelsListV1 tests:', () => {
 		const person = authRegisterV1('hao@mail.com', '1234512345', 'hao', 'yang');
 		const person2 = authRegisterV1('ethan@mail.com', '5678956789', 'ethan', 'chew');
 		
-		const channel1 = channelsCreateV1(person, 'hao/channel1', true); 
-		const channel2 = channelsCreateV1(person, 'hao/channel2', true); 
-		const channel3 = channelsCreateV1(person, 'hao/channel3', false); 
-		const channel4 = channelsCreateV1(person2, 'ethan/channel1', true); 
+    const channel1 = channelsCreateV1(person, 'hao/channel1', true); 
+    const channel2 = channelsCreateV1(person, 'hao/channel2', true); 
+    const channel3 = channelsCreateV1(person, 'hao/channel3', false); 
+		const channel4 = channelsCreateV1(person2, 'ethan/channel1', true);  
 
 		expect(channelsListV1(person)).toStrictEqual(
 			{
