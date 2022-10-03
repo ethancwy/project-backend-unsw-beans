@@ -16,15 +16,15 @@ import validator from 'validator';
 function authLoginV1(email, password) {
   let data = getData();
 
-  if (!validEmail(email) || !validPass(password)) {
-    return { error: 'error' };
-  }
-
   for (let i = 0; i < data.users.length; i++) {
-    if (email === data.users[i].email && password === data.users[i].password) {
-      return { authUserId: data.users[i].uId };
+    if ( data.users[i].email === email ) {
+      if ( data.users[i].password === password )
+        return { authtUserID: data.users[i].uId }
+      else
+        return { error: 'error' };
     }
   }
+  return { error: 'error' };
 }
 /**
   * Allows user to register with email, password, first name, and last name
