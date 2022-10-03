@@ -14,21 +14,24 @@ describe('channelsCreateV1 tests:', () => {
 	test('Testing for invalid name(greater than 20)', () => {
 		clearV1();
 		
-		const person = authRegisterV1('hao@mail.com', '12345', 'hao', 'yang');
+		const person = authRegisterV1('hao@mail.com', '1234512345', 'hao', 'yang');
 
 		expect(channelsCreateV1(person, '1234567890qwertyuiopasdfghjkl', true)).toStrictEqual({error: 'error'});
 	});
 
 	test('Testing for invalid authUserId', () => {
 		clearV1();
-		const invalidId = 9999;
-		expect(channelsCreateV1(invalidId, 'hao/channel', true)).toStrictEqual({error: 'error'});
+		
+		const person = authRegisterV1('hao@mail.com', '1234512345', 'hao', 'yang');
+		clearV1();
+
+		expect(channelsCreateV1(person, 'hao/channel', true)).toStrictEqual({error: 'error'});
 	});
 
 	test('Testing for successful creation', () => {
 		clearV1();
 			
-		const person = authRegisterV1('hao@mail.com', '12345', 'hao', 'yang');
+		const person = authRegisterV1('hao@mail.com', '1234512345', 'hao', 'yang');
 
 		expect(channelsCreateV1(person, 'hao/channel', true)).toStrictEqual(
 			{
