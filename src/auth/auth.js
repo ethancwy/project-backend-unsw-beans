@@ -62,7 +62,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     data.users[0].isGlobalOwner = true;
   } else {
     data.users.push({
-      uId: data.users.length - 1,
+      uId: data.users.length,
       nameFirst: nameFirst,
       nameLast: nameLast,
       email: email,
