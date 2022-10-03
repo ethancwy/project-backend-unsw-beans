@@ -1,4 +1,6 @@
 import { getData, setData } from '../dataStore.js';
+import { authRegisterV1 } from '../auth/auth.js';
+import { clearV1 } from '../other/other.js';
 
 /*
   *
@@ -36,33 +38,68 @@ function channelsCreateV1(authUserId, name, IsPublic) {
     data.channels[0].channelId = data.channels.length - 1;
     data.channels[0].name = name;
     data.channels[0].isPublic = isPublic;
-    data.channels[0].ownerIds.push(authUserId);
-    data.channels[0].memberIds.push(authUserId);
+    data.channels[0].ownerIds.push(authUserId.authUserId);
+    data.channels[0].memberIds.push(authUserId.authUserId);
   }
   else {
     data.channels.push({ 
-      channelId: data.channels.length - 1,
+      channelId: data.channels.length,
       name: name,
       isPublic: IsPublic,
-      ownerIds: [authUserId],
-      memberIds: [authUserId],
+      ownerIds: [authUserId.authUserId],
+      memberIds: [authUserId.authUserId],
   });
 }
 
   setData(data);
-  return { channelId: data.channels.length };
+  return { channelId: data.channels[data.channels.length - 1].channelId };
 }
 
+/*
+  *
+  * Provides an array of all channels (and their associated details) that the authorised user is part of
+  * 
+  * @param {integer} authUserId - a valid userId in dataStore
+  * ...
+  * 
+  * @returns {channels: 
+  *             channelId:
+  *             name:
+  *           } - if authuserId is valid
+  * 
+*/
+
 function channelsListV1(authUserId) {
-  return {
-    channels: [
-      {
-        channelId: 1,
-        name: "My Channel",
-      }
-    ],
+  let data = getData();
+
+  //checking if authUserId is valid
+  let user_is_valid = false;
+  for ( const user of data.users ) {
+    if ( user.uId === authUserId.authUserId ) {
+      user_is_valid = true;
+      break;
+    }
   }
+  if ( !(user_is_valid) )
+    return { error: 'error' };
+
+  const channel_list = [];
+
+  for ( const ch of data.channels ) {
+    for ( const member of ch.memberIds ) {
+      if ( authUserId.authUserId === member ) {
+        channel_list.push({
+          channelId: ch.channelId,
+          name: ch.name,
+        });
+        break;
+      }
+    }
+  }
+  
+  return { channels: channel_list };
 }
+
 
 function channelsListAllV1(authUserId) {
   return {
