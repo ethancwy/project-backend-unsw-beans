@@ -2,7 +2,7 @@ import { clearV1 } from './other';
 import { authRegister, authLogin } from './auth';
 import { channelsCreateV1 } from './channels';
 import { channelDetailsV1 } from './channel';
-
+ 
 describe('Sample test', () => {
 	test('Test the auth has been clear',() => {
 		authRegister('tony0905@gmail.com','Tony0905', 'Tony', 'Yeung');

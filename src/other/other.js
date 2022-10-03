@@ -9,6 +9,6 @@ function clearV1() {
 	setData(data);
 }
 
-export {
+export { 
   clearV1,
 };
