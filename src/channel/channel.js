@@ -32,6 +32,34 @@ function channelInviteV1(authUserId, channelId, uId) {
   return {};
 }
 
+// Helper function to check if user is valid
+function isValidUser(authUserId) {
+  const data = getData();
+  for (const user of data.users) {
+    if (authUserId === user.uId) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// Helper function to check if user is valid
+function isGlobalOwner(authUserId) {
+  const data = getData();
+
+  for (const user of data.users) {
+    if (authUserId === user.uId) {
+      if (user.isGlobalOwner) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+
+
 function channelMessagesV1(authUserId, channelId, start) {
   return {
     messages: [
@@ -51,14 +79,7 @@ function channelDetailsV1(authUserId, channelId) {
   let data = getData();
 
   // checking if authUserId is valid
-  let user_check = 0;
-  for (const users of data.users) {
-    if (users.uId === authUserId) {
-      user_check = 1;
-    }
-  }
-
-  if (user_check === 0) {
+  if (!isValidUser(authUserId)) {
     return { error: 'error' };
   }
 
@@ -77,7 +98,7 @@ function channelDetailsV1(authUserId, channelId) {
   }
 
   //checking if authUserId is in the channel
-  user_check = 0;
+  let user_check = 0;
   for (const membs of data.channels[channel_pos].memberIds) {
     if (membs === authUserId) {
       user_check = 1;
