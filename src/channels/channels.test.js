@@ -80,6 +80,7 @@ describe('channelsListV1 tests:', () => {
       }
     );
   });
+<<<<<<< HEAD
 });
 
 // Testing for channelsListAll
@@ -145,4 +146,3 @@ describe ('Testing the edge cases', () => {
     });
   });
 });
-
