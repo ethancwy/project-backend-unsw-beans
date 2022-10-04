@@ -19,7 +19,7 @@ function authLoginV1(email, password) {
   for (let i = 0; i < data.users.length; i++) {
     if ( data.users[i].email === email ) {
       if ( data.users[i].password === password )
-        return { authtUserID: data.users[i].uId }
+        return { authtUserId: data.users[i].uId }
       else
         return { error: 'error' };
     }
@@ -61,7 +61,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     data.users[0].isGlobalOwner = true;
   } else {
     data.users.push({
-      uId: data.users.length - 1,
+      uId: data.users.length,
       nameFirst: nameFirst,
       nameLast: nameLast,
       email: email,
@@ -108,9 +108,9 @@ function validPass(password) {
 }
 
 
-// Helper function to get valid first name
-function validName(nameFirst) {
-  if (nameFirst.length < 1 || nameFirst.length > 50) {
+// Helper function to get valid name
+function validName(name) {
+  if (name.length < 1 || name.length > 50 || !name.match(/[A-Za-z0-9]/)) {
     return false;
   }
   return true;
