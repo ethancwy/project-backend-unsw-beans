@@ -1,7 +1,7 @@
 import { channelDetailsV1, channelJoinV1, channelInviteV1 } from './channel.js'
-import channelsCreateV1 from '../channels/channels.js'
-import authRegisterV1 from '../auth/auth.js'
-import clearV1 from '../other/other.js'
+import { channelsCreateV1}  from '../channels/channels.js'
+import { authRegisterV1 } from '../auth/auth.js'
+import { clearV1 } from '../other/other.js'
 
 describe('Testing that channelDetailsV1 works standard', () => {
 
@@ -92,9 +92,12 @@ describe('Testing channelDetailsV1 edge cases', () => {
     let globalOwnerId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
     let channelOwnerPrivId = authRegisterV1('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
     let channelIdPriv = channelsCreateV1(channelOwnerPrivId.authUserId, 'Priv', false);
-    let fakeUserId = channelOwnerPrivId.authUserId + 1;
+    let fakeUserId = channelOwnerPrivId.authUserId + 5;
+    if (fakeUserId = globalOwnerId.authUserId) {
+      fakeUserId++;
+    }
 
-    expect(channelDetailsV1(fakeUserId, channelIdPublic.channelId)).toEqual({ error: 'error' });
+    expect(channelDetailsV1(fakeUserId, channelIdPriv.channelId)).toEqual({ error: 'error' });
   });
 
   test('Testing when Id is valid but user is not a member of the channel', () => {
@@ -103,7 +106,7 @@ describe('Testing channelDetailsV1 edge cases', () => {
     let globalOwnerId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
     let tempUserId = authRegisterV1('heisenberg@hhm.com', 'AnotherPasword1', 'Walter', 'White');
     let channelOwnerPublicId = authRegisterV1('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
-    let channelIdPublic = channelsCreateV1(channelOwnerPublicId.authUserId, 'Priv', true);
+    let channelIdPublic = channelsCreateV1(channelOwnerPublicId.authUserId, 'Public', false);
 
 
     expect(channelDetailsV1(tempUserId.authUserId, channelIdPublic.channelId)).toEqual({ error: 'error' });
