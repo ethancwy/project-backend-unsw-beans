@@ -8,8 +8,8 @@ describe('Testing userProfileV1', () => {
     let member1 = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
     let member2 = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
 
-    expect(userProfileV1(member1, member2)).toStrictEqual({
-      uId: member2.uId,
+    expect(userProfileV1(member1.authUserId, member2.authUserId)).toStrictEqual({
+      uId: member2.authUserId,
       email: 'chicken@bar.com',
       nameFirst: 'Ronald',
       nameLast: 'Mcdonald',
@@ -24,11 +24,11 @@ describe('Error checking userProfileV1', () => {
     let member1 = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
     let member2 = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
 
-    let invalidMember1 = member1 + 1;
-    let invalidMember2 = member2 + 1;
+    let invalidMember1 = member1.authUserId + 1;
+    let invalidMember2 = member2.authUserId + 1;
 
-    expect(userProfileV1(member1, invalidMember2)).toStrictEqual({ error: 'error' });
-    expect(userProfileV1(invalidMember1, member2)).toStrictEqual({ error: 'error' });
+    expect(userProfileV1(member1.authUserId, invalidMember2)).toStrictEqual({ error: 'error' });
+    expect(userProfileV1(invalidMember1, member2.authUserId)).toStrictEqual({ error: 'error' });
   });
 
 });
