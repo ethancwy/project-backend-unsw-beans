@@ -1,4 +1,4 @@
-import { channelsListV1, channelsCreateV1 } from './channels';
+import { channelsListV1, channelsCreateV1, channelsListAllV1 } from './channels';
 import { authRegisterV1, authLoginV1 } from '../auth/auth.js';
 import { clearV1 } from '../other/other.js';
 
@@ -79,5 +79,70 @@ describe('channelsListV1 tests:', () => {
         ]
       }
     );
+  });
+<<<<<<< HEAD
+});
+
+// Testing for channelsListAll
+describe ('Testing channelsListAllV1 standard', () => {
+
+  test('Test that the baseline function works', () => {
+    clearV1();
+
+    let globalOwnerId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
+    let channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    let channelIdPublic = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
+
+    expect(channelsListAllV1(channelOwnerId.authUserId)).toEqual({
+      channels: [
+        {
+        channelId: channelIdPublic.channelId,
+        name: 'Boost',
+        }
+      ]
+    });
+  });
+
+  test('test that function works with more than one channel including a private channel', () => {
+    clearV1();
+
+    let globalOwnerId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
+    let channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    let channelIdPublic = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
+    let channelIdPrivate = channelsCreateV1(channelOwnerId.authUserId, 'priv_channel', false);
+
+    expect(channelsListAllV1(globalOwnerId.authUserId)).toEqual({
+      channels: [
+        {
+          channelId: channelIdPublic.channelId,
+          name: 'Boost',
+        },
+        {
+          channelId: channelIdPrivate.channelId,
+          name: 'priv_channel',
+        }
+      ]
+    });
+  });
+});
+
+describe ('Testing the edge cases', () => {
+
+  test('Test for when authuserId is invalid', () => {
+    clearV1();
+
+    let fake_user = -20;
+
+    expect(channelsListAllV1(fake_user)).toEqual(fake_user + " is invalid");
+  });
+
+  test('Test for when there are no channels in existence yet', () => {
+    clearV1();
+
+    let user = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
+
+    expect(channelsListAllV1(user.authUserId)).toEqual({
+      channels: []
+    });
   });
 });
