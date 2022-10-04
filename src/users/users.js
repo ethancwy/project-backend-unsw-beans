@@ -24,12 +24,14 @@ function userProfileV1(authUserId, uId) {
 
   if (uId === user.uId) {
     return {
-      uId: uId,
-      email: user.email,
-      nameFirst: user.nameFirst,
-      nameLast: user.nameLast,
-      handleStr: user.handleStr,
-    }
+      user: {
+        uId: uId,
+        email: user.email,
+        nameFirst: user.nameFirst,
+        nameLast: user.nameLast,
+        handleStr: user.handleStr,
+      }
+    };
   }
 }
 

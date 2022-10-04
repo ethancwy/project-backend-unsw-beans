@@ -9,11 +9,13 @@ describe('Testing userProfileV1', () => {
     let member2 = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
 
     expect(userProfileV1(member1.authUserId, member2.authUserId)).toStrictEqual({
-      uId: member2.authUserId,
-      email: 'chicken@bar.com',
-      nameFirst: 'Ronald',
-      nameLast: 'Mcdonald',
-      handleStr: expect.any(String),
+      user: {
+        uId: member2.authUserId,
+        email: 'chicken@bar.com',
+        nameFirst: 'Ronald',
+        nameLast: 'Mcdonald',
+        handleStr: expect.any(String),
+      }
     });
   });
 });
