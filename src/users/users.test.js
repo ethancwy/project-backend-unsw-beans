@@ -21,13 +21,14 @@ describe('Testing userProfileV1', () => {
 describe('Error checking userProfileV1', () => {
   test('Testing for invalid users', () => {
     clearV1();
-    let member1 = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
-    let member2 = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+    let member = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
+    const invalidMember = member.authUserId + 1;
 
-    let invalidMember = member1.authUserId + member2.authUserId;
+    // valid authUserId, invalid uId
+    expect(userProfileV1(member.authUserId, invalidMember)).toStrictEqual({ error: 'error' });
 
-    expect(userProfileV1(member1.authUserId, invalidMember)).toStrictEqual({ error: 'error' });
-    expect(userProfileV1(invalidMember, member2.authUserId)).toStrictEqual({ error: 'error' });
+    // invalid authUserId, valid uId
+    expect(userProfileV1(invalidMember, member.authUserId)).toStrictEqual({ error: 'error' });
   });
 
 });
