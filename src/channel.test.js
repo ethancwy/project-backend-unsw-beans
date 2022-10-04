@@ -1,7 +1,7 @@
-import { channelDetailsV1, channelJoinV1, channelInviteV1 } from './channel.js'
-import { channelsCreateV1 } from '../channels/channels.js'
-import { authRegisterV1, authLoginV1 } from '../auth/auth.js'
-import { clearV1 } from '../other/other.js'
+import { channelDetailsV1, channelJoinV1, channelInviteV1, channelMessagesV1 } from './channel.js'
+import { channelsCreateV1 } from './channels.js'
+import { authRegisterV1, authLoginV1 } from './auth.js'
+import { clearV1 } from './other.js'
 
 describe('Testing that channelDetailsV1 works standard', () => {
 
@@ -289,4 +289,51 @@ describe('Error checking channelInviteV1', () => {
     expect(channelInviteV1(nonMember1.authUserId, channelId.channelId, nonMember2.authUserId)).toStrictEqual({ error: 'error' });
   });
 
+});
+
+
+describe('test block for channelMessagesV1', () => {
+  test('invalid input', () => {
+    clearV1();
+    expect(channelMessagesV1('hi','hello','ya')).toStrictEqual({ 
+      error: 'error'});
+  });
+  
+  test('invalid input', () => {
+    clearV1();
+    expect(channelMessagesV1('cat',335,-1)).toStrictEqual({ 
+      error: 'error'});
+  });
+  
+  test('invalid input', () => {
+    clearV1();
+    expect(channelMessagesV1(1,'dog',-1)).toStrictEqual({ 
+      error: 'error'});
+  });
+
+  test('testing for valid input(empty messages)', () => {
+    clearV1();
+
+    let personId = authRegisterV1('tony@mail.com', 'tonytony1', 'tony', 'yeung');
+    let channelId = channelsCreateV1(personId.authUserId, 'tonyschannel', true);
+
+    expect(channelMessagesV1(personId.authUserId, channelId.channelId, 0)).toStrictEqual({
+      messages: [],
+      start: expect.any(Number),
+      end: expect.any(Number),
+    });
+
+  });
+
+  test('testing for invalid input(start > amount)', () => {
+    clearV1();
+
+    let personId = authRegisterV1('tony@mail.com', 'tonytony1', 'tony', 'yeung');
+    let channelId = channelsCreateV1(personId.authUserId, 'tonyschannel', true);
+
+    expect(channelMessagesV1(personId.authUserId, channelId.channelId, 1)).toStrictEqual({
+      error: 'error'
+    });
+
+  });
 });

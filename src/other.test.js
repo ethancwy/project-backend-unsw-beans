@@ -1,5 +1,5 @@
 import { clearV1 } from './other.js';
-import { authRegisterV1, authLoginV1 } from '../auth/auth.js';
+import { authRegisterV1, authLoginV1 } from './auth.js';
 
 describe('Testing clear function', () => {
   test('Test the auth has been cleared', () => {

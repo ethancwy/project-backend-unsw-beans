@@ -1,4 +1,4 @@
-import { getData, setData } from '../dataStore.js';
+import { getData, setData } from './dataStore.js';
 
 /**
   *
@@ -13,7 +13,7 @@ import { getData, setData } from '../dataStore.js';
   * @returns {integer} - channelId of the channel created
 */
 
-function channelsCreateV1(authUserId, name, IsPublic) {
+function channelsCreateV1(authUserId, name, isPublic) {
   let data = getData();
 
   //checking if authUserId is valid
@@ -32,8 +32,8 @@ function channelsCreateV1(authUserId, name, IsPublic) {
     return { error: 'error' };
 
   //setting channel values and pushing channel into dataStore
-  if (data.channels[0].channelId === NaN && data.channels.length === 1) {
-    data.channels[0].channelId = data.channels.length - 1;
+  if (isNaN(data.channels[0].channelId) && data.channels.length === 1) {
+    data.channels[0].channelId = 0;
     data.channels[0].name = name;
     data.channels[0].isPublic = isPublic;
     data.channels[0].ownerIds.push(authUserId);
@@ -41,9 +41,9 @@ function channelsCreateV1(authUserId, name, IsPublic) {
   }
   else {
     data.channels.push({
-      channelId: data.channels.length,
+      channelId: data.channels.length - 1,
       name: name,
-      isPublic: IsPublic,
+      isPublic: isPublic,
       ownerIds: [authUserId],
       memberIds: [authUserId],
     });
@@ -129,12 +129,12 @@ function channelsListAllV1(authUserId) {
 
   let array = [];
 
-  for (let i = 0; i < data.channels.length; i++) {
-    if (i != 0) {
-      array[i - 1] = {
-        channelId: data.channels[i].channelId,
-        name: data.channels[i].name,
-      };
+  for ( const ch of data.channels ) {
+    if ( !isNaN(ch.channelId) ) {
+      array.push({
+        channelId: ch.channelId,
+        name: ch.name,
+      });
     }
   }
 

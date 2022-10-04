@@ -1,6 +1,6 @@
 import { channelsListV1, channelsCreateV1, channelsListAllV1 } from './channels';
-import { authRegisterV1, authLoginV1 } from '../auth/auth.js';
-import { clearV1 } from '../other/other.js';
+import { authRegisterV1, authLoginV1 } from './auth.js';
+import { clearV1 } from './other.js';
 
 describe('channelsCreateV1 tests:', () => {
   test('Testing for invalid name(smaller than 1)', () => {

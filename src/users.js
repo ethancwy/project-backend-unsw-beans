@@ -1,4 +1,4 @@
-import { getData, setData } from '../dataStore'
+import { getData, setData } from './dataStore.js'
 
 /**
   * For a valid user, returns information about their user ID, email, 

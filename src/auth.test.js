@@ -1,4 +1,4 @@
-import { authLoginV1, authRegisterV1 } from'./auth';
+import { authLoginV1, authRegisterV1 } from'./auth.js';
 
 describe('Testing for authRegisterV1: ', ()=> {
   // Valid register
