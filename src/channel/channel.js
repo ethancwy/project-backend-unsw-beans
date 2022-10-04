@@ -10,7 +10,7 @@ function channelJoinV1(authUserId, channelId) {
   for (const channel of data.channels) {
     if (channelId === channel.channelId) {
       if (channel.isPublic === false) { // private channel
-        if (!isGlobalOwner(authUserId)) {
+        if (!isGlobalOwner(authUserId)) { // not a global owner
           return { error: 'error' };
         }
       }
