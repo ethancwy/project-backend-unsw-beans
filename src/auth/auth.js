@@ -19,7 +19,7 @@ function authLoginV1(email, password) {
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].email === email) {
       if (data.users[i].password === password) {
-        return { authtUserId: data.users[i].uId };
+        return { authUserId: data.users[i].uId };
       } else {
         return { error: 'error' };
       }
