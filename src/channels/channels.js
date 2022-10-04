@@ -127,8 +127,6 @@ function channelsListAllV1(authUserId) {
     return authUserId + " is invalid";
   }
 
-  // if there are currently no channels in existence
-
   let array = [];
 
   for (let i = 0; i < data.channels.length; i++) {
