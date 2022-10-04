@@ -12,13 +12,13 @@ describe('Testing that channelDetailsV1 works standard', () => {
     let channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     let channelIdPublic = channelsCreateV1(channelOwnerId, 'Boost', true);
 
-    expect(channelDetailsV1(channelOwnerId, channelIdPublic)).toEqual(
+    expect(channelDetailsV1(channelOwnerId.authUserId, channelIdPublic.channelId)).toEqual(
       {
         name: 'Boost',
         isPublic: true,
         ownerMembers: [
           {
-            uId: channelOwnerId.uId,
+            uId: channelOwnerId.authUserId,
             email: 'chocolate@bar.com',
             nameFirst: 'Willy',
             nameLast: 'Wonka',
@@ -27,7 +27,7 @@ describe('Testing that channelDetailsV1 works standard', () => {
         ],
         allMembers: [
           {
-            uId: channelOwnerId.uId,
+            uId: channelOwnerId.authUserId,
             email: 'chocolate@bar.com',
             nameFirst: 'Willy',
             nameLast: 'Wonka',
@@ -39,41 +39,33 @@ describe('Testing that channelDetailsV1 works standard', () => {
   });
 
   test('works with priv channel and member even if there are multiple channels', () => {
+    clearV1();
+
+    let globalOwnerId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
     let channelOwnerPrivId = authRegisterV1('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
     let channelIdPriv = channelsCreateV1(channelOwnerPrivId, 'Priv', false);
-    let memberId = authRegisterV1('saul@hhm.com', 'greAtPassword34', 'James', 'McGill');
-    
-    expect(channelInviteV1(channelOwnerPrivId, channelIdPriv, memberId)).toEqual({});
-    expect(channelInviteV1(channelOwnerId, channelIdPublic, memberId)).toEqual({});
 
-    expect(channelDetailsV1(memberId, channelIdPriv)).toEqual(
+    expect(channelDetailsV1(channelOwnerPrivId.authUserId, channelIdPriv.channelId)).toEqual(
       {
         name: 'Priv',
         isPublic: false,
         ownerMembers: [
           {
-            uId: channelOwnerPrivId.uId,
+            uId: channelOwnerPrivId.authUserId,
             email: 'pollos@hhm.com',
             nameFirst: 'Gus',
             nameLast: 'Fring',
             handleStr: expect.any(String), 
-          },
+          }
         ],
         allMembers: [
           {
-            uId: channelOwnerPrivId.uId,
+            uId: channelOwnerPrivId.authUserId,
             email: 'pollos@hhm.com',
             nameFirst: 'Gus',
             nameLast: 'Fring',
             handleStr: expect.any(String),
-          },
-          {
-            uId: memberId.uId,
-            email: 'saul@hhm.com',
-            nameFirst: 'James',
-            nameLast: 'McGill',
-            handleStr: expect.any(String),
-          },
+          }
         ],  
       },
     );
@@ -83,22 +75,37 @@ describe('Testing that channelDetailsV1 works standard', () => {
 describe('Testing channelDetailsV1 edge cases', () => {
 
   test('Testing when channelId does not refer to a valid channel', () => {
+    clearV1();
+
+    let globalOwnerId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
+    let channelOwnerPrivId = authRegisterV1('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
+    let channelIdPriv = channelsCreateV1(channelOwnerPrivId, 'Priv', false);
+
     let fakeChannelId = -100;
 
-    expect(channelDetailsV1(memberId, fakeChannelId)).toEqual({ error: 'error' });
+    expect(channelDetailsV1(channelOwnerPrivId.authUserId, fakeChannelId.channelId)).toEqual({ error: 'error' });
   });
 
   test('Testing when UserId does not refer to a valid user', () => {
-    let fakeUserId = -10;
+    clearV1();
 
-    expect(channelDetailsV1(fakeUserId, channelIdPublic)).toEqual({ error: 'error' });
+    let globalOwnerId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
+    let channelOwnerPrivId = authRegisterV1('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
+    let channelIdPriv = channelsCreateV1(channelOwnerPrivId.authUserId, 'Priv', false);
+    let fakeUserId = channelOwnerPrivId.authUserId + 1;
+
+    expect(channelDetailsV1(fakeUserId, channelIdPublic.channelId)).toEqual({ error: 'error' });
   });
 
   test('Testing when Id is valid but user is not a member of the channel', () => {
-    let tempUserId = authRegisterV1('heisenberg@hhm.com', 'AnotherPasword1', 'Walter', 'White');
+    clearV1();
 
-    expect(channelDetailsV1(tempUserId, channelIdPublic)).toEqual({ error: 'error' });
+    let globalOwnerId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
+    let tempUserId = authRegisterV1('heisenberg@hhm.com', 'AnotherPasword1', 'Walter', 'White');
+    let channelOwnerPublicId = authRegisterV1('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
+    let channelIdPublic = channelsCreateV1(channelOwnerPublicId.authUserId, 'Priv', true);
+
+
+    expect(channelDetailsV1(tempUserId.authUserId, channelIdPublic.channelId)).toEqual({ error: 'error' });
   });
 });
-
-
