@@ -79,7 +79,7 @@ describe('Testing channelDetailsV1 edge cases', () => {
 
     let globalOwnerId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
     let channelOwnerPrivId = authRegisterV1('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
-    let channelIdPriv = channelsCreateV1(channelOwnerPrivId, 'Priv', false);
+    let channelIdPriv = channelsCreateV1(channelOwnerPrivId.authUserId, 'Priv', false);
 
     let fakeChannelId = -100;
 
