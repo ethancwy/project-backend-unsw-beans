@@ -1,7 +1,31 @@
 import { getData, setData } from '../dataStore.js';
 
 function channelJoinV1(authUserId, channelId) {
-  return {};
+  const data = getData();
+
+  if (!isValidUser(authUserId)) {
+    return { error: 'error' };
+  }
+
+  for (const channel of data.channels) {
+    if (channelId === channel.channelId) {
+      if (channel.isPublic === false) { // private channel
+        if (!isGlobalOwner(authUserId)) {
+          return { error: 'error' };
+        }
+      }
+      for (const member of channel.memberIds) {
+        if (authUserId === member) {  // already a member
+          return { error: 'error' };
+        }
+      }
+      channel.memberIds.push(authUserId); // add member
+      setData(data);
+      return {};
+    }
+  }
+
+  return { error: 'error' };
 }
 
 function channelInviteV1(authUserId, channelId, uId) {
