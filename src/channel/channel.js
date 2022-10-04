@@ -55,7 +55,7 @@ function channelDetailsV1(authUserId, channelId) {
   //checking if authUserId is in the channel
   user_check = 0;
   for (const membs of data.channels[channel_pos].memberIds) {
-    if (authUserId === membs) {
+    if (membs === authUserId) {
       user_check = 1;
     }
   }
@@ -64,8 +64,43 @@ function channelDetailsV1(authUserId, channelId) {
     return { error: 'error' };
   }
 
+  const array_owners = [];
+
+  for (const membs of data.channels[channel_pos].ownerIds) {
+    for (const users of data.users) {
+      if (users.uId === membs) {
+        array_owners.push({
+          uId: users.uId,
+          email: users.email,
+          nameFirst: users.nameFirst,
+          nameLast: users.nameLast,
+          handleStr: expect.any(String),
+        });
+      }
+    }
+  }
+
+  const array_memb = [];
+
+  for (const membs of data.channels[channel_pos].memberIds) {
+    for (const users of data.users) {
+      if (users.uId === membs) {
+        array_memb.push({
+          uId: users.uId,
+          email: users.email,
+          nameFirst: users.nameFirst,
+          nameLast: users.nameLast,
+          handleStr: expect.any(String),
+        });
+      }
+    }
+  }
+
   return {
-    data.channels[channel_pos]
+    name: data.channels[channel_pos].name,
+    isPublic: data.channels[channel_pos].isPublic,
+    ownerMembers: array_owners,
+    allMembers: array_memb,
   };
 }
 
