@@ -1,8 +1,89 @@
-import { channelsCreateV1, channelsListAllV1 } from './channels.js';
-import { authRegisterV1 } from '../auth/auth.js';
+import { channelsListV1, channelsCreateV1, channelsListAllV1 } from './channels';
+import { authRegisterV1, authLoginV1 } from '../auth/auth.js';
 import { clearV1 } from '../other/other.js';
 
-describe ('Testing channelListAllV1 standard', () => {
+describe('channelsCreateV1 tests:', () => {
+  test('Testing for invalid name(smaller than 1)', () => {
+    clearV1();
+
+    const person = authRegisterV1('hao@mail.com', '12345', 'hao', 'yang');
+
+    expect(channelsCreateV1(person.authUserId, '', true)).toStrictEqual({ error: 'error' });
+  });
+
+  test('Testing for invalid name(greater than 20)', () => {
+    clearV1();
+
+    const person = authRegisterV1('hao@mail.com', '1234512345', 'hao', 'yang');
+
+    expect(channelsCreateV1(person.authUserId, '1234567890qwertyuiopasdfghjkl', true)).toStrictEqual({ error: 'error' });
+  });
+
+  test('Testing for invalid authUserId', () => {
+    clearV1();
+
+    const person = authRegisterV1('hao@mail.com', '1234512345', 'hao', 'yang');
+    clearV1();
+
+    expect(channelsCreateV1(person.authUserId, 'hao/channel', true)).toStrictEqual({ error: 'error' });
+  });
+
+  test('Testing for successful creation', () => {
+    clearV1();
+
+    const person = authRegisterV1('hao@mail.com', '1234512345', 'hao', 'yang');
+
+    expect(channelsCreateV1(person.authUserId, 'hao/channel', true)).toStrictEqual(
+      {
+        channelId: expect.any(Number),
+      }
+    );
+  });
+});
+
+describe('channelsListV1 tests:', () => {
+  test('Testing for invalid authUserId', () => {
+    clearV1();
+
+    const invalidId = 9999;
+
+    expect(channelsCreateV1(invalidId, '', true)).toStrictEqual({ error: 'error' });
+  });
+
+  test('Testing for successful creation', () => {
+    clearV1();
+
+    const person = authRegisterV1('hao@mail.com', '1234512345', 'hao', 'yang');
+    const person2 = authRegisterV1('ethan@mail.com', '5678956789', 'ethan', 'chew');
+
+    const channel1 = channelsCreateV1(person.authUserId, 'hao/channel1', true);
+    const channel2 = channelsCreateV1(person.authUserId, 'hao/channel2', true);
+    const channel3 = channelsCreateV1(person.authUserId, 'hao/channel3', false);
+    const channel4 = channelsCreateV1(person2.authUserId, 'ethan/channel1', true);
+
+    expect(channelsListV1(person.authUserId)).toStrictEqual(
+      {
+        channels: [
+          {
+            channelId: channel1.channelId,
+            name: 'hao/channel1',
+          },
+          {
+            channelId: channel2.channelId,
+            name: 'hao/channel2',
+          },
+          {
+            channelId: channel3.channelId,
+            name: 'hao/channel3',
+          },
+        ]
+      }
+    );
+  });
+});
+
+// Testing for channelsListAll
+describe ('Testing channelsListAllV1 standard', () => {
 
   test('Test that the baseline function works', () => {
     clearV1();
@@ -12,11 +93,11 @@ describe ('Testing channelListAllV1 standard', () => {
     let channelIdPublic = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
 
     expect(channelsListAllV1(channelOwnerId.authUserId)).toEqual({
-      channel: [
+      channels: [
         {
         channelId: channelIdPublic.channelId,
         name: 'Boost',
-        },
+        }
       ]
     });
   });
@@ -30,7 +111,7 @@ describe ('Testing channelListAllV1 standard', () => {
     let channelIdPrivate = channelsCreateV1(channelOwnerId.authUserId, 'priv_channel', false);
 
     expect(channelsListAllV1(globalOwnerId.authUserId)).toEqual({
-      channel: [
+      channels: [
         {
           channelId: channelIdPublic.channelId,
           name: 'Boost',
@@ -38,7 +119,7 @@ describe ('Testing channelListAllV1 standard', () => {
         {
           channelId: channelIdPrivate.channelId,
           name: 'priv_channel',
-        },
+        }
       ]
     });
   });
@@ -60,41 +141,8 @@ describe ('Testing the edge cases', () => {
     let user = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
 
     expect(channelsListAllV1(user.authUserId)).toEqual({
-      channel: []
+      channels: []
     });
   });
 });
 
-
-// may need this later
-/*[
-      {
-        name: 'Boost',
-        isPublic: true,
-        ownerMembers: [
-          {
-            uId: channelOwnerId.uId,
-            email: 'chocolate@bar.com',
-            nameFirst: 'Willy',
-            nameLast: 'Wonka',
-            handleStr: expect.any(String),
-          }
-        ],
-        allMembers: [
-          {
-            uId: channelOwnerId.uId,
-            email: 'chocolate@bar.com',
-            nameFirst: 'Willy',
-            nameLast: 'Wonka',
-            handleStr: expect.any(String),
-          },
-          {
-            uId: memberId.uId,
-            email: 'chicken@bar.com',
-            nameFirst: 'Ronald',
-            nameLast: 'Mcdonald',
-            handleStr: expect.any(String),
-          }
-        ],
-      },
-    ]*/
