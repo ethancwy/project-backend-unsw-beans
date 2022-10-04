@@ -1,12 +1,60 @@
 import { getData, setData } from '../dataStore.js';
 
+
 function channelJoinV1(authUserId, channelId) {
-  return {};
+  const data = getData();
+
+  if (!isValidUser(authUserId)) {
+    console.log('bruh');
+    return { error: 'error' };
+  }
+
+  let globalOwner = false;
+  for (const user of data.users) {
+    if (authUserId === user.uId) {
+      if (user.isGlobalOwner) {
+        globalOwner = true;
+      }
+    }
+  }
+
+  for (const channel of data.channels) {
+    if (channelId === channel.channelId) {
+      if (channel.isPublic === false) { // private channel
+        if (!globalOwner) { // if not global owner
+          return { error: 'error' };
+        }
+      }
+      for (const member of channel.memberIds) {
+        if (authUserId === member) {  // already a member
+          return { error: 'error' };
+        }
+      }
+      channel.memberIds.push(authUserId); // add member
+      setData(data);
+      return {};
+    }
+  }
+  console.log('bruh');
+  return { error: 'error' };
 }
 
 function channelInviteV1(authUserId, channelId, uId) {
   return {};
 }
+
+// Helper function to check if user is valid
+function isValidUser(authUserId) {
+  const data = getData();
+  for (const user of data.users) {
+    if (authUserId === user.uId) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 
 function channelMessagesV1(authUserId, channelId, start) {
   return {
