@@ -1,4 +1,4 @@
-import { getData, setData } from '../dataStore.js';
+import { getData, setData } from './dataStore.js';
 
 /**
   * Given a channelId of a channel that the authorised user can join, 
@@ -119,19 +119,90 @@ function isGlobalOwner(authUserId) {
 
 
 function channelMessagesV1(authUserId, channelId, start) {
-  return {
-    messages: [
-      {
-        messageId: 1,
-        uId: 1,
-        message: 'Hello world',
-        timeSent: 1582426789,
-      }
-    ],
-    start: 0,
-    end: 50,
+  let data = getData();
+
+  //checking if userid valid
+  let is_valid = false;
+  for ( const user of data.users ) {
+    if ( user.uId === authUserId ) {
+      is_valid = true;
+      break;
+    }
   }
+
+  if ( !is_valid ) {
+    return { error: 'error' };
+  }
+
+  is_valid = false;
+  let index = 0;
+  for ( const i in data.channels ) {
+    if ( data.channels[i].channelId === channelId ) {
+      is_valid = true;
+      index = i;
+      break;
+    }
+  }
+
+  if ( !is_valid ) {
+    return { error: 'error' };
+  }
+
+  //checking if user is part of channel
+  if ( !(authUserId in data.channels[index].memberIds) ) {
+    return { error: 'error' };
+  }
+
+  //getting amount of msgs in channel
+  let amount = 0;
+  for ( const i in data.channels[index].channelmessages )
+    amount = i;
+  if ( isNaN(data.channels[index].channelmessages[0].messageId) )
+    amount = 0;
+  let amount_of_msgs = amount;
+  let end = 0;
+  const empty_msg = {
+    messageId: NaN,
+    uId: NaN,
+    message: '',
+    timeSent: NaN,
+  };
+
+  if ( amount_of_msgs === 1 && data.channels[index].channelmessages[0] === empty_msg ) {
+    amount_of_msgs = 0;
+  }
+  
+  if ( start > amount_of_msgs ) {
+    return { error: 'error' };
+  }
+
+  let count = 0;
+  let is_more = false;
+  const list = [];
+  if ( amount > 0 ) {
+    for ( const msg of data.channels[index].channelmessages ) {
+      if ( count === 50 ) {
+        is_more = true;
+        break;
+      }
+
+      list.push(msg);
+      count ++;
+    }
+  }
+
+  if ( is_more )
+    end = start + 50;
+  else
+    end = -1;
+
+  return {
+    messages: list,
+    start: start,
+    end: end,
+  };
 }
+
 
 function channelDetailsV1(authUserId, channelId) {
   let data = getData();
