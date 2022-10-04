@@ -193,7 +193,6 @@ describe('Testing channelJoinV1', () => {
 
 });
 
-
 describe('Error checking channelJoinV1', () => {
   test('Testing invalid authUserId, channelId, and already a member', () => {
     clearV1();
@@ -217,6 +216,77 @@ describe('Error checking channelJoinV1', () => {
 
     let memberId = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
     expect(channelJoinV1(memberId.authUserId, channelId.channelId)).toStrictEqual({ error: 'error' }); // can't join private channel
+  });
+
+});
+
+describe('Testing channelInviteV1', () => {
+  test('Testing normal invitation procedures with public channel', () => {
+    clearV1();
+    let channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    let channelId = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
+
+    let memberId = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald'); // normal user
+    expect(channelInviteV1(channelOwnerId.authUserId, channelId.channelId, memberId.authUserId)).toStrictEqual({});
+    expect(channelDetailsV1(channelOwnerId.authUserId, channelId.channelId)).toStrictEqual({
+      name: 'Boost',
+      isPublic: true,
+      ownerMembers: [
+        {
+          uId: channelOwnerId.authUserId,
+          email: 'chocolate@bar.com',
+          nameFirst: 'Willy',
+          nameLast: 'Wonka',
+          handleStr: expect.any(String),
+        }
+      ],
+      allMembers: [
+        {
+          uId: channelOwnerId.authUserId,
+          email: 'chocolate@bar.com',
+          nameFirst: 'Willy',
+          nameLast: 'Wonka',
+          handleStr: expect.any(String),
+        },
+        {
+          uId: memberId.authUserId,
+          email: 'chicken@bar.com',
+          nameFirst: 'Ronald',
+          nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        }
+      ],
+    });
+  });
+
+});
+
+describe('Error checking channelInviteV1', () => {
+  test('Testing invalid authUserId, channelId, and uId, and already a member', () => {
+    clearV1();
+    let channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    let channelId = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
+    let memberId = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+
+    let invalidMember = channelOwnerId.authUserId + memberId.authUserId + 1;
+    let invalidChannel = channelId.channelId + 1;
+
+    expect(channelInviteV1(invalidMember, channelId.channelId, memberId.authUserId)).toStrictEqual({ error: 'error' });
+    expect(channelInviteV1(channelOwnerId.authUserId, invalidChannel, memberId.authUserId)).toStrictEqual({ error: 'error' });
+    expect(channelInviteV1(channelOwnerId.authUserId, channelId.channelId, invalidMember)).toStrictEqual({ error: 'error' });
+
+    channelInviteV1(channelOwnerId.authUserId, channelId.channelId, memberId.authUserId);  // channel owner invites normal user
+    expect(channelInviteV1(channelOwnerId.authUserId, channelId.channelId, memberId.authUserId)).toStrictEqual({ error: 'error' }); // invites again
+  });
+
+  test('Non-member inviting a non-member', () => {
+    clearV1();
+    let channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    let channelId = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
+
+    let nonMember1 = authRegisterV1('ethan@bar.com', 'okpassword', 'Ethan', 'Chew');
+    let nonMember2 = authRegisterV1('john@bar.com', 'decentpassword', 'John', 'Wick');
+    expect(channelInviteV1(nonMember1.authUserId, channelId.channelId, nonMember2.authUserId)).toStrictEqual({ error: 'error' });
   });
 
 });
