@@ -98,17 +98,51 @@ function channelsListV1(authUserId) {
   return { channels: channel_list };
 }
 
+/**
+  *
+  * Provides an array of all channels, including private channels (and their associated details)
+  * 
+  * @param {integer} authUserId - a valid userId in dataStore
+  * ...
+  * 
+  * @returns {channels: 
+ *             channelId:
+ *             name:
+ *           } - if authUserId is valid
+ * 
+*/
 
 function channelsListAllV1(authUserId) {
+  let data = getData();
+
+  // checking if user exists
+  let user_check = 0;
+  for (const user of data.users) {
+    if (user.uId === authUserId) {
+      user_check = 1;
+    }
+  }
+
+  if (user_check === 0) {
+    return authUserId + " is invalid";
+  }
+
+  let array = [];
+
+  for (let i = 0; i < data.channels.length; i++) {
+    if (i != 0) {
+      array[i - 1] = {
+        channelId: data.channels[i].channelId,
+        name: data.channels[i].name,
+      };
+    }
+  }
+
   return {
-    channels: [
-      {
-        channelId: 1,
-        name: 'My Channel',
-      }
-    ],
+    channels: array
   };
 }
+
 
 export {
   channelsCreateV1,
