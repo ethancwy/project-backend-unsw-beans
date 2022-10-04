@@ -1,64 +1,12 @@
 import { getData, setData } from '../dataStore.js';
 
 function channelJoinV1(authUserId, channelId) {
-  const data = getData();
-
-  if (!isValidUser(authUserId)) {
-    return { error: 'error' };
-  }
-
-  for (const channel of data.channels) {
-    if (channelId === channel.channelId) {
-      if (channel.isPublic === false) { // private channel
-        if (!isGlobalOwner(authUserId)) { // if not global owner
-          return { error: 'error' };
-        }
-      }
-      for (const member of channel.memberIds) {
-        if (authUserId === member) {  // already a member
-          return { error: 'error' };
-        }
-      }
-      channel.memberIds.push(authUserId); // add member
-      setData(data);
-      return {};
-    }
-  }
-
-  return { error: 'error' };
+  return {};
 }
 
 function channelInviteV1(authUserId, channelId, uId) {
   return {};
 }
-
-// Helper function to check if user is valid
-function isValidUser(authUserId) {
-  const data = getData();
-  for (const user of data.users) {
-    if (authUserId === user.uId) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-// Helper function to check if user is valid
-function isGlobalOwner(authUserId) {
-  const data = getData();
-
-  for (const user of data.users) {
-    if (authUserId === user.uId) {
-      if (user.isGlobalOwner) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-
 
 function channelMessagesV1(authUserId, channelId, start) {
   return {
@@ -79,7 +27,14 @@ function channelDetailsV1(authUserId, channelId) {
   let data = getData();
 
   // checking if authUserId is valid
-  if (!isValidUser(authUserId)) {
+  let user_check = 0;
+  for (const users of data.users) {
+    if (users.uId === authUserId) {
+      user_check = 1;
+    }
+  }
+
+  if (user_check === 0) {
     return { error: 'error' };
   }
 
@@ -98,7 +53,7 @@ function channelDetailsV1(authUserId, channelId) {
   }
 
   //checking if authUserId is in the channel
-  let user_check = 0;
+  user_check = 0;
   for (const membs of data.channels[channel_pos].memberIds) {
     if (membs === authUserId) {
       user_check = 1;
