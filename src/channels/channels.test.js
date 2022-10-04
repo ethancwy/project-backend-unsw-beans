@@ -80,11 +80,11 @@ describe('channelsListV1 tests:', () => {
       }
     );
   });
-<<<<<<< HEAD
+
 });
 
 // Testing for channelsListAll
-describe ('Testing channelsListAllV1 standard', () => {
+describe('Testing channelsListAllV1 standard', () => {
 
   test('Test that the baseline function works', () => {
     clearV1();
@@ -96,8 +96,8 @@ describe ('Testing channelsListAllV1 standard', () => {
     expect(channelsListAllV1(channelOwnerId.authUserId)).toEqual({
       channels: [
         {
-        channelId: channelIdPublic.channelId,
-        name: 'Boost',
+          channelId: channelIdPublic.channelId,
+          name: 'Boost',
         }
       ]
     });
@@ -126,7 +126,7 @@ describe ('Testing channelsListAllV1 standard', () => {
   });
 });
 
-describe ('Testing the edge cases', () => {
+describe('Testing the edge cases', () => {
 
   test('Test for when authuserId is invalid', () => {
     clearV1();
