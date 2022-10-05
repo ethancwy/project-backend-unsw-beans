@@ -121,6 +121,10 @@ function isGlobalOwner(authUserId) {
 function channelMessagesV1(authUserId, channelId, start) {
   let data = getData();
 
+  if ( start < 0 ) {
+    return { error: 'error' };
+  }
+
   //checking if userid valid
   let is_valid = false;
   for ( const user of data.users ) {
