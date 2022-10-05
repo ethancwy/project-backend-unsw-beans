@@ -45,9 +45,23 @@ describe('channelsListV1 tests:', () => {
   test('Testing for invalid authUserId', () => {
     clearV1();
 
-    const invalidId = 9999;
+    let person = authRegisterV1('hao@mail.com', '1234512345', 'hao', 'yang');
+    clearV1();
 
-    expect(channelsCreateV1(invalidId, '', true)).toStrictEqual({ error: 'error' });
+    expect(channelsListV1(person.authUserId)).toStrictEqual({ error: 'error' });
+  });
+
+  test('Testing for valid input(not in any channel)', () => {
+    clearV1();
+
+    let person = authRegisterV1('hao@mail.com', '1234512345', 'hao', 'yang');
+    let person2 = authRegisterV1('ethan@mail.com', '5678956789', 'ethan', 'chew');
+
+    let channel = channelsCreateV1(person2.authUserId, 'person2/channel1', true);
+
+    expect(channelsListV1(person.authUserId)).toStrictEqual({
+      channels: []
+    });
   });
 
   test('Testing for successful creation', () => {
