@@ -293,22 +293,25 @@ describe('Error checking channelInviteV1', () => {
 
 
 describe('test block for channelMessagesV1', () => {
-  test('invalid input', () => {
+  test('invalid input(invalid user and channel)', () => {
     clearV1();
-    expect(channelMessagesV1('hi','hello','ya')).toStrictEqual({ 
-      error: 'error'});
+
+    let personId = authRegisterV1('ethanchew@mail.com', 'paswword123', 'ethan', 'chew');
+    let channelId = channelsCreateV1(personId.authUserId, 'achannel', true);
+
+    clearV1();
+
+    expect(channelMessagesV1(personId.authUserId, channelId.channelId, 0)).toStrictEqual({error: 'error'});
   });
   
-  test('invalid input', () => {
+  test('invalid input(user not in channel)', () => {
     clearV1();
-    expect(channelMessagesV1('cat',335,-1)).toStrictEqual({ 
-      error: 'error'});
-  });
-  
-  test('invalid input', () => {
-    clearV1();
-    expect(channelMessagesV1(1,'dog',-1)).toStrictEqual({ 
-      error: 'error'});
+
+    let personId = authRegisterV1('ethanchew@mail.com', 'paswword123', 'ethan', 'chew');
+    let person2 = authRegisterV1('donaldduck@mail.com', 'duck4life', 'donald', 'duck');
+    let channelId = channelsCreateV1(personId.authUserId, 'achannel', true);
+
+    expect(channelMessagesV1(person2.authUserId, channelId.channelId, 0)).toStrictEqual({error: 'error'});
   });
 
   test('testing for valid input(empty messages)', () => {
@@ -319,8 +322,8 @@ describe('test block for channelMessagesV1', () => {
 
     expect(channelMessagesV1(personId.authUserId, channelId.channelId, 0)).toStrictEqual({
       messages: [],
-      start: expect.any(Number),
-      end: expect.any(Number),
+      start: 0,
+      end: -1,
     });
 
   });
