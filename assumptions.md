@@ -26,5 +26,8 @@
 6. A user who creates a channel becomes the channelOwner of that channel (the spec says user automatically joins channel only, so we 
   assume that the user becomes the channelOwner)
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
 7. If a global owner is removed (as per spec's 4.6. Permissions), the next user who signed up after the global owner becomes the new global 
   owner. This is an assumption that's not relevent yet as of iteration 1.  
+
+8. Global owners are not a part of ownerMembers (a key in the returning object for channelDetailsV1) in every channel they are in, unless added as a ownerMember by the channelOwner or themselves
