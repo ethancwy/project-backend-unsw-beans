@@ -1,4 +1,5 @@
 *AuthRegisterV1 assumptions*
+
 1. Password:
   According to Iteration 1 interface, a valid password is a string with six or more characters. Our group
   has decided to keep the restrictions according to the specifications provided. Therefore, passwords such
@@ -16,6 +17,7 @@
   there is no need for AuthLoginV1 to be called and other functions can be called by the user. 
 
 *Channel assumptions*
+
 4. For channelsListAllV1, if there are no channels, return an empty array. 
 
 5. If the index start in channelMessagesV1 is a negative number (<0), return error. Since starting from 0 accesses the first element (0) 
