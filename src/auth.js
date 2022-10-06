@@ -6,7 +6,7 @@ import validator from 'validator';
 * returns a userId if valid and error if invalid
 * 
 * @param {String} email - User enters a valid email address
-* @param {String} password - User enters a password that is >= 6 characters long
+* @param {String} password - User input password that is >= 6 characters long
 * 
 * @returns {Object { authUserId: Number}} - Returns a valid authUserId
 * @returns {{error: 'error'}} - on error
@@ -32,9 +32,9 @@ function authLoginV1(email, password) {
   * returns a userId if valid
   * 
   * @param {String} email - User enters a valid email address
-  * @param {String} password - User enters a password that is >= 6 characters long
-  * @param {String} nameFirst - User enters their first name that is 1 to 50 characters inclusive
-  * @param {String} nameLast - User enters their last name that is 1 to 50 characters inclusive
+  * @param {String} password - User input password that's >= 6 characters long
+  * @param {String} nameFirst - User input name that's 1-50 characters long
+  * @param {String} nameLast - User input name that's 1-50 characters long
   * 
   * @returns {Object { authUserId: Number}} - Returns a valid authUserId
   * @returns {{error: 'error'}} - on error
@@ -44,7 +44,7 @@ function authLoginV1(email, password) {
 function authRegisterV1(email, password, nameFirst, nameLast) {
   let data = getData();
 
-  if (!validEmail(email) || !validPass(password) || !validName(nameFirst) || 
+  if (!validEmail(email) || !validPass(password) || !validName(nameFirst) ||
       !validName(nameLast) || sameEmail(email)) {
     return { error: 'error' };
   }
