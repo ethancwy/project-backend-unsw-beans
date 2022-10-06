@@ -27,6 +27,7 @@ function authLoginV1(email, password) {
   }
   return { error: 'error' };
 }
+
 /**
   * Allows user to register with email, password, first name, and last name
   * returns a userId if valid
