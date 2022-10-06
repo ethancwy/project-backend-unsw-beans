@@ -11,7 +11,7 @@
   a HandleStr is generated from the concatenation of both first and last name, the removal of white space and special characters 
   and allowing only lowercase alphanumeric numbers. This can cause a slight issue for HandlrStr if e.g both names consist of ONLY 
   special characters ' ^-..'. HandleStr will just return an empty string - to tackle the problem, our team has decided to restrict 
-  both names to have atleast ONE alphanumeric character in their name so HandleStr can return more than an empty string.
+  both names to have at least ONE alphanumeric character in their name so HandleStr can return more than an empty string.
 
 3. Once a user registers, the user will be automatically logged in. Hence for testing, once AuthRegisterV1 is called, 
   there is no need for AuthLoginV1 to be called and other functions can be called by the user. 
