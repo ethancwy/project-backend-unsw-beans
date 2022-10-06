@@ -28,5 +28,3 @@
 
 7. If a global owner is removed (as per spec's 4.6. Permissions), the next user who signed up after the global owner becomes the new global 
   owner. This is an assumption that's not relevent yet as of iteration 1.  
-
-Please mark the first six, thank you!
