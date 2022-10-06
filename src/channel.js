@@ -116,7 +116,27 @@ function isGlobalOwner(authUserId) {
   return false;
 }
 
-
+/**
+  * Given a channel with ID channelId that the authorised user is a member of, 
+  * returns up to 50 messages between index "start" and "start + 50". Message
+  * with index 0 (i.e. the first element in the returned array of messages) 
+  * is the most recent message in the channel. This function returns a new 
+  * index "end". If there are more messages to return after thisfunction call,
+  * "end" equals "start + 50". If this function has returned the least recent 
+  * messages in the channel, "end" equals -1 to indicate that there are no more
+  *  messages to load after this return.
+  * 
+  * @param {integer} authUserId - a valid authUserId from dataStore
+  * @param {integer} channelId - a valid channelId from dataStore
+  * @param {integer} start - a start index
+  * 
+  * @returns { messages:
+  *            start: 
+  *            end:
+  *           } - returns array of objects containing 
+  *               message details, start integer and end integer
+  * @returns {error} - return error object in invalid cases
+*/
 
 function channelMessagesV1(authUserId, channelId, start) {
   let data = getData();
@@ -207,6 +227,20 @@ function channelMessagesV1(authUserId, channelId, start) {
   };
 }
 
+/**
+  * Given a channel with ID channelId that the authorised user is a 
+  * member of, provides basic details about the channel.
+  * 
+  * @param {integer} authUserId - a valid authUserId from dataStore
+  * @param {integer} channelId - a valid channelId from dataStore
+  * 
+  * @returns { name: 
+  *            isPublic:
+  *            ownerMembers:
+  *            allMembers:
+  *          } - returns basic channel info
+  * @returns {error} - return error object in invalid cases
+*/
 
 function channelDetailsV1(authUserId, channelId) {
   let data = getData();
