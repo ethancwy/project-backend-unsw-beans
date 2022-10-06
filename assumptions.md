@@ -19,7 +19,7 @@
 4. For channelsListAllV1, if there are no channels, return an empty array. 
 
 5. If the index start in channelMessagesV1 is a negative number (<0), return error. Since starting from 0 accesses the first element (0) 
-  in the returned array of messages, it wouldn't make sense for start to be be <0. Hence, the index start has to start from 0 onwards.
+  in the returned array of messages, it wouldn't make sense for start to be <0. Hence, the index start has to start from 0 onwards.
 
 6. A user who creates a channel becomes the channelOwner of that channel (the spec says user automatically joins channel only, so we 
   assume that the user becomes the channelOwner)
