@@ -78,7 +78,6 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
   return { authUserId: data.users[data.users.length - 1].uId };
 }
 
-
 // Helper function to generate a valid handle string
 function getHandleStr(nameFirst, nameLast) {
   // Given a first and last name
