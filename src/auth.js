@@ -54,7 +54,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
   let handleStr = validHandle(handle);
 
   if ( isNaN(data.users[0].uId) && data.users.length === 1 ) {
-    data.users[0].uId = data.users.length - 1;
+    data.users[0].uId = 0;
     data.users[0].nameFirst = nameFirst;
     data.users[0].nameLast = nameLast;
     data.users[0].email = email;
@@ -77,7 +77,6 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
   setData(data);
   return { authUserId: data.users[data.users.length - 1].uId };
 }
-
 
 
 // Helper function to generate a valid handle string
