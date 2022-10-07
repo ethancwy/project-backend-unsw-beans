@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore.js';
-import { authRegisterV1 } from './auth.js';
+
 /**
   *
   * Creates a new channel with the given name, that is either a public or 
