@@ -46,15 +46,16 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
   let data = getData();
 
   if (!validEmail(email) || !validPass(password) || !validName(nameFirst) ||
-      !validName(nameLast) || sameEmail(email)) {
+    !validName(nameLast) || sameEmail(email)) {
     return { error: 'error' };
   }
 
   let handle = getHandleStr(nameFirst, nameLast);
   let handleStr = validHandle(handle);
 
-  if ( isNaN(data.users[0].uId) && data.users.length === 1 ) {
-    data.users[0].uId = data.users.length - 1;
+  // checking if first user is empty/placeholder
+  if (isNaN(data.users[0].uId) && data.users.length === 1) {
+    data.users[0].uId = 0;
     data.users[0].nameFirst = nameFirst;
     data.users[0].nameLast = nameLast;
     data.users[0].email = email;
@@ -73,7 +74,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     });
   };
 
-  
+
   setData(data);
   return { authUserId: data.users[data.users.length - 1].uId };
 }
@@ -90,7 +91,7 @@ function getHandleStr(nameFirst, nameLast) {
 
   let result = name1.concat(name2);
 
-  let handleStr = result.substring(0,20);
+  let handleStr = result.substring(0, 20);
 
   return handleStr;
 }
@@ -98,7 +99,7 @@ function getHandleStr(nameFirst, nameLast) {
 // Helper function to get valid email address
 function validEmail(email) {
   return validator.isEmail(email);
-} 
+}
 
 // Helper function to get valid password
 function validPass(password) {
