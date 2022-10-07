@@ -41,7 +41,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
   }
   else {
     data.channels.push({
-      channelId: data.channels.length - 1,
+      channelId: data.channels.length,
       name: name,
       isPublic: isPublic,
       ownerIds: [authUserId],
@@ -52,6 +52,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
   setData(data);
   return { channelId: data.channels[data.channels.length - 1].channelId };
 }
+
 
 /**
   *
