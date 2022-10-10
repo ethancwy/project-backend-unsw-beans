@@ -246,7 +246,6 @@ To run the dryrun, you should be in the root directory of your project (e.g. `/p
       <li>Correct implementation of specified functions</li>
       <li>Correctly written tests based on the specification requirements</li>
       <li>Correctly linted code</li>
-      <li>Correctly typechecked code</li>
     </ul></td>
   </tr>
   <tr>
@@ -284,14 +283,13 @@ For this and for all future milestones, you should consider the other expectatio
 
 The formula used for automarking in this iteration is:
 
-`Automark = 90*(t * i) + 5*e + 5*f`
-(Mark equals 90% of `t` multiplied by `i` plus 5% of `e` plus 5% of `f`). This formula produces a value between 0 and 1.
+`Automark = 95*(t * i) + 5*e`
+(Mark equals 95% of `t` multiplied by `i` plus 5% of `e`). This formula produces a value between 0 and 1.
 
 Where:
  * `t` is the mark between 0-1 you receive for your tests running against your code (100% = your implementation passes all of your tests)
  * `i` is the mark between 0-1 you receive for our course tests (hidden) running against your code (100% = your implementation passes all of our tests)
  * `e` is the score between 0-1 achieved by running eslint against your code with the provided configuration
- * `f` is the score between 0-1 achieved by running typechecking against your code with the provided configuration
 
 ### 4.11. Submission
 
