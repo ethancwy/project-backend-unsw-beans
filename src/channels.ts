@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore.ts';
-import { channels, channelId } from './global.ts';
+import { channels, channelId, error } from './global.ts';
 
 /**
   *
@@ -14,8 +14,7 @@ import { channels, channelId } from './global.ts';
   * @returns {integer} - channelId of the channel created
 */
 
-function channelsCreateV1(authUserId: number, name: string, isPublic): channelId | error;
- {
+function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): channelId | error {
   let data = getData();
 
   //checking if authUserId is valid
@@ -69,8 +68,7 @@ function channelsCreateV1(authUserId: number, name: string, isPublic): channelId
   * 
 */
 
-function channelsListV1(authUserId: number): channels[] | error;
- {
+function channelsListV1(authUserId: number): channels[] | error {
   let data = getData();
 
   //checking if authUserId is valid
