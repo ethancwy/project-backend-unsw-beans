@@ -1,6 +1,5 @@
 import { getData, setData } from './dataStore.ts';
-import { channels } from './global.js';
-import { channelId } from './global.ts';
+import { channels, channelId } from './global.ts';
 
 /**
   *
