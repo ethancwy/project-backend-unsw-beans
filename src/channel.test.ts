@@ -1,7 +1,7 @@
-import { channelDetailsV1, channelJoinV1, channelInviteV1, channelMessagesV1 } from './channel.js'
-import { channelsCreateV1 } from './channels.js'
-import { authRegisterV1, authLoginV1 } from './auth.js'
-import { clearV1 } from './other.js'
+import { channelDetailsV1, channelJoinV1, channelInviteV1, channelMessagesV1 } from './channel.ts'
+import { channelsCreateV1 } from './channels.ts'
+import { authRegisterV1, authLoginV1 } from './auth.ts'
+import { clearV1 } from './other.ts'
 
 describe('Testing that channelDetailsV1 works standard', () => {
 
