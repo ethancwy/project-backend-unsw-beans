@@ -1,6 +1,6 @@
-import { authRegisterV1 } from './auth.js'
-import { userProfileV1 } from './users.js'
-import { clearV1 } from './other.js'
+import { authRegisterV1 } from './auth.ts'
+import { userProfileV1 } from './users.ts'
+import { clearV1 } from './other.ts'
 
 describe('Testing userProfileV1', () => {
   test('Testing for valid user', () => {

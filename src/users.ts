@@ -1,4 +1,5 @@
-import { getData, setData } from './dataStore.js'
+import { getData, setData } from './dataStore.ts'
+import { user, error } from './global.ts'
 
 /**
   * For a valid user, returns information about their user ID, email, 
@@ -13,7 +14,7 @@ import { getData, setData } from './dataStore.js'
  * @returns {error} - return error object in invalid cases
 */
 
-function userProfileV1(authUserId, uId) {
+function userProfileV1(authUserId: number, uId: number): user | error {
   const data = getData();
 
   let user = isValidUser(uId);
@@ -36,7 +37,7 @@ function userProfileV1(authUserId, uId) {
 }
 
 // Helper function to check if user is valid
-function isValidUser(userId) {
+function isValidUser(userId: number): boolean {
   const data = getData();
   for (const user of data.users) {
     if (userId === user.uId) {
