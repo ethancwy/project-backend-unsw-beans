@@ -34,7 +34,9 @@ UNSW thanks you for doing your part in saving them approximately $100 per studen
 (For legal reasons, this is a joke).
 
 ## 2. Iteration 0: Getting Started
+
 Now complete!
+
 ## 3. Iteration 1: Basic Functionality and Tests
 
 Now complete!
@@ -50,10 +52,6 @@ In this iteration, you are expected to:
 2. Migrate to Typescript
 
     * Change `.js` file extension to `.ts` for both tests and function files. You **must** do this step to avoid import errors.
-
-    * Run `npm run tsc` and incrementally fix all type errors.
-    
-    * Either choose to change one file at a time, or change all file extensions and use `// @ts-nocheck` at the beginning of select files to disable checking on that specific file, omitting errors.
 
     Below shows a sample conversion of auth.js => auth.ts
     ![](node.png)
@@ -90,6 +88,16 @@ In this iteration, you are expected to:
     * As with iteration 1, you must be able to demonstrate evidence of regular standups.
 
     * You are required to regularly and thoughtfully make merge requests for the smallest reasonable units, and merge them into `master`.
+
+6. (Recommended) Remove any type errors in your code
+
+    * Run `npm run tsc` and incrementally fix all type errors.
+    
+    * Either choose to change one file at a time, or change all file extensions and use `// @ts-nocheck` at the beginning of select files to disable checking on that specific file, omitting errors.
+
+    * There are no explicit marks this term for completing this step, however:
+      * Groups who ensure their code are type-safe tend to perform much better in the automarker
+      * For iteration 3, if you make your entire code type safe and complete the majority of the implementation, you will receive full marks for the bonus mark component (a VERY easy way to get all the bonus marks). Starting early makes that easier!
 
 A frontend has been built that you can use in this iteration, and use your backend to power it (note: an incomplete backend will mean the frontend cannot work). You can, if you wish, make changes to the frontend code, but it is not required. The source code for the frontend is only provided for your own fun or curiosity.
 
