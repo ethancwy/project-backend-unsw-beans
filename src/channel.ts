@@ -1,5 +1,5 @@
-import { getData, setData } from './dataStore.js';
-import { authUserId, channelId, channelInfo, messages } from './global.js';
+import { getData, setData } from './dataStore.ts';
+import { authUserId, channelId, channelInfo, messages } from './global.ts';
 
 /**
   * Given a channelId of a channel that the authorised user can join, 
