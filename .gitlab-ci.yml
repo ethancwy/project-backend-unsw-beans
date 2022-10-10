@@ -1,5 +1,9 @@
 image: comp1531/basic:latest
 
+cache:
+ paths:
+ - node_modules
+
 stages:
   - checks
 
