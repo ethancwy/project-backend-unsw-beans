@@ -1,5 +1,6 @@
-import { getData, setData } from './dataStore.js';
+import { getData, setData } from './dataStore.ts';
 import validator from 'validator';
+import { authUserId, error } from './global.ts';
 
 /** 
 * Allows user to login with email and password that they have registered
@@ -13,7 +14,7 @@ import validator from 'validator';
 */
 
 
-function authLoginV1(email, password) {
+function authLoginV1(email: string, password: string): authUserId | error {
   let data = getData();
 
   for (let i = 0; i < data.users.length; i++) {
@@ -42,7 +43,7 @@ function authLoginV1(email, password) {
 */
 
 
-function authRegisterV1(email, password, nameFirst, nameLast) {
+function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string): authUserId | error {
   let data = getData();
 
   if (!validEmail(email) || !validPass(password) || !validName(nameFirst) ||
@@ -82,7 +83,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
 
 
 // Helper function to generate a valid handle string
-function getHandleStr(nameFirst, nameLast) {
+function getHandleStr(nameFirst: string, nameLast: string): string {
   // Given a first and last name
   // return a handle that concats together both names
   // without any uppercase, whitespace, and special characters
@@ -97,12 +98,12 @@ function getHandleStr(nameFirst, nameLast) {
 }
 
 // Helper function to get valid email address
-function validEmail(email) {
+function validEmail(email: string): boolean {
   return validator.isEmail(email);
 }
 
 // Helper function to get valid password
-function validPass(password) {
+function validPass(password: string): boolean {
   if (password.match(/.{6,}/)) {
     return true;
   } else {
@@ -112,7 +113,7 @@ function validPass(password) {
 
 
 // Helper function to get valid first name
-function validName(nameFirst) {
+function validName(nameFirst: string): boolean {
   if (nameFirst.length < 1 || nameFirst.length > 50) {
     return false;
   }
@@ -120,7 +121,7 @@ function validName(nameFirst) {
 }
 
 // Helper function to get valid handle string
-function validHandle(handle) {
+function validHandle(handle: string): string {
   let data = getData();
   let temp_handle = handle;
   let suffix = 0;
@@ -134,7 +135,7 @@ function validHandle(handle) {
   return handle;
 }
 
-function sameEmail(email) {
+function sameEmail(email: string): boolean {
   let data = getData();
 
   for (let i = 0; i < data.users.length; i++) {
