@@ -1,4 +1,6 @@
-import { getData, setData } from './dataStore.js';
+import { getData, setData } from './dataStore.ts';
+import { channels } from './global.js';
+import { channelId } from './global.ts';
 
 /**
   *
@@ -13,7 +15,8 @@ import { getData, setData } from './dataStore.js';
   * @returns {integer} - channelId of the channel created
 */
 
-function channelsCreateV1(authUserId, name, isPublic) {
+function channelsCreateV1(authUserId: number, name: string, isPublic): channelId | error;
+ {
   let data = getData();
 
   //checking if authUserId is valid
@@ -67,7 +70,8 @@ function channelsCreateV1(authUserId, name, isPublic) {
   * 
 */
 
-function channelsListV1(authUserId) {
+function channelsListV1(authUserId: number): channels[] | error;
+ {
   let data = getData();
 
   //checking if authUserId is valid
@@ -112,7 +116,7 @@ function channelsListV1(authUserId) {
  * 
 */
 
-function channelsListAllV1(authUserId) {
+function channelsListAllV1(authUserId: number): channels[] | error {
   let data = getData();
 
   // checking if user exists

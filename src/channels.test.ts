@@ -1,6 +1,6 @@
-import { channelsListV1, channelsCreateV1, channelsListAllV1 } from './channels';
-import { authRegisterV1, authLoginV1 } from './auth.js';
-import { clearV1 } from './other.js';
+import { channelsListV1, channelsCreateV1, channelsListAllV1 } from './channels.ts';
+import { authRegisterV1, authLoginV1 } from './auth.ts';
+import { clearV1 } from './other.ts';
 
 describe('channelsCreateV1 tests:', () => {
   test('Testing for invalid name(smaller than 1)', () => {
