@@ -21,6 +21,18 @@ export type user = {
     handleStr: string;
 };
 
+export type messages = {
+  messages: string[];
+  start: number;
+  end: number;
+};
+
+export type channelInfo = {
+  name: string;
+  isPublic: boolean;
+  ownerMembers: user[];
+  allMembers: user[];
+};
 
 // Helper function to check if user is valid
 export function isValidUser(authUserId: number): boolean {
