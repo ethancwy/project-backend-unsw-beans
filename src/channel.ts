@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore.ts';
-import { authUserId, channelId, channelInfo, messages } from './global.ts';
+import { authUserId, channelId, channelInfo, messages, error } from './global.ts';
+import { isValidUser, isValidChannel, isGlobalOwner } from './global.ts';
 
 /**
   * Given a channelId of a channel that the authorised user can join, 
@@ -12,8 +13,7 @@ import { authUserId, channelId, channelInfo, messages } from './global.ts';
   * @returns {error} - return error object in invalid cases
 */
 
-function channelJoinV1(authUserId: authUserId, channelId: channelId): {} | error;
- {
+function channelJoinV1(authUserId: authUserId, channelId: channelId): {} | error {
   const data = getData();
 
   if (!isValidUser(authUserId)) {
@@ -82,41 +82,6 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): {}
   }
 }
 
-// Helper function to check if user is valid
-function isValidUser(authUserId) {
-  const data = getData();
-  for (const user of data.users) {
-    if (authUserId === user.uId) {
-      return true;
-    }
-  }
-  return false;
-}
-
-// Helper function to check if channel is valid
-function isValidChannel(channelId) {
-  const data = getData();
-  for (const channel of data.channels) {
-    if (channelId === channel.channelId) {
-      return true;
-    }
-  }
-  return false;
-}
-
-// Helper function to check if user is valid
-function isGlobalOwner(authUserId) {
-  const data = getData();
-
-  for (const user of data.users) {
-    if (authUserId === user.uId) {
-      if (user.isGlobalOwner) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
 
 /**
   * Given a channel with ID channelId that the authorised user is a member of, 
