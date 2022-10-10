@@ -1,4 +1,35 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
+type typedata = {
+  users: [
+    {
+      uId: number,
+      nameFirst: string,
+      nameLast: string,
+      email: string,
+      password: string,
+      handleStr: string,
+      isGlobalOwner: boolean,
+    },
+  ],
+
+  channels: [
+    {
+      channelId: number,
+      name: string,
+      isPublic: boolean,
+      ownerIds: [],
+      memberIds: [],
+      channelmessages: [
+        {
+          messageId: number,
+          uId: number,
+          message: string,
+          timeSent: number,
+        }
+      ]
+    },
+  ],
+}; 
 
 let data = {
   users: [
@@ -50,12 +81,12 @@ Example usage
 */
 
 // Use get() to access the data
-function getData() {
+function getData(): typedata {
   return data;
 }
 
 // Use set(newData) to pass in the entire data object, with modifications made
-function setData(newData) {
+function setData(newData: typedata) {
   data = newData;
 }
 
