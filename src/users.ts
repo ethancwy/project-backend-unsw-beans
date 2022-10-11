@@ -22,8 +22,8 @@ function userProfileV1(authUserId: number, uId: number): user | error {
     return { error: 'error' };
   }
 
-  for ( const user of data.users ) {
-    if ( uId === user.uId ) {
+  for (const user of data.users) {
+    if (uId === user.uId) {
       return {
         user: {
           uId: uId,
@@ -35,9 +35,7 @@ function userProfileV1(authUserId: number, uId: number): user | error {
       };
     }
   }
-  return {error: 'error'};
-
-
+  return { error: 'error' };
 }
 
 export { userProfileV1 };

@@ -4,7 +4,6 @@ export type authUserId = { authUserId: number };
 
 export type channelId = { channelId: number };
 
-
 export type channels = {
   channels: {
     channelId: number,
