@@ -54,7 +54,9 @@ function channelJoinV1(authUserId, channelId) {
 function channelInviteV1(authUserId, channelId, uId) {
   const data = getData();
 
-  if (!isValidUser(authUserId) || !isValidUser(uId) || !isValidChannel(channelId)) {
+  if (!isValidUser(authUserId) 
+      || !isValidUser(uId) 
+      || !isValidChannel(channelId)) {
     return { error: 'error' };
   }
 
@@ -172,7 +174,8 @@ function channelMessagesV1(authUserId, channelId, start) {
     timeSent: NaN,
   };
 
-  if ( amount_of_msgs === 1 && data.channels[index].channelmessages[0] === empty_msg ) {
+  if ( amount_of_msgs === 1 
+    && data.channels[index].channelmessages[0] === empty_msg ) {
     amount_of_msgs = 0;
   }
   

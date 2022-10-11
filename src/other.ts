@@ -1,6 +1,6 @@
-import {getData, setData} from './dataStore.js';
+import {getData, setData} from './dataStore.ts';
 
-function clearV1() {
+function clearV1() : {} {
   let data = getData();
   data = {
     users: [
