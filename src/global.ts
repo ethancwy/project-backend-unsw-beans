@@ -12,11 +12,11 @@ export type channels = {
 };
 
 export type user = {
-    uId: number;
-    email: string;
-    nameFirst: string;
-    nameLast: string;
-    handleStr: string;
+  uId: number;
+  email: string;
+  nameFirst: string;
+  nameLast: string;
+  handleStr: string;
 };
 
 export type messages = {
@@ -56,7 +56,7 @@ export function isValidChannel(channelId: number): boolean {
   return false;
 }
 
-// Helper function to check if user is valid
+// Helper function to check if user is global owner
 export function isGlobalOwner(authUserId: number): boolean {
   const data = getData();
 
