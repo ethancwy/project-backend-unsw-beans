@@ -1,16 +1,15 @@
-import { getData, setData } from './datastore.ts';
+import { getData } from './datastore.ts';
 
 export type authUserId = { authUserId: number };
 
 export type channelId = { channelId: number };
 
-export type error = { error: string };
 
-export type channels = { 
-  channels: { 
+export type channels = {
+  channels: {
     channelId: number,
-    name: string 
-  } 
+    name: string
+  }
 };
 
 export type user = {
@@ -33,6 +32,8 @@ export type channelInfo = {
   ownerMembers: user[];
   allMembers: user[];
 };
+
+export type error = { error: string, authUserId?: number, channelId?: number };
 
 // Helper function to check if user is valid
 export function isValidUser(authUserId: number): boolean {

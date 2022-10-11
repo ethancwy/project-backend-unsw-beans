@@ -1,6 +1,6 @@
 import { getData, setData } from './dataStore.ts';
 
-function clearV1(): {} {
+function clearV1(): Record<string, never> {
   let data = getData();
   data = {
     users: [

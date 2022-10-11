@@ -1,4 +1,4 @@
-import { authLoginV1, authRegisterV1 } from './auth.ts';
+import { authLoginV1, authRegisterV1 } from './auth';
 
 describe('Testing for authRegisterV1: ', () => {
   // Valid register
@@ -26,7 +26,6 @@ describe('Testing for authRegisterV1: ', () => {
     expect(authRegisterV1('p.file@gmail.com', 'Bob100', 'Peter', 'File'))
       .toStrictEqual({ error: 'error' });
   });
-
 
   // Invalid password
   test('Testing for invalid password: Invalid password', () => {
@@ -62,15 +61,12 @@ describe('Testing for authRegisterV1: ', () => {
     expect(authRegisterV1('p.file@gmail.com', 'Bob100', 'Peter', ''))
       .toStrictEqual({ error: 'error' });
   });
-
 });
-
-
 
 describe('Testing for authLoginV1: ', () => {
   // Valid login
   test('Testing for Valid login: ', () => {
-    const register = authRegisterV1('p.file@gmail.com', 'Bob100',
+    authRegisterV1('p.file@gmail.com', 'Bob100',
       'Peter', 'File');
     expect(authLoginV1('p.file@gmail.com', 'Bob100')).toStrictEqual(
       {
@@ -78,31 +74,30 @@ describe('Testing for authLoginV1: ', () => {
       });
   });
 
-
   // Invalid email
   test('Testing for invalid login email: Invalid email', () => {
-    const register = authRegisterV1('p.file@gmail.com', 'Bob100',
+    authRegisterV1('p.file@gmail.com', 'Bob100',
       'Peter', 'File');
     expect(authLoginV1('invalid email', 'Bob100'))
       .toStrictEqual({ error: 'error' });
   });
 
   test('Testing for invalid login email: Invalid email', () => {
-    const register = authRegisterV1('p.file@gmail.com', 'Bob100',
+    authRegisterV1('p.file@gmail.com', 'Bob100',
       'Peter', 'File');
     expect(authLoginV1('', 'Bob100')).toStrictEqual({ error: 'error' });
   });
 
   // Invalid password
   test('Testing for invalid login password: Invalid password', () => {
-    const register = authRegisterV1('p.file@gmail.com', 'Bob100',
+    authRegisterV1('p.file@gmail.com', 'Bob100',
       'Peter', 'File');
     expect(authLoginV1('p.file@gmail.com', 'bob10'))
       .toStrictEqual({ error: 'error' });
   });
 
   test('Testing for invalid login password: Invalid password', () => {
-    const register = authRegisterV1('p.file@gmail.com', 'Bob100',
+    authRegisterV1('p.file@gmail.com', 'Bob100',
       'Peter', 'File');
     expect(authLoginV1('p.file@gmail.com', '')).toStrictEqual({ error: 'error' });
   });

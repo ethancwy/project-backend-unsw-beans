@@ -3,17 +3,17 @@ import { authUserId, channelId, channelInfo, messages, error } from './global.ts
 import { isValidUser, isValidChannel, isGlobalOwner } from './global.ts';
 
 /**
-  * Given a channelId of a channel that the authorised user can join, 
+  * Given a channelId of a channel that the authorised user can join,
   * adds them to that channel.
-  * 
+  *
   * @param {integer} authUserId - a valid authUserId from dataStore
   * @param {integer} channelId - a valid channelId from dataStore
-  * 
+  *
   * @returns {} - return empty
   * @returns {error} - return error object in invalid cases
 */
 
-function channelJoinV1(authUserId: authUserId, channelId: channelId): {} | error {
+function channelJoinV1(authUserId: authUserId, channelId: channelId): Record<string, never> | error {
   const data = getData();
 
   if (!isValidUser(authUserId)) {
@@ -28,7 +28,7 @@ function channelJoinV1(authUserId: authUserId, channelId: channelId): {} | error
         }
       }
       for (const member of channel.memberIds) {
-        if (authUserId === member) {  // already a member
+        if (authUserId === member) { // already a member
           return { error: 'error' };
         }
       }
@@ -42,18 +42,18 @@ function channelJoinV1(authUserId: authUserId, channelId: channelId): {} | error
 }
 
 /**
-  * The authUser invites a user with uId to join a channel with channelId. 
+  * The authUser invites a user with uId to join a channel with channelId.
   * Once invited, the user is added to the channel immediately.
-  * 
+  *
   * @param {integer} authUserId - a valid authUserId from dataStore
   * @param {integer} channelId - a valid channelId from dataStore
   * @param {integer} uId - a valid uId from dataStore
-  * 
+  *
   * @returns {} - return empty
   * @returns {error} - return error object in invalid cases
 */
 
-function channelInviteV1(authUserId: number, channelId: number, uId: number): {} | error {
+function channelInviteV1(authUserId: number, channelId: number, uId: number): Record<string, never> | error {
   const data = getData();
 
   if (!isValidUser(authUserId) || !isValidUser(uId) || !isValidChannel(channelId)) {
@@ -64,14 +64,14 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): {}
   for (const channel of data.channels) {
     if (channelId === channel.channelId) {
       for (const member of channel.memberIds) {
-        if (uId === member) {  // already a member
+        if (uId === member) { // already a member
           return { error: 'error' };
         }
         if (authUserId === member && !authMember) { // inviter not a member check
           authMember = true;
         }
       }
-      if (!authMember) {  // the authUser who's inviting is not a member 
+      if (!authMember) { // the authUser who's inviting is not a member
         return { error: 'error' };
       }
 
@@ -82,61 +82,60 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): {}
   }
 }
 
-
 /**
-  * Given a channel with ID channelId that the authorised user is a member of, 
+  * Given a channel with ID channelId that the authorised user is a member of,
   * returns up to 50 messages between index "start" and "start + 50". Message
-  * with index 0 (i.e. the first element in the returned array of messages) 
-  * is the most recent message in the channel. This function returns a new 
+  * with index 0 (i.e. the first element in the returned array of messages)
+  * is the most recent message in the channel. This function returns a new
   * index "end". If there are more messages to return after thisfunction call,
-  * "end" equals "start + 50". If this function has returned the least recent 
+  * "end" equals "start + 50". If this function has returned the least recent
   * messages in the channel, "end" equals -1 to indicate that there are no more
   *  messages to load after this return.
-  * 
+  *
   * @param {integer} authUserId - a valid authUserId from dataStore
   * @param {integer} channelId - a valid channelId from dataStore
   * @param {integer} start - a start index
-  * 
+  *
   * @returns { messages:
-  *            start: 
+  *            start:
   *            end:
-  *           } - returns array of objects containing 
+  *           } - returns array of objects containing
   *               message details, start integer and end integer
   * @returns {error} - return error object in invalid cases
 */
 
 function channelMessagesV1(authUserId: number, channelId: number, start: number): messages | error {
-  let data = getData();
+  const data = getData();
 
   if (start < 0) {
     return { error: 'error' };
   }
 
-  //checking if userid valid
+  // checking if userid valid
   if (!isValidUser(authUserId)) {
     return { error: 'error' };
   }
 
-  let is_valid = false;
+  let isValid = false;
   let index = 0;
   for (const i in data.channels) {
     if (data.channels[i].channelId === channelId) {
-      is_valid = true;
+      isValid = true;
       index = i;
       break;
     }
   }
 
-  if (!is_valid) {
+  if (!isValid) {
     return { error: 'error' };
   }
 
-  //checking if user is part of channel
+  // checking if user is part of channel
   if (!(authUserId in data.channels[index].memberIds)) {
     return { error: 'error' };
   }
 
-  //getting amount of msgs in channel
+  // getting amount of msgs in channel
   let amount = 0;
   for (const i in data.channels[index].channelmessages) {
     amount = i;
@@ -144,30 +143,30 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
   if (isNaN(data.channels[index].channelmessages[0].messageId)) {
     amount = 0;
   }
-  let amount_of_msgs = amount;
+  let amountOfMsgs = amount;
   let end = 0;
-  const empty_msg = {
+  const emptyMsg = {
     messageId: NaN,
     uId: NaN,
     message: '',
     timeSent: NaN,
   };
 
-  if (amount_of_msgs === 1 && data.channels[index].channelmessages[0] === empty_msg) {
-    amount_of_msgs = 0;
+  if (amountOfMsgs === 1 && data.channels[index].channelmessages[0] === emptyMsg) {
+    amountOfMsgs = 0;
   }
 
-  if (start > amount_of_msgs) {
+  if (start > amountOfMsgs) {
     return { error: 'error' };
   }
 
   let count = 0;
-  let is_more = false;
+  let isMore = false;
   const list = [];
   if (amount > 0) {
     for (const msg of data.channels[index].channelmessages) {
       if (count === 50) {
-        is_more = true;
+        isMore = true;
         break;
       }
 
@@ -176,10 +175,9 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
     }
   }
 
-  if (is_more) {
+  if (isMore) {
     end = start + 50;
-  }
-  else {
+  } else {
     end = -1;
   }
 
@@ -191,13 +189,13 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
 }
 
 /**
-  * Given a channel with ID channelId that the authorised user is a 
+  * Given a channel with ID channelId that the authorised user is a
   * member of, provides basic details about the channel.
-  * 
+  *
   * @param {integer} authUserId - a valid authUserId from dataStore
   * @param {integer} channelId - a valid channelId from dataStore
-  * 
-  * @returns { name: 
+  *
+  * @returns { name:
   *            isPublic:
   *            ownerMembers:
   *            allMembers:
@@ -206,45 +204,45 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
 */
 
 function channelDetailsV1(authUserId: number, channelId: number): channelInfo | error {
-  let data = getData();
+  const data = getData();
 
   // checking if authUserId is valid
   if (!isValidUser(authUserId)) {
     return { error: 'error' };
   }
 
-  //checking if channelId is valid
-  let channel_check = 0;
-  let channel_pos = 0;
+  // checking if channelId is valid
+  let channelCheck = 0;
+  let channelPos = 0;
   for (const chans in data.channels) {
     if (data.channels[chans].channelId === channelId) {
-      channel_check = 1;
-      channel_pos = chans;
+      channelCheck = 1;
+      channelPos = chans;
     }
   }
 
-  if (channel_check === 0) {
+  if (channelCheck === 0) {
     return { error: 'error' };
   }
 
-  //checking if authUserId is in the channel
-  let user_check = 0;
-  for (const membs of data.channels[channel_pos].memberIds) {
+  // checking if authUserId is in the channel
+  let userCheck = 0;
+  for (const membs of data.channels[channelPos].memberIds) {
     if (membs === authUserId) {
-      user_check = 1;
+      userCheck = 1;
     }
   }
 
-  if (user_check === 0) {
+  if (userCheck === 0) {
     return { error: 'error' };
   }
 
-  const array_owners = [];
+  const arrayOwners = [];
 
-  for (const membs of data.channels[channel_pos].ownerIds) {
+  for (const membs of data.channels[channelPos].ownerIds) {
     for (const users of data.users) {
       if (users.uId === membs) {
-        array_owners.push({
+        arrayOwners.push({
           uId: users.uId,
           email: users.email,
           nameFirst: users.nameFirst,
@@ -255,12 +253,12 @@ function channelDetailsV1(authUserId: number, channelId: number): channelInfo | 
     }
   }
 
-  const array_memb = [];
+  const arrayMemb = [];
 
-  for (const membs of data.channels[channel_pos].memberIds) {
+  for (const membs of data.channels[channelPos].memberIds) {
     for (const users of data.users) {
       if (users.uId === membs) {
-        array_memb.push({
+        arrayMemb.push({
           uId: users.uId,
           email: users.email,
           nameFirst: users.nameFirst,
@@ -272,10 +270,10 @@ function channelDetailsV1(authUserId: number, channelId: number): channelInfo | 
   }
 
   return {
-    name: data.channels[channel_pos].name,
-    isPublic: data.channels[channel_pos].isPublic,
-    ownerMembers: array_owners,
-    allMembers: array_memb,
+    name: data.channels[channelPos].name,
+    isPublic: data.channels[channelPos].isPublic,
+    ownerMembers: arrayOwners,
+    allMembers: arrayMemb,
   };
 }
 

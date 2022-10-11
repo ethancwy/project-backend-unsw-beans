@@ -1,21 +1,20 @@
-import { getData, setData } from './dataStore.ts';
+import { getData, setData } from './dataStore';
 import validator from 'validator';
-import { authUserId, error } from './global.ts';
+import { authUserId, error } from './global';
 
-/** 
+/**
 * Allows user to login with email and password that they have registered
 * returns a userId if valid and error if invalid
-* 
+*
 * @param {String} email - User enters a valid email address
 * @param {String} password - User input password that is >= 6 characters long
-* 
+*
 * @returns {Object { authUserId: Number}} - Returns a valid authUserId
 * @returns {{error: 'error'}} - on error
 */
 
-
 function authLoginV1(email: string, password: string): authUserId | error {
-  let data = getData();
+  const data = getData();
 
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].email === email) {
@@ -32,27 +31,26 @@ function authLoginV1(email: string, password: string): authUserId | error {
 /**
   * Allows user to register with email, password, first name, and last name
   * returns a userId if valid
-  * 
+  *
   * @param {String} email - User enters a valid email address
   * @param {String} password - User input password that's >= 6 characters long
   * @param {String} nameFirst - User input name that's 1-50 characters long
   * @param {String} nameLast - User input name that's 1-50 characters long
-  * 
+  *
   * @returns {Object { authUserId: Number}} - Returns a valid authUserId
   * @returns {{error: 'error'}} - on error
 */
 
-
 function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string): authUserId | error {
-  let data = getData();
+  const data = getData();
 
   if (!validEmail(email) || !validPass(password) || !validName(nameFirst) ||
     !validName(nameLast) || sameEmail(email)) {
     return { error: 'error' };
   }
 
-  let handle = getHandleStr(nameFirst, nameLast);
-  let handleStr = validHandle(handle);
+  const handle = getHandleStr(nameFirst, nameLast);
+  const handleStr = validHandle(handle);
 
   // checking if first user is empty/placeholder
   if (isNaN(data.users[0].uId) && data.users.length === 1) {
@@ -73,26 +71,23 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
       handleStr: handleStr,
       isGlobalOwner: false,
     });
-  };
-
+  }
 
   setData(data);
   return { authUserId: data.users[data.users.length - 1].uId };
 }
-
-
 
 // Helper function to generate a valid handle string
 function getHandleStr(nameFirst: string, nameLast: string): string {
   // Given a first and last name
   // return a handle that concats together both names
   // without any uppercase, whitespace, and special characters
-  let name1 = nameFirst.toLowerCase().replace(/[0-9]|\W/g, '');
-  let name2 = nameLast.toLowerCase().replace(/[0-9]|\W/g, '');
+  const name1 = nameFirst.toLowerCase().replace(/[0-9]|\W/g, '');
+  const name2 = nameLast.toLowerCase().replace(/[0-9]|\W/g, '');
 
-  let result = name1.concat(name2);
+  const result = name1.concat(name2);
 
-  let handleStr = result.substring(0, 20);
+  const handleStr = result.substring(0, 20);
 
   return handleStr;
 }
@@ -111,7 +106,6 @@ function validPass(password: string): boolean {
   }
 }
 
-
 // Helper function to get valid first name
 function validName(nameFirst: string): boolean {
   if (nameFirst.length < 1 || nameFirst.length > 50) {
@@ -122,21 +116,21 @@ function validName(nameFirst: string): boolean {
 
 // Helper function to get valid handle string
 function validHandle(handle: string): string {
-  let data = getData();
-  let temp_handle = handle;
+  const data = getData();
+  let tempHandle = handle;
   let suffix = 0;
   for (let i = 0; i < data.users.length; i++) {
-    if (temp_handle === data.users[i].handleStr) {
-      temp_handle = handle + String(suffix);
+    if (tempHandle === data.users[i].handleStr) {
+      tempHandle = handle + String(suffix);
       suffix += 1;
     }
   }
-  handle = temp_handle;
+  handle = tempHandle;
   return handle;
 }
 
 function sameEmail(email: string): boolean {
-  let data = getData();
+  const data = getData();
 
   for (let i = 0; i < data.users.length; i++) {
     if (email === data.users[i].email) {
@@ -150,4 +144,4 @@ function sameEmail(email: string): boolean {
 export {
   authLoginV1,
   authRegisterV1
-}; 
+};

@@ -1,46 +1,43 @@
-import { getData, setData } from './dataStore.ts';
-import { channels, channelId, error } from './global.ts';
+import { getData, setData } from './dataStore';
+import { channels, channelId, error } from './global';
 
 /**
   *
-  * Creates a new channel with the given name, that is either a public or 
+  * Creates a new channel with the given name, that is either a public or
   * private channel. The user who created it automatically joins the channel.
-  * 
+  *
   * @param {integer} authUserId - a valid authUserId from dataStore
   * @param {string} name - a valid name that is greater than 1 and smaller than 20
   * @param {boolean} isPublic - deciding factor for setting if channel should be public
   * ...
-  * 
+  *
   * @returns {integer} - channelId of the channel created
 */
 
 function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): channelId | error {
-  let data = getData();
+  const data = getData();
 
-  //checking if authUserId is valid
-  let user_is_valid = false;
+  // checking if authUserId is valid
+  let userIsValid = false;
   for (const user of data.users) {
     if (user.uId === authUserId) {
-      user_is_valid = true;
+      userIsValid = true;
       break;
     }
   }
-  if (!(user_is_valid))
-    return { error: 'error' };
+  if (!(userIsValid)) { return { error: 'error' }; }
 
-  //checking if name is valid
-  if (name.length > 20 || name.length < 1)
-    return { error: 'error' };
+  // checking if name is valid
+  if (name.length > 20 || name.length < 1) { return { error: 'error' }; }
 
-  //setting channel values and pushing channel into dataStore
+  // setting channel values and pushing channel into dataStore
   if (isNaN(data.channels[0].channelId) && data.channels.length === 1) {
     data.channels[0].channelId = 0;
     data.channels[0].name = name;
     data.channels[0].isPublic = isPublic;
     data.channels[0].ownerIds.push(authUserId);
     data.channels[0].memberIds.push(authUserId);
-  }
-  else {
+  } else {
     data.channels.push({
       channelId: data.channels.length,
       name: name,
@@ -57,37 +54,36 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
 /**
   *
   * Provides an array of all channels (and their associated details) that the authorised user is part of
-  * 
+  *
   * @param {integer} authUserId - a valid userId in dataStore
   * ...
-  * 
-  * @returns {channels: 
+  *
+  * @returns {channels:
   *             channelId:
   *             name:
   *           } - if authuserId is valid
-  * 
+  *
 */
 
 function channelsListV1(authUserId: number): channels[] | error {
-  let data = getData();
+  const data = getData();
 
-  //checking if authUserId is valid
-  let user_is_valid = false;
+  // checking if authUserId is valid
+  let userIsValid = false;
   for (const user of data.users) {
     if (user.uId === authUserId) {
-      user_is_valid = true;
+      userIsValid = true;
       break;
     }
   }
-  if (!(user_is_valid))
-    return { error: 'error' };
+  if (!(userIsValid)) { return { error: 'error' }; }
 
-  const channel_list = [];
+  const channelList = [];
 
   for (const ch of data.channels) {
     for (const member of ch.memberIds) {
       if (authUserId === member) {
-        channel_list.push({
+        channelList.push({
           channelId: ch.channelId,
           name: ch.name,
         });
@@ -96,39 +92,39 @@ function channelsListV1(authUserId: number): channels[] | error {
     }
   }
 
-  return { channels: channel_list };
+  return { channels: channelList };
 }
 
 /**
   *
   * Provides an array of all channels, including private channels (and their associated details)
-  * 
+  *
   * @param {integer} authUserId - a valid userId in dataStore
   * ...
-  * 
-  * @returns {channels: 
+  *
+  * @returns {channels:
  *             channelId:
  *             name:
  *           } - if authUserId is valid
- * 
+ *
 */
 
 function channelsListAllV1(authUserId: number): channels[] | error {
-  let data = getData();
+  const data = getData();
 
   // checking if user exists
-  let user_check = 0;
+  let userCheck = 0;
   for (const user of data.users) {
     if (user.uId === authUserId) {
-      user_check = 1;
+      userCheck = 1;
     }
   }
 
-  if (user_check === 0) {
-    return authUserId + " is invalid";
+  if (userCheck === 0) {
+    return authUserId + ' is invalid';
   }
 
-  let array = [];
+  const array = [];
 
   for (const ch of data.channels) {
     if (!isNaN(ch.channelId)) {
@@ -143,7 +139,6 @@ function channelsListAllV1(authUserId: number): channels[] | error {
     channels: array
   };
 }
-
 
 export {
   channelsCreateV1,
