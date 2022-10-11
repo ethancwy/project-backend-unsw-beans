@@ -15,7 +15,7 @@ import { isValidUser } from './global';
   * @returns {integer} - channelId of the channel created
 */
 
-function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): channelId | error {
+function channelsCreateV1(authUserId, name, isPublic) {
   const data = getData();
 
   if (!isValidUser(authUserId)) {
@@ -60,7 +60,7 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
   *
 */
 
-function channelsListV1(authUserId: number): channels[] | error {
+function channelsListV1(authUserId) {
   const data = getData();
 
   if (!isValidUser(authUserId)) {
@@ -98,7 +98,7 @@ function channelsListV1(authUserId: number): channels[] | error {
  *
 */
 
-function channelsListAllV1(authUserId: number): channels[] | error {
+function channelsListAllV1(authUserId) {
   const data = getData();
 
   if (!isValidUser(authUserId)) {

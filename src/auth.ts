@@ -13,7 +13,7 @@ import { authUserId, error } from './global';
 * @returns {{error: 'error'}} - on error
 */
 
-function authLoginV1(email: string, password: string): authUserId | error {
+function authLoginV1(email, password) {
   const data = getData();
 
   for (let i = 0; i < data.users.length; i++) {
@@ -41,7 +41,7 @@ function authLoginV1(email: string, password: string): authUserId | error {
   * @returns {{error: 'error'}} - on error
 */
 
-function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string): authUserId | error {
+function authRegisterV1(email, password, nameFirst, nameLast) {
   const data = getData();
 
   if (!validEmail(email) || !validPass(password) || !validName(nameFirst) ||
@@ -78,7 +78,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
 }
 
 // Helper function to generate a valid handle string
-function getHandleStr(nameFirst: string, nameLast: string): string {
+function getHandleStr(nameFirst, nameLast) {
   // Given a first and last name
   // return a handle that concats together both names
   // without any uppercase, whitespace, and special characters
@@ -93,12 +93,12 @@ function getHandleStr(nameFirst: string, nameLast: string): string {
 }
 
 // Helper function to get valid email address
-function validEmail(email: string): boolean {
+function validEmail(email) {
   return validator.isEmail(email);
 }
 
 // Helper function to get valid password
-function validPass(password: string): boolean {
+function validPass(password) {
   if (password.match(/.{6,}/)) {
     return true;
   } else {
@@ -107,7 +107,7 @@ function validPass(password: string): boolean {
 }
 
 // Helper function to get valid first name
-function validName(nameFirst: string): boolean {
+function validName(nameFirst) {
   if (nameFirst.length < 1 || nameFirst.length > 50) {
     return false;
   }
@@ -115,7 +115,7 @@ function validName(nameFirst: string): boolean {
 }
 
 // Helper function to get valid handle string
-function validHandle(handle: string): string {
+function validHandle(handle) {
   const data = getData();
   let tempHandle = handle;
   let suffix = 0;
@@ -129,7 +129,7 @@ function validHandle(handle: string): string {
   return handle;
 }
 
-function sameEmail(email: string): boolean {
+function sameEmail(email) {
   const data = getData();
 
   for (let i = 0; i < data.users.length; i++) {

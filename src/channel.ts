@@ -13,7 +13,7 @@ import { isValidUser, isValidChannel, isGlobalOwner } from './global';
   * @returns {error} - return error object in invalid cases
 */
 
-function channelJoinV1(authUserId: authUserId, channelId: channelId): Record<string, never> | error {
+function channelJoinV1(authUserId, channelId) {
   const data = getData();
 
   if (!isValidUser(authUserId)) {
@@ -53,7 +53,7 @@ function channelJoinV1(authUserId: authUserId, channelId: channelId): Record<str
   * @returns {error} - return error object in invalid cases
 */
 
-function channelInviteV1(authUserId: number, channelId: number, uId: number): Record<string, never> | error {
+function channelInviteV1(authUserId, channelId, uId) {
   const data = getData();
 
   if (!isValidUser(authUserId) || !isValidUser(uId) || !isValidChannel(channelId)) {
@@ -104,7 +104,7 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number): Re
   * @returns {error} - return error object in invalid cases
 */
 
-function channelMessagesV1(authUserId: number, channelId: number, start: number): messages | error {
+function channelMessagesV1(authUserId, channelId, start) {
   const data = getData();
 
   if (start < 0) {
@@ -203,7 +203,7 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
   * @returns {error} - return error object in invalid cases
 */
 
-function channelDetailsV1(authUserId: number, channelId: number): channelInfo | error {
+function channelDetailsV1(authUserId, channelId) {
   const data = getData();
 
   // checking if authUserId is valid

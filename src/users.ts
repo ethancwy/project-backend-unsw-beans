@@ -15,7 +15,7 @@ import { user, error } from './global';
  * @returns {error} - return error object in invalid cases
 */
 
-function userProfileV1(authUserId: number, uId: number): user | error {
+function userProfileV1(authUserId, uId) {
   const data = getData();
 
   if (!isValidUser(authUserId)) {

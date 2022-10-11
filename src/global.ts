@@ -12,11 +12,13 @@ export type channels = {
 };
 
 export type user = {
-  uId: number;
-  email: string;
-  nameFirst: string;
-  nameLast: string;
-  handleStr: string;
+  users: {
+    uId: number;
+    email: string;
+    nameFirst: string;
+    nameLast: string;
+    handleStr: string;
+  }
 };
 
 export type messages = {
@@ -32,10 +34,10 @@ export type channelInfo = {
   allMembers: user[];
 };
 
-export type error = { error: string, authUserId?: number, channelId?: number };
+export type error = { error: string };
 
 // Helper function to check if user is valid
-export function isValidUser(authUserId: number): boolean {
+export function isValidUser(authUserId) {
   const data = getData();
   for (const user of data.users) {
     if (authUserId === user.uId) {
@@ -46,7 +48,7 @@ export function isValidUser(authUserId: number): boolean {
 }
 
 // Helper function to check if channel is valid
-export function isValidChannel(channelId: number): boolean {
+export function isValidChannel(channelId) {
   const data = getData();
   for (const channel of data.channels) {
     if (channelId === channel.channelId) {
@@ -57,7 +59,7 @@ export function isValidChannel(channelId: number): boolean {
 }
 
 // Helper function to check if user is global owner
-export function isGlobalOwner(authUserId: number): boolean {
+export function isGlobalOwner(authUserId) {
   const data = getData();
 
   for (const user of data.users) {
