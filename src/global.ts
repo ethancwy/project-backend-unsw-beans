@@ -1,4 +1,4 @@
-import { getData } from './datastore';
+import { getData } from './dataStore';
 
 export type authUserId = { authUserId: number };
 

@@ -1,5 +1,4 @@
 import { getData, setData } from './dataStore';
-import { authUserId, channelId, channelInfo, messages, error } from './global';
 import { isValidUser, isValidChannel, isGlobalOwner } from './global';
 
 /**
@@ -121,7 +120,7 @@ function channelMessagesV1(authUserId, channelId, start) {
   for (const i in data.channels) {
     if (data.channels[i].channelId === channelId) {
       isValid = true;
-      index = i;
+      index = parseInt(i);
       break;
     }
   }
@@ -138,7 +137,7 @@ function channelMessagesV1(authUserId, channelId, start) {
   // getting amount of msgs in channel
   let amount = 0;
   for (const i in data.channels[index].channelmessages) {
-    amount = i;
+    amount = parseInt(i);
   }
   if (isNaN(data.channels[index].channelmessages[0].messageId)) {
     amount = 0;
@@ -217,7 +216,7 @@ function channelDetailsV1(authUserId, channelId) {
   for (const chans in data.channels) {
     if (data.channels[chans].channelId === channelId) {
       channelCheck = 1;
-      channelPos = chans;
+      channelPos = parseInt(chans);
     }
   }
 

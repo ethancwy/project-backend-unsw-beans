@@ -1,6 +1,5 @@
 import { getData, setData } from './dataStore';
 import validator from 'validator';
-import { authUserId, error } from './global';
 
 /**
 * Allows user to login with email and password that they have registered

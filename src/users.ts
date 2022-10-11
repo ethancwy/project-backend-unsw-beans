@@ -1,6 +1,5 @@
 import { getData } from './dataStore';
 import { isValidUser } from './global';
-import { user, error } from './global';
 
 /**
   * For a valid user, returns information about their user ID, email,

@@ -1,5 +1,4 @@
 import { getData, setData } from './dataStore';
-import { channels, channelId, error } from './global';
 import { isValidUser } from './global';
 
 /**
@@ -39,6 +38,14 @@ function channelsCreateV1(authUserId, name, isPublic) {
       isPublic: isPublic,
       ownerIds: [authUserId],
       memberIds: [authUserId],
+      channelmessages: [
+        {
+          messageId: NaN,
+          uId: NaN,
+          message: '',
+          timeSent: NaN,
+        }
+      ]
     });
   }
 
