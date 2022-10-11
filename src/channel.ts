@@ -1,6 +1,6 @@
-import { getData, setData } from './dataStore.ts';
-import { authUserId, channelId, channelInfo, messages, error } from './global.ts';
-import { isValidUser, isValidChannel, isGlobalOwner } from './global.ts';
+import { getData, setData } from './dataStore';
+import { authUserId, channelId, channelInfo, messages, error } from './global';
+import { isValidUser, isValidChannel, isGlobalOwner } from './global';
 
 /**
   * Given a channelId of a channel that the authorised user can join,

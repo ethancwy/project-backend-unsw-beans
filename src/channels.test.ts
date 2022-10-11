@@ -1,6 +1,6 @@
-import { channelsListV1, channelsCreateV1, channelsListAllV1 } from './channels.ts';
-import { authRegisterV1 } from './auth.ts';
-import { clearV1 } from './other.ts';
+import { channelsListV1, channelsCreateV1, channelsListAllV1 } from './channels';
+import { authRegisterV1 } from './auth';
+import { clearV1 } from './other';
 
 describe('channelsCreateV1 tests:', () => {
   test('Testing for invalid name(smaller than 1)', () => {
@@ -144,7 +144,7 @@ describe('Testing the edge cases', () => {
 
     const fakeUser = -20;
 
-    expect(channelsListAllV1(fakeUser)).toEqual(fakeUser + ' is invalid');
+    expect(channelsListAllV1(fakeUser)).toEqual({ error: 'error' });
   });
 
   test('Test for when there are no channels in existence yet', () => {

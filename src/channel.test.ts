@@ -1,7 +1,7 @@
-import { channelDetailsV1, channelJoinV1, channelInviteV1, channelMessagesV1 } from './channel.ts';
-import { channelsCreateV1 } from './channels.ts';
-import { authRegisterV1 } from './auth.ts';
-import { clearV1 } from './other.ts';
+import { channelDetailsV1, channelJoinV1, channelInviteV1, channelMessagesV1 } from './channel';
+import { channelsCreateV1 } from './channels';
+import { authRegisterV1 } from './auth';
+import { clearV1 } from './other';
 
 describe('Testing that channelDetailsV1 works standard', () => {
   test('when given id, returns relevant info of channels if the user is apart of it', () => {

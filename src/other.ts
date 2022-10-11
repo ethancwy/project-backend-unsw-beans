@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore.ts';
+import { getData, setData } from './dataStore';
 
 function clearV1(): Record<string, never> {
   let data = getData();
@@ -19,7 +19,7 @@ function clearV1(): Record<string, never> {
       {
         channelId: NaN,
         name: '',
-        isPublic: '',
+        isPublic: false,
         ownerIds: [],
         memberIds: [],
         channelmessages: [

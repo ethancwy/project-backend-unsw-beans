@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { channels, channelId, error } from './global';
+import { isValidUser } from './global';
 
 /**
   *
@@ -17,15 +18,9 @@ import { channels, channelId, error } from './global';
 function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): channelId | error {
   const data = getData();
 
-  // checking if authUserId is valid
-  let userIsValid = false;
-  for (const user of data.users) {
-    if (user.uId === authUserId) {
-      userIsValid = true;
-      break;
-    }
+  if (!isValidUser(authUserId)) {
+    return { error: 'error' };
   }
-  if (!(userIsValid)) { return { error: 'error' }; }
 
   // checking if name is valid
   if (name.length > 20 || name.length < 1) { return { error: 'error' }; }
@@ -68,15 +63,9 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
 function channelsListV1(authUserId: number): channels[] | error {
   const data = getData();
 
-  // checking if authUserId is valid
-  let userIsValid = false;
-  for (const user of data.users) {
-    if (user.uId === authUserId) {
-      userIsValid = true;
-      break;
-    }
+  if (!isValidUser(authUserId)) {
+    return { error: 'error' };
   }
-  if (!(userIsValid)) { return { error: 'error' }; }
 
   const channelList = [];
 
@@ -112,16 +101,8 @@ function channelsListV1(authUserId: number): channels[] | error {
 function channelsListAllV1(authUserId: number): channels[] | error {
   const data = getData();
 
-  // checking if user exists
-  let userCheck = 0;
-  for (const user of data.users) {
-    if (user.uId === authUserId) {
-      userCheck = 1;
-    }
-  }
-
-  if (userCheck === 0) {
-    return authUserId + ' is invalid';
+  if (!isValidUser(authUserId)) {
+    return { error: 'error' };
   }
 
   const array = [];
