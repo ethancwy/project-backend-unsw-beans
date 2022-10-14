@@ -1,0 +1,114 @@
+npm verb cli /import/kamen/3/cs1531/.nvm/versions/node/v18.10.0/bin/node /import/kamen/3/cs1531/.nvm/versions/node/v18.10.0/bin/npm
+npm info using npm@8.19.2
+npm info using node@v18.10.0
+npm timing npm:load:whichnode Completed in 0ms
+npm timing config:load:defaults Completed in 2ms
+npm timing config:load:file:/import/kamen/3/cs1531/.nvm/versions/node/v18.10.0/lib/node_modules/npm/npmrc Completed in 1ms
+npm timing config:load:builtin Completed in 1ms
+npm timing config:load:cli Completed in 2ms
+npm timing config:load:env Completed in 1ms
+npm timing config:load:file:/import/kamen/3/cs1531/project-automarking/tempstore/.npmrc Completed in 0ms
+npm timing config:load:project Completed in 5ms
+npm timing config:load:file:/import/kamen/3/cs1531/.npmrc Completed in 0ms
+npm timing config:load:user Completed in 0ms
+npm timing config:load:file:/import/kamen/3/cs1531/.nvm/versions/node/v18.10.0/etc/npmrc Completed in 0ms
+npm timing config:load:global Completed in 1ms
+npm timing config:load:validate Completed in 0ms
+npm timing config:load:credentials Completed in 1ms
+npm timing config:load:setEnvs Completed in 0ms
+npm timing config:load Completed in 13ms
+npm timing npm:load:configload Completed in 14ms
+npm timing npm:load:mkdirpcache Completed in 3ms
+npm timing npm:load:mkdirplogs Completed in 1ms
+npm verb title npm run test course_tests/
+npm verb argv "run" "test" "--loglevel" "verbose" "course_tests/"
+npm timing npm:load:setTitle Completed in 1ms
+npm timing config:load:flatten Completed in 2ms
+npm timing npm:load:display Completed in 5ms
+npm verb logfile logs-max:10 dir:/import/kamen/3/cs1531/.npm/_logs
+npm verb logfile /import/kamen/3/cs1531/.npm/_logs/2022-10-08T04_36_29_118Z-debug-0.log
+npm timing npm:load:logFile Completed in 4ms
+npm timing npm:load:timers Completed in 1ms
+npm timing npm:load:configScope Completed in 0ms
+npm timing npm:load Completed in 29ms
+
+> test
+> jest course_tests/
+
+PASS course_tests/tests/channel_tests/channelDetails.test.js
+PASS course_tests/tests/channel_tests/channelJoin.test.js
+FAIL course_tests/tests/channel_tests/channelMessages.test.js
+  ● Test successful no messages
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: undefined
+
+      18 | test('Test successful no messages', () => {
+      19 |   const res = channelMessagesV1(uIdWoody, chIdWoody, 0);
+    > 20 |   expect(res.start).toBe(0);
+         |                     ^
+      21 |   expect(res.end).toBe(-1);
+      22 |   expect(res.messages).toStrictEqual([]);
+      23 | });
+
+      at Object.toBe (course_tests/tests/channel_tests/channelMessages.test.js:20:21)
+
+  ● Test messages from non channel member
+
+    expect(received).toStrictEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+      Object {
+    -   "error": Any<String>,
+    +   "end": -1,
+    +   "messages": Array [],
+    +   "start": 0,
+      }
+
+      30 | test('Test messages from non channel member', () => {
+      31 |   const res = channelMessagesV1(uIdZerg, chIdWoody, 0);
+    > 32 |   expect(res).toStrictEqual({ error: expect.any(String) });
+         |               ^
+      33 | });
+      34 |
+      35 | test('Test channel id invalid', () => {
+
+      at Object.toStrictEqual (course_tests/tests/channel_tests/channelMessages.test.js:32:15)
+
+PASS course_tests/tests/other_tests/clear.test.js
+PASS course_tests/tests/channel_tests/channelInvite.test.js
+PASS course_tests/tests/auth_tests/authRegister.test.js
+PASS course_tests/tests/channels_tests/channelsList.test.js
+PASS course_tests/tests/user_tests/userProfile.test.js
+PASS course_tests/tests/channels_tests/channelsCreate.test.js
+PASS course_tests/tests/auth_tests/authLogin.test.js
+FAIL course_tests/tests/channels_tests/channelsListall.test.js
+  ● Test invalid token
+
+    expect(received).toStrictEqual(expected) // deep equality
+
+    Expected: {"error": Any<String>}
+    Received: "-1 is invalid"
+
+      59 | test('Test invalid token', () => {
+      60 |   const res = channelsListAllV1(-1);
+    > 61 |   expect(res).toStrictEqual({ error: expect.any(String) });
+         |               ^
+      62 | });
+      63 |
+
+      at Object.toStrictEqual (course_tests/tests/channels_tests/channelsListall.test.js:61:15)
+
+Test Suites: 2 failed, 9 passed, 11 total
+Tests:       3 failed, 59 passed, 62 total
+Snapshots:   0 total
+Time:        2.942 s
+Ran all test suites matching /course_tests\//i.
+npm timing command:run Completed in 4186ms
+npm verb exit 1
+npm timing npm Completed in 4221ms
+npm verb code 1
