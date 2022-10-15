@@ -1,12 +1,12 @@
-import { authRegisterV1 } from './auth.js'
-import { userProfileV1 } from './users.js'
-import { clearV1 } from './other.js'
+import { authRegisterV1 } from './auth';
+import { userProfileV1 } from './users';
+import { clearV1 } from './other';
 
 describe('Testing userProfileV1', () => {
   test('Testing for valid user', () => {
     clearV1();
-    let member1 = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
-    let member2 = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+    const member1 = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
+    const member2 = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
 
     expect(userProfileV1(member1.authUserId, member2.authUserId)).toStrictEqual({
       user: {
@@ -23,7 +23,7 @@ describe('Testing userProfileV1', () => {
 describe('Error checking userProfileV1', () => {
   test('Testing for invalid users', () => {
     clearV1();
-    let member = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
+    const member = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
     const invalidMember = member.authUserId + 1;
 
     // valid authUserId, invalid uId
@@ -32,5 +32,4 @@ describe('Error checking userProfileV1', () => {
     // invalid authUserId, valid uId
     expect(userProfileV1(invalidMember, member.authUserId)).toStrictEqual({ error: 'error' });
   });
-
 });
