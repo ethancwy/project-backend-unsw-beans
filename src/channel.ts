@@ -139,19 +139,19 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
   for (const i in data.channels[index].channelmessages) {
     amount = parseInt(i);
   }
-  if (isNaN(data.channels[index].channelmessages[0].messageId)) {
+  if (data.channels[index].channelmessages.length === 0) {
     amount = 0;
   }
   let amountOfMsgs = amount;
   let end = 0;
-  const emptyMsg = {
-    messageId: NaN,
-    uId: NaN,
-    message: '',
-    timeSent: NaN,
-  };
+  // const emptyMsg = {
+  //   messageId: NaN,
+  //   uId: NaN,
+  //   message: '',
+  //   timeSent: NaN,
+  // };
 
-  if (amountOfMsgs === 1 && data.channels[index].channelmessages[0] === emptyMsg) {
+  if (amountOfMsgs === 1 && amount === 0) {
     amountOfMsgs = 0;
   }
 
@@ -246,7 +246,7 @@ function channelDetailsV1(authUserId: number, channelId: number) {
           email: users.email,
           nameFirst: users.nameFirst,
           nameLast: users.nameLast,
-          handleStr: expect.any(String),
+          handleStr: users.handleStr,
         });
       }
     }
@@ -262,7 +262,7 @@ function channelDetailsV1(authUserId: number, channelId: number) {
           email: users.email,
           nameFirst: users.nameFirst,
           nameLast: users.nameLast,
-          handleStr: expect.any(String),
+          handleStr: users.handleStr,
         });
       }
     }

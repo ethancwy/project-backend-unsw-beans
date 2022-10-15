@@ -1,33 +1,64 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
-let data = {
+type user = {
+  uId: number;
+  nameFirst: string;
+  nameLast: string;
+  email: string;
+  password: string;
+  handleStr: string;
+  isGlobalOwner: boolean;
+}
+
+type channelmessages = {
+  messageId: number;
+  uId: number;
+  message: string;
+  timeSent: number;
+}
+
+type channel = {
+  channelId: number;
+  name: string;
+  isPublic: boolean;
+  ownerIds: Array<number>;
+  memberIds: Array<number>;
+  channelmessages: Array<channelmessages>;
+}
+
+type datatype = {
+  users: Array<user>;
+  channels: Array<channel>;
+}
+
+let data: datatype = {
   users: [
-    {
-      uId: NaN,
-      nameFirst: '',
-      nameLast: '',
-      email: '',
-      password: '',
-      handleStr: '',
-      isGlobalOwner: false,
-    },
+    // {
+    //   uId: NaN,
+    //   nameFirst: '',
+    //   nameLast: '',
+    //   email: '',
+    //   password: '',
+    //   handleStr: '',
+    //   isGlobalOwner: false,
+    // },
   ],
 
   channels: [
-    {
-      channelId: NaN,
-      name: '',
-      isPublic: false,
-      ownerIds: [],
-      memberIds: [],
-      channelmessages: [
-        {
-          messageId: NaN,
-          uId: NaN,
-          message: '',
-          timeSent: NaN,
-        }
-      ]
-    },
+    // {
+    //   channelId: NaN,
+    //   name: '',
+    //   isPublic: false,
+    //   ownerIds: [],
+    //   memberIds: [],
+    //   channelmessages: [
+    //     {
+    //       messageId: NaN,
+    //       uId: NaN,
+    //       message: '',
+    //       timeSent: NaN,
+    //     }
+    //   ]
+    // },
   ],
 };
 
@@ -53,7 +84,7 @@ function getData() {
 }
 
 // Use set(newData) to pass in the entire data object, with modifications made
-function setData(newData) {
+function setData(newData: datatype) {
   data = newData;
 }
 

@@ -51,25 +51,18 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   const handle = getHandleStr(nameFirst, nameLast);
   const handleStr = validHandle(handle);
 
-  // checking if first user is empty/placeholder
-  if (isNaN(data.users[0].uId) && data.users.length === 1) {
-    data.users[0].uId = 0;
-    data.users[0].nameFirst = nameFirst;
-    data.users[0].nameLast = nameLast;
-    data.users[0].email = email;
-    data.users[0].password = password;
-    data.users[0].handleStr = handleStr;
+  data.users.push({
+    uId: data.users.length,
+    nameFirst: nameFirst,
+    nameLast: nameLast,
+    email: email,
+    password: password,
+    handleStr: handleStr,
+    isGlobalOwner: false,
+  });
+
+  if (data.users.length === 1) {
     data.users[0].isGlobalOwner = true;
-  } else {
-    data.users.push({
-      uId: data.users.length,
-      nameFirst: nameFirst,
-      nameLast: nameLast,
-      email: email,
-      password: password,
-      handleStr: handleStr,
-      isGlobalOwner: false,
-    });
   }
 
   setData(data);

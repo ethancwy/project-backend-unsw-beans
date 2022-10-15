@@ -25,29 +25,14 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean) {
   if (name.length > 20 || name.length < 1) { return { error: 'error' }; }
 
   // setting channel values and pushing channel into dataStore
-  if (isNaN(data.channels[0].channelId) && data.channels.length === 1) {
-    data.channels[0].channelId = 0;
-    data.channels[0].name = name;
-    data.channels[0].isPublic = isPublic;
-    data.channels[0].ownerIds.push(authUserId);
-    data.channels[0].memberIds.push(authUserId);
-  } else {
-    data.channels.push({
-      channelId: data.channels.length,
-      name: name,
-      isPublic: isPublic,
-      ownerIds: [authUserId],
-      memberIds: [authUserId],
-      channelmessages: [
-        {
-          messageId: NaN,
-          uId: NaN,
-          message: '',
-          timeSent: NaN,
-        }
-      ]
-    });
-  }
+  data.channels.push({
+    channelId: data.channels.length,
+    name: name,
+    isPublic: isPublic,
+    ownerIds: [authUserId],
+    memberIds: [authUserId],
+    channelmessages: [],
+  });
 
   setData(data);
   return { channelId: data.channels[data.channels.length - 1].channelId };
