@@ -17,10 +17,10 @@ tests:
     - sleep 2
     - cat $SERVER_LOG
 
-testing:
- stage: checks
- script:
- - npm run test
+# testing:
+#  stage: checks
+#  script:
+#  - npm run test
 
 typecheck:
  stage: checks
