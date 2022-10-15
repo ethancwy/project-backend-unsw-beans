@@ -37,7 +37,7 @@ export type channelInfo = {
 export type error = { error: string };
 
 // Helper function to check if user is valid
-export function isValidUser(authUserId) {
+export function isValidUser(authUserId: number) {
   const data = getData();
   for (const user of data.users) {
     if (authUserId === user.uId) {
@@ -48,7 +48,7 @@ export function isValidUser(authUserId) {
 }
 
 // Helper function to check if channel is valid
-export function isValidChannel(channelId) {
+export function isValidChannel(channelId: number) {
   const data = getData();
   for (const channel of data.channels) {
     if (channelId === channel.channelId) {
@@ -59,7 +59,7 @@ export function isValidChannel(channelId) {
 }
 
 // Helper function to check if user is global owner
-export function isGlobalOwner(authUserId) {
+export function isGlobalOwner(authUserId: number) {
   const data = getData();
 
   for (const user of data.users) {

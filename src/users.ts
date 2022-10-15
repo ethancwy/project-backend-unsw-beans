@@ -14,7 +14,7 @@ import { isValidUser } from './global';
  * @returns {error} - return error object in invalid cases
 */
 
-function userProfileV1(authUserId, uId) {
+function userProfileV1(authUserId: number, uId: number) {
   const data = getData();
 
   if (!isValidUser(authUserId)) {
