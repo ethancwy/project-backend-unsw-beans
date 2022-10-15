@@ -12,7 +12,7 @@ import validator from 'validator';
 * @returns {{error: 'error'}} - on error
 */
 
-function authLoginV1(email, password) {
+function authLoginV1(email: string, password: string) {
   const data = getData();
 
   for (let i = 0; i < data.users.length; i++) {
@@ -40,7 +40,7 @@ function authLoginV1(email, password) {
   * @returns {{error: 'error'}} - on error
 */
 
-function authRegisterV1(email, password, nameFirst, nameLast) {
+function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string) {
   const data = getData();
 
   if (!validEmail(email) || !validPass(password) || !validName(nameFirst) ||
@@ -77,7 +77,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
 }
 
 // Helper function to generate a valid handle string
-function getHandleStr(nameFirst, nameLast) {
+function getHandleStr(nameFirst: string, nameLast: string) {
   // Given a first and last name
   // return a handle that concats together both names
   // without any uppercase, whitespace, and special characters
@@ -92,12 +92,12 @@ function getHandleStr(nameFirst, nameLast) {
 }
 
 // Helper function to get valid email address
-function validEmail(email) {
+function validEmail(email: string) {
   return validator.isEmail(email);
 }
 
 // Helper function to get valid password
-function validPass(password) {
+function validPass(password: string) {
   if (password.match(/.{6,}/)) {
     return true;
   } else {
@@ -106,7 +106,7 @@ function validPass(password) {
 }
 
 // Helper function to get valid first name
-function validName(nameFirst) {
+function validName(nameFirst: string) {
   if (nameFirst.length < 1 || nameFirst.length > 50) {
     return false;
   }
@@ -114,7 +114,7 @@ function validName(nameFirst) {
 }
 
 // Helper function to get valid handle string
-function validHandle(handle) {
+function validHandle(handle: string) {
   const data = getData();
   let tempHandle = handle;
   let suffix = 0;
@@ -128,7 +128,7 @@ function validHandle(handle) {
   return handle;
 }
 
-function sameEmail(email) {
+function sameEmail(email: string) {
   const data = getData();
 
   for (let i = 0; i < data.users.length; i++) {

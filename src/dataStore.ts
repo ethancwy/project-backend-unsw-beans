@@ -17,8 +17,8 @@ let data = {
       channelId: NaN,
       name: '',
       isPublic: false,
-      ownerIds: [],
-      memberIds: [],
+      ownerIds: Array<number>,
+      memberIds: Array<number>,
       channelmessages: [
         {
           messageId: NaN,

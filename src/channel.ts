@@ -12,7 +12,7 @@ import { isValidUser, isValidChannel, isGlobalOwner } from './global';
   * @returns {error} - return error object in invalid cases
 */
 
-function channelJoinV1(authUserId, channelId) {
+function channelJoinV1(authUserId: number, channelId: number) {
   const data = getData();
 
   if (!isValidUser(authUserId)) {
@@ -52,7 +52,7 @@ function channelJoinV1(authUserId, channelId) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelInviteV1(authUserId, channelId, uId) {
+function channelInviteV1(authUserId: number, channelId: number, uId: number) {
   const data = getData();
 
   if (!isValidUser(authUserId) || !isValidUser(uId) || !isValidChannel(channelId)) {
@@ -103,7 +103,7 @@ function channelInviteV1(authUserId, channelId, uId) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelMessagesV1(authUserId, channelId, start) {
+function channelMessagesV1(authUserId: number, channelId: number, start: number) {
   const data = getData();
 
   if (start < 0) {
@@ -202,7 +202,7 @@ function channelMessagesV1(authUserId, channelId, start) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelDetailsV1(authUserId, channelId) {
+function channelDetailsV1(authUserId: number, channelId: number) {
   const data = getData();
 
   // checking if authUserId is valid
