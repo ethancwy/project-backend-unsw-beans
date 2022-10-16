@@ -128,7 +128,7 @@ export function requestHelper(method: HttpVerb, path: string, payload: object) {
     // PUT/POST
     json = payload;
   }
-  // const headers = { token: token };
+  //const headers = { token: token };
   const res = request(method, SERVER_URL + path, { qs, json });
   return JSON.parse(res.getBody() as string);
 }

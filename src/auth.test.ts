@@ -20,7 +20,7 @@ export function authLogin(email: string, password: string) {
 }
 
 export function authLogout(token: string) {
-  return requestHelper('POST', '/auth/logout/v1', { });
+  return requestHelper('POST', '/auth/logout/v1', { token });
 }
 
 // =================================================== //
