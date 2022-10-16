@@ -8,7 +8,7 @@ import validator from 'validator';
 * @param {String} email - User enters a valid email address
 * @param {String} password - User input password that is >= 6 characters long
 *
-* @returns {Object { authUserId: Number}} - Returns a valid authUserId
+* @returns {Object { authUserId: Number, token: String }} - Returns a valid authUserId and token
 * @returns {{error: 'error'}} - on error
 */
 
@@ -18,7 +18,7 @@ function authLoginV1(email: string, password: string) {
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].email === email) {
       if (data.users[i].password === password) {
-        return { authUserId: data.users[i].uId };
+        return { authUserId: data.users[i].uId, token: data.users[i].token };
       } else {
         return { error: 'error' };
       }
@@ -36,7 +36,7 @@ function authLoginV1(email: string, password: string) {
   * @param {String} nameFirst - User input name that's 1-50 characters long
   * @param {String} nameLast - User input name that's 1-50 characters long
   *
-  * @returns {Object { authUserId: Number}} - Returns a valid authUserId
+  * @returns {Object { authUserId: Number, token: String }} - Returns a valid authUserId and token
   * @returns {{error: 'error'}} - on error
 */
 
@@ -59,6 +59,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     password: password,
     handleStr: handleStr,
     isGlobalOwner: false,
+    token: String(data.users.length + 1000),
   });
 
   if (data.users.length === 1) {
@@ -66,7 +67,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   }
 
   setData(data);
-  return { authUserId: data.users[data.users.length - 1].uId };
+  return { authUserId: data.users[data.users.length - 1].uId, token: data.users[data.users.length - 1].token };
 }
 
 // Helper function to generate a valid handle string
@@ -132,6 +133,7 @@ function sameEmail(email: string) {
 
   return false;
 }
+
 
 export {
   authLoginV1,
