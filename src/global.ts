@@ -1,5 +1,7 @@
 import { getData } from './dataStore';
-import request from 'sync-request';
+import request, { HttpVerb } from 'sync-request';
+import { port, url } from './config.json';
+const SERVER_URL = `${url}:${port}`;
 
 const OK = 200;
 
@@ -115,4 +117,18 @@ export function deleteRequest(url: string, data: any) {
   const bodyObj = JSON.parse(res.getBody() as string);
   expect(res.statusCode).toBe(OK);
   return bodyObj;
+}
+
+export function requestHelper(method: HttpVerb, path: string, payload: object) {
+  let qs = {};
+  let json = {};
+  if (['GET', 'DELETE'].includes(method)) {
+    qs = payload;
+  } else {
+    // PUT/POST
+    json = payload;
+  }
+  // const headers = { token: token };
+  const res = request(method, SERVER_URL + path, { qs, json });
+  return JSON.parse(res.getBody() as string);
 }

@@ -7,7 +7,7 @@ type user = {
   password: string;
   handleStr: string;
   isGlobalOwner: boolean;
-  token: string;
+  token?: string;
 }
 
 type channelmessages = {
@@ -60,7 +60,7 @@ let data: datatype = {
     //     }
     //   ]
     // },
-  ],
+  ]
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1

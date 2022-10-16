@@ -37,3 +37,19 @@ const server = app.listen(PORT, HOST, () => {
 process.on('SIGINT', () => {
   server.close(() => console.log('Shutting down server gracefully.'));
 });
+
+
+app.post('/auth/register/v2', (req, res, next) => {
+  const { email, password, nameFirst, nameLast } = req.body;
+  return res.json(authRegisterV1(email, password, nameFirst, nameLast));
+});
+
+app.post('/auth/login/v2', (req, res, next) => {
+  const { email, password } = req.body;
+  return res.json(authLoginV1(email, password));
+});
+
+app.post('/auth/logout/v1', (req, res, next) => {
+  const { token } = req.body;
+  return res.json(authLogoutV1(token));
+});
