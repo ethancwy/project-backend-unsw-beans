@@ -1,5 +1,27 @@
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
+import request, { HttpVerb } from 'sync-request';
+import { requestHelper } from './global';
+import { port, url } from './config.json';
+const SERVER_URL = `${url}:${port}`;
+
+// =================================================== //
+//                                                     //
+//              AUTH FUNCTION WRAPPERS                 //
+//                                                     //
+// ==================================================  //
+
+export function authRegister(email: string, password: string, nameFirst: string, nameLast: string) {
+  return requestHelper('POST', '/auth/register/v2', { email, password, nameFirst, nameLast });
+}
+
+export function authLogin(email: string, password: string) {
+  return requestHelper('POST', '/auth/login/v2', { email, password });
+}
+
+export function authLogout(token: string) {
+  return requestHelper('POST', '/auth/logout/v1', { });
+}
 
 // =================================================== //
 //                                                     //
