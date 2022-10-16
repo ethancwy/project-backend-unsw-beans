@@ -18,6 +18,10 @@ function authLoginV1(email: string, password: string) {
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].email === email) {
       if (data.users[i].password === password) {
+        if (data.users[i].token.length === 0) {
+          const token = generateToken();
+          data.users[i].token = token;
+        }
         return { authUserId: data.users[i].uId, token: data.users[i].token };
       } else {
         return { error: 'error' };
@@ -51,6 +55,8 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   const handle = getHandleStr(nameFirst, nameLast);
   const handleStr = validHandle(handle);
 
+  const token = generateToken();
+
   data.users.push({
     uId: data.users.length,
     nameFirst: nameFirst,
@@ -59,7 +65,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     password: password,
     handleStr: handleStr,
     isGlobalOwner: false,
-    token: String(data.users.length + 1000),
+    token: token,
   });
 
   if (data.users.length === 1) {
@@ -80,15 +86,37 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   * @returns {{error: 'error'}} - on error
 */
 
-function authLogoutV1(token: String) {
-  const data = getData();
+function authLogoutV1(token: string) {
+  let data = getData();
 
-  
+  if (!validToken(token) && token !== '') {
+    return { error: 'error' };
+  }
+
+  for (const user of data.users) {
+    if (user.token === token) {
+      user.token = '';
+    }
+  }
+  return {};
 }
 
+function validToken(token: string) {
+  const data = getData();
+  let found = false;
+  for (const user of data.users) {
+    if (user.token.includes(token)) {
+      found = true;
+    }
+  }
+  return found;
+}
 
-
-
+function generateToken() {
+  const data = getData();
+  const newToken = data.users.length + 1000;
+  return String(newToken);
+}
 
 // Helper function to generate a valid handle string
 function getHandleStr(nameFirst: string, nameLast: string) {
@@ -154,8 +182,8 @@ function sameEmail(email: string) {
   return false;
 }
 
-
 export {
   authLoginV1,
-  authRegisterV1
+  authRegisterV1,
+  authLogoutV1
 };
