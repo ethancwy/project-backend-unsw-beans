@@ -116,3 +116,17 @@ export function deleteRequest(url: string, data: any) {
   expect(res.statusCode).toBe(OK);
   return bodyObj;
 }
+
+export function requestHelper(method: HttpVerb, path: string, payload: object) {
+  let qs = {};
+  let json = {};
+  if (['GET', 'DELETE'].includes(method)) {
+    qs = payload;
+  } else {
+    // PUT/POST
+    json = payload;
+  }
+  // const headers = { token: token };
+  const res = request(method, SERVER_URL + path, { qs, json });
+  return JSON.parse(res.getBody() as string);
+}
