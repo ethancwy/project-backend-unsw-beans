@@ -87,7 +87,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
 */
 
 function authLogoutV1(token: string) {
-  let data = getData();
+  const data = getData();
 
   if (!validToken(token) && token !== '') {
     return { error: 'error' };
@@ -98,6 +98,7 @@ function authLogoutV1(token: string) {
       user.token = '';
     }
   }
+  setData(data);
   return {};
 }
 

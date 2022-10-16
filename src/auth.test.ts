@@ -1,13 +1,11 @@
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 
-
 // =================================================== //
 //                                                     //
 //              AUTH FUNCTION TESTS                    //
 //                                                     //
 // ==================================================  //
-
 
 describe('Testing for authRegisterV2: ', () => {
   // Valid register
@@ -131,17 +129,14 @@ describe('Testing for auth/logout/v1', () => {
     clearV1();
     authRegisterV1('p.file@gmail.com', 'Bob100', 'Peter', 'File');
     const user = authLoginV1('p.file@gmail.com', 'Bob100');
-    const token = user.token;
     expect(authLogoutV1(user.token)).toStrictEqual({});
   });
 
-  // Invalid token 
+  // Invalid token
   test('Testing for invalid logout', () => {
     clearV1();
     authRegisterV1('p.file@gmail.com', 'Bob100', 'Peter', 'File');
-    const user = authLoginV1('p.file@gmail.com', 'Bob100');
-    const token = user.token;
-    expect(authLogoutV1('token')).toStrictEqual({ error: 'error'});
+    expect(authLogoutV1('token')).toStrictEqual({ error: 'error' });
   });
 
   // Invalid logout (logout twice)
@@ -149,9 +144,8 @@ describe('Testing for auth/logout/v1', () => {
     clearV1();
     authRegisterV1('p.file@gmail.com', 'Bob100', 'Peter', 'File');
     const user = authLoginV1('p.file@gmail.com', 'Bob100');
-    const token = user.token;
     expect(authLogoutV1(user.token)).toStrictEqual({});
-    expect(authLogoutV1(user.token)).toStrictEqual({ error: 'error'});
+    expect(authLogoutV1(user.token)).toStrictEqual({ error: 'error' });
   });
 
   test('Testing for invalid logout', () => {
@@ -161,8 +155,8 @@ describe('Testing for auth/logout/v1', () => {
     const user = authLoginV1('p.file@gmail.com', 'Bob100');
     const user1 = authLoginV1('m.hunt@gmail.com', 'Bob100');
     expect(authLogoutV1(user.token)).toStrictEqual({});
-    expect(authLogoutV1(user.token)).toStrictEqual({ error: 'error'});
+    expect(authLogoutV1(user.token)).toStrictEqual({ error: 'error' });
     expect(authLogoutV1(user1.token)).toStrictEqual({});
-    expect(authLogoutV1(user1.token)).toStrictEqual({ error: 'error'});
+    expect(authLogoutV1(user1.token)).toStrictEqual({ error: 'error' });
   });
 });

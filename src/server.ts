@@ -3,6 +3,7 @@ import { echo } from './echo';
 import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
+import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 
 // Set up web app
 const app = express();
@@ -37,7 +38,6 @@ const server = app.listen(PORT, HOST, () => {
 process.on('SIGINT', () => {
   server.close(() => console.log('Shutting down server gracefully.'));
 });
-
 
 app.post('/auth/register/v2', (req, res, next) => {
   const { email, password, nameFirst, nameLast } = req.body;
