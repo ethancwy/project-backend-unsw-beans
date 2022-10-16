@@ -1,9 +1,6 @@
 import { authLoginV1, authRegisterV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
-import request, { HttpVerb } from 'sync-request';
 import { requestHelper } from './global';
-import { port, url } from './config.json';
-const SERVER_URL = `${url}:${port}`;
 
 // =================================================== //
 //                                                     //
@@ -128,7 +125,7 @@ describe('Testing for authLoginV2: ', () => {
     expect(authLoginV1('', 'Bob100')).toStrictEqual({ error: 'error' });
   });
 
-  // Invalid password
+  //  Invalid password
   test('Testing for invalid login password: Invalid password', () => {
     clearV1();
     authRegisterV1('p.file@gmail.com', 'Bob100',
