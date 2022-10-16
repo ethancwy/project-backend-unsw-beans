@@ -1,4 +1,5 @@
 import { getData } from './dataStore';
+import request from 'sync-request';
 
 const OK = 200;
 
@@ -100,7 +101,7 @@ export function getRequest(url: string, data: any) {
   const bodyObj = JSON.parse(res.getBody() as string);
   expect(res.statusCode).toBe(OK);
   return bodyObj;
-};
+}
 
 // Helper function delete request
 export function deleteRequest(url: string, data: any) {
@@ -114,4 +115,4 @@ export function deleteRequest(url: string, data: any) {
   const bodyObj = JSON.parse(res.getBody() as string);
   expect(res.statusCode).toBe(OK);
   return bodyObj;
-};
+}
