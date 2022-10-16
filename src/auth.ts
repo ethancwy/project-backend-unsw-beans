@@ -70,6 +70,26 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   return { authUserId: data.users[data.users.length - 1].uId, token: data.users[data.users.length - 1].token };
 }
 
+/**
+  * Allows a user to logout when provided a valid token
+  * returns nothing if valid
+  *
+  * @param {String} token - User enters a valid token
+  *
+  * @returns {{}} - Returns nothing if valid
+  * @returns {{error: 'error'}} - on error
+*/
+
+function authLogoutV1(token: String) {
+  const data = getData();
+
+  
+}
+
+
+
+
+
 // Helper function to generate a valid handle string
 function getHandleStr(nameFirst: string, nameLast: string) {
   // Given a first and last name
