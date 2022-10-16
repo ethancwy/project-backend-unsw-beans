@@ -1,7 +1,6 @@
-import { channelDetailsV1, channelJoinV1, channelInviteV1, channelMessagesV1 } from './channel';
-import { channelsCreateV1 } from './channels';
-import { authRegisterV1 } from './auth';
-import { clearV1 } from './other';
+import { postRequest, getRequest, deleteRequest } from './global'
+import { port, url } from './config.json';
+const SERVER_URL = `${url}:${port}`;
 
 describe('Testing that channelDetailsV1 works standard', () => {
   test('when given id, returns relevant info of channels if the user is apart of it', () => {
@@ -112,13 +111,33 @@ describe('Testing channelDetailsV1 edge cases', () => {
 
 describe('Testing channelJoinV1', () => {
   test('Normal joining procedures for public channel, and displaying via channelDetails', () => {
-    clearV1();
-    const channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    const channelIdPublic = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
+    deleteRequest(SERVER_URL + '/clear/v1', {});
+    const channelOwnerId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chocolate@bar.com',
+      password: 'g00dpassword',
+      nameFirst: 'Willy',
+      nameLast: 'Wonka',
+    });
+    const channelIdPublic = postRequest(SERVER_URL + '/channels/create/v2', {
+      token: channelOwnerId.token,
+      name: 'Boost',
+      isPublic: true,
+    });
+    const memberId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chicken@bar.com',
+      password: 'goodpassword',
+      nameFirst: 'Ronald',
+      nameLast: 'Mcdonald',
+    });
+    expect(postRequest(SERVER_URL + '/channel/join/v2', {
+      token: memberId.token,
+      channelId: channelIdPublic.channelId,
+    })).toStrictEqual({});
 
-    const memberId = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
-    expect(channelJoinV1(memberId.authUserId, channelIdPublic.channelId)).toStrictEqual({});
-    expect(channelDetailsV1(channelOwnerId.authUserId, channelIdPublic.channelId)).toStrictEqual({
+    expect(getRequest(SERVER_URL + '/channel/details/v2', {
+      token: channelOwnerId.token,
+      channelId: channelIdPublic.channelId,
+    })).toStrictEqual({
       name: 'Boost',
       isPublic: true,
       ownerMembers: [
@@ -150,14 +169,35 @@ describe('Testing channelJoinV1', () => {
   });
 
   test('Global owner joining private channel', () => {
-    clearV1();
-    const globalOwnerId = authRegisterV1('foo@bar.com', 'password', 'James', 'Charles');
+    deleteRequest(SERVER_URL + '/clear/v1', {});
+    const globalOwnerId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'foo@bar.com',
+      password: 'password',
+      nameFirst: 'James',
+      nameLast: 'Charles',
+    });
+    const channelOwnerId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chocolate@bar.com',
+      password: 'g00dpassword',
+      nameFirst: 'Willy',
+      nameLast: 'Wonka',
+    });
 
-    const channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    const channelIdPrivate = channelsCreateV1(channelOwnerId.authUserId, 'BoostPrivate', false);
+    const channelIdPrivate = postRequest(SERVER_URL + '/channels/create/v2', {
+      token: channelOwnerId.token,
+      name: 'BoostPrivate',
+      isPublic: false,
+    });
 
-    expect(channelJoinV1(globalOwnerId.authUserId, channelIdPrivate.channelId)).toStrictEqual({});
-    expect(channelDetailsV1(channelOwnerId.authUserId, channelIdPrivate.channelId)).toStrictEqual({
+    postRequest(SERVER_URL + '/channel/join/v2', {
+      token: globalOwnerId.token,
+      channelId: channelIdPrivate.channelId,
+    });
+
+    expect(getRequest(SERVER_URL + '/channel/details/v2', {
+      token: channelOwnerId.token,
+      channelId: channelIdPrivate.channelId,
+    })).toStrictEqual({
       name: 'BoostPrivate',
       isPublic: false,
       ownerMembers: [
@@ -191,43 +231,109 @@ describe('Testing channelJoinV1', () => {
 
 describe('Error checking channelJoinV1', () => {
   test('Testing invalid authUserId, channelId, and already a member', () => {
-    clearV1();
-    const channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    const channelId = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
-
-    const memberId = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
-    let invalidMemberId = memberId.authUserId + 1;
-    if (invalidMemberId === channelOwnerId.authUserId) {
-      invalidMemberId++;
+    deleteRequest(SERVER_URL + '/clear/v1', {});
+    const channelOwnerId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chocolate@bar.com',
+      password: 'g00dpassword',
+      nameFirst: 'Willy',
+      nameLast: 'Wonka',
+    });
+    const channelId = postRequest(SERVER_URL + '/channels/create/v2', {
+      token: channelOwnerId.token,
+      name: 'Boost',
+      isPublic: true,
+    });
+    const memberId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chicken@bar.com',
+      password: 'goodpassword',
+      nameFirst: 'Ronald',
+      nameLast: 'Mcdonald',
+    });
+    let invalidMemberToken = memberId.token + 'hi';
+    if (invalidMemberToken === channelOwnerId.token) {
+      invalidMemberToken += 'bye';
     }
     const invalidChannelId = channelId.channelId + 1;
-    expect(channelJoinV1(invalidMemberId, channelId.channelId)).toStrictEqual({ error: 'error' }); // invalid memberId
-    expect(channelJoinV1(memberId.authUserId, invalidChannelId)).toStrictEqual({ error: 'error' }); // invalid channelId
+    expect(postRequest(SERVER_URL + '/channel/join/v2', {
+      token: invalidMemberToken,
+      channelId: channelId.channelId,
+    })).toStrictEqual({ error: 'error' }); // invalid memberToken
+    expect(postRequest(SERVER_URL + '/channel/join/v2', {
+      token: memberId.token,
+      channelId: invalidChannelId,
+    })).toStrictEqual({ error: 'error' }); // invalid channelId
 
     // Testing already a member
-    expect(channelJoinV1(memberId.authUserId, channelId.channelId)).toStrictEqual({});
-    expect(channelJoinV1(memberId.authUserId, channelId.channelId)).toStrictEqual({ error: 'error' });
+    postRequest(SERVER_URL + '/channel/join/v2', {
+      token: memberId.token,
+      channelId: channelId.channelId,
+    }); // join channel
+    expect(postRequest(SERVER_URL + '/channel/join/v2', {
+      token: memberId.token,
+      channelId: channelId.channelId,
+    })).toStrictEqual({ error: 'error' }); // already a member
   });
 
   test('Testing normal user cannot join private channel', () => {
-    clearV1();
-    const channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    const channelId = channelsCreateV1(channelOwnerId.authUserId, 'BoostPrivate', false); // private channel
+    deleteRequest(SERVER_URL + '/clear/v1', {});
+    const channelOwnerId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chocolate@bar.com',
+      password: 'g00dpassword',
+      nameFirst: 'Willy',
+      nameLast: 'Wonka',
+    });
+    const channelIdPrivate = postRequest(SERVER_URL + '/channels/create/v2', {
+      token: channelOwnerId.token,
+      name: 'BoostPrivate',
+      isPublic: false,
+    }); // private channel
 
-    const memberId = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
-    expect(channelJoinV1(memberId.authUserId, channelId.channelId)).toStrictEqual({ error: 'error' }); // can't join private channel
+    const memberId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chicken@bar.com',
+      password: 'goodpassword',
+      nameFirst: 'Ronald',
+      nameLast: 'Mcdonald',
+    });
+
+    expect(postRequest(SERVER_URL + '/channel/join/v2', {
+      token: memberId.token,
+      channelId: channelIdPrivate.channelId,
+    })).toStrictEqual({ error: 'error' }); // norma user cannot join private channel
   });
 });
 
 describe('Testing channelInviteV1', () => {
   test('Testing normal invitation procedures with public channel', () => {
-    clearV1();
-    const channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    const channelId = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
+    deleteRequest(SERVER_URL + '/clear/v1', {});
+    const channelOwnerId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chocolate@bar.com',
+      password: 'g00dpassword',
+      nameFirst: 'Willy',
+      nameLast: 'Wonka',
+    });
+    const channelId = postRequest(SERVER_URL + '/channels/create/v2', {
+      token: channelOwnerId.token,
+      name: 'Boost',
+      isPublic: true,
+    });
 
-    const memberId = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald'); // normal user
-    expect(channelInviteV1(channelOwnerId.authUserId, channelId.channelId, memberId.authUserId)).toStrictEqual({});
-    expect(channelDetailsV1(channelOwnerId.authUserId, channelId.channelId)).toStrictEqual({
+    const memberId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chicken@bar.com',
+      password: 'goodpassword',
+      nameFirst: 'Ronald',
+      nameLast: 'Mcdonald',
+    }); // normal user
+
+    expect(postRequest(SERVER_URL + '/channel/invite/v2', {
+      token: channelOwnerId.token,
+      channelId: channelId.channelId,
+      uId: memberId.authUserId,
+    })).toStrictEqual({});
+
+    expect(getRequest(SERVER_URL + '/channel/details/v2', {
+      token: channelOwnerId.token,
+      channelId: channelId.channelId,
+    })).toStrictEqual({
       name: 'Boost',
       isPublic: true,
       ownerMembers: [
@@ -261,61 +367,137 @@ describe('Testing channelInviteV1', () => {
 
 describe('Error checking channelInviteV1', () => {
   test('Testing invalid authUserId, channelId, and uId, and already a member', () => {
-    clearV1();
-    const channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    const channelId = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
-    const memberId = authRegisterV1('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+    deleteRequest(SERVER_URL + '/clear/v1', {});
+    const channelOwnerId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chocolate@bar.com',
+      password: 'g00dpassword',
+      nameFirst: 'Willy',
+      nameLast: 'Wonka',
+    });
+    const channelId = postRequest(SERVER_URL + '/channels/create/v2', {
+      token: channelOwnerId.token,
+      name: 'Boost',
+      isPublic: true,
+    });
+    const memberId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chicken@bar.com',
+      password: 'goodpassword',
+      nameFirst: 'Ronald',
+      nameLast: 'Mcdonald',
+    });
 
     let invalidMemberId = memberId.authUserId + 1;
     if (invalidMemberId === channelOwnerId.authUserId) {
       invalidMemberId++;
     }
+
+    let invalidToken = memberId.token + 'hi';
+    if (invalidToken === channelOwnerId.token) {
+      invalidToken += 'bye';
+    }
+
     const invalidChannelId = channelId.channelId + 1;
 
-    expect(channelInviteV1(invalidMemberId, channelId.channelId, memberId.authUserId)).toStrictEqual({ error: 'error' });
-    expect(channelInviteV1(channelOwnerId.authUserId, invalidChannelId, memberId.authUserId)).toStrictEqual({ error: 'error' });
-    expect(channelInviteV1(channelOwnerId.authUserId, channelId.channelId, invalidMemberId)).toStrictEqual({ error: 'error' });
+    expect(postRequest(SERVER_URL + '/channel/invite/v2', {
+      token: invalidToken,
+      channelId: channelId.channelId,
+      uId: memberId.authUserId,
+    })).toStrictEqual({ error: 'error' });
 
-    channelInviteV1(channelOwnerId.authUserId, channelId.channelId, memberId.authUserId); // channel owner invites normal user
-    expect(channelInviteV1(channelOwnerId.authUserId, channelId.channelId, memberId.authUserId)).toStrictEqual({ error: 'error' }); // invites again
+    expect(postRequest(SERVER_URL + '/channel/invite/v2', {
+      token: channelOwnerId.token,
+      channelId: invalidChannelId,
+      uId: memberId.authUserId,
+    })).toStrictEqual({ error: 'error' });
+
+    expect(postRequest(SERVER_URL + '/channel/invite/v2', {
+      token: channelOwnerId.token,
+      channelId: channelId.channelId,
+      uId: invalidMemberId,
+    })).toStrictEqual({ error: 'error' });
+
+    postRequest(SERVER_URL + '/channel/invite/v2', {
+      token: channelOwnerId.token,
+      channelId: channelId.channelId,
+      uId: memberId.authUserId,
+    }); // channel owner invites normal user
+
+    expect(postRequest(SERVER_URL + '/channel/invite/v2', {
+      token: channelOwnerId.token,
+      channelId: channelId.channelId,
+      uId: memberId.authUserId,
+    })).toStrictEqual({ error: 'error' });  // invites again
   });
 
-  test('Non-member inviting a non-member', () => {
-    clearV1();
-    const channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    const channelId = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
+  test('Non-member inviting a non-member and inviting himself', () => {
+    deleteRequest(SERVER_URL + '/clear/v1', {});
+    const channelOwnerId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chocolate@bar.com',
+      password: 'g00dpassword',
+      nameFirst: 'Willy',
+      nameLast: 'Wonka',
+    });
+    const channelId = postRequest(SERVER_URL + '/channels/create/v2', {
+      token: channelOwnerId.token,
+      name: 'Boost',
+      isPublic: true,
+    });
 
-    const nonMember1 = authRegisterV1('ethan@bar.com', 'okpassword', 'Ethan', 'Chew');
-    const nonMember2 = authRegisterV1('john@bar.com', 'decentpassword', 'John', 'Wick');
-    expect(channelInviteV1(nonMember1.authUserId, channelId.channelId, nonMember2.authUserId)).toStrictEqual({ error: 'error' });
+    const nonMember1 = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chicken@bar.com',
+      password: 'goodpassword',
+      nameFirst: 'Ronald',
+      nameLast: 'Mcdonald',
+    });
+    const nonMember2 = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'john@bar.com',
+      password: 'decentpassword',
+      nameFirst: 'John',
+      nameLast: 'Wick',
+    });
+
+    expect(postRequest(SERVER_URL + '/channel/invite/v2', {
+      token: nonMember1.token,
+      channelId: channelId.channelId,
+      uId: nonMember2.authUserId,
+    })).toStrictEqual({ error: 'error' });
+
+    expect(postRequest(SERVER_URL + '/channel/invite/v2', {
+      token: nonMember1.token,
+      channelId: channelId.channelId,
+      uId: nonMember1.authUserId,
+    })).toStrictEqual({ error: 'error' });
+
   });
 
-  test('Non-member inviting itself', () => {
-    clearV1();
-    const channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    const channelId = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
+  test('globalowner(nonmember) inviting non-member and itself', () => {
+    deleteRequest(SERVER_URL + '/clear/v1', {});
+    const globalOwnerId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'foo@bar.com',
+      password: 'password',
+      nameFirst: 'James',
+      nameLast: 'Charles',
+    });
+    const channelOwnerId = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chocolate@bar.com',
+      password: 'g00dpassword',
+      nameFirst: 'Willy',
+      nameLast: 'Wonka',
+    });
+    const channelId = postRequest(SERVER_URL + '/channels/create/v2', {
+      token: channelOwnerId.token,
+      name: 'Boost',
+      isPublic: true,
+    });
 
-    const nonMember1 = authRegisterV1('ethan@bar.com', 'okpassword', 'Ethan', 'Chew');
-    expect(channelInviteV1(nonMember1.authUserId, channelId.channelId, nonMember1.authUserId)).toStrictEqual({ error: 'error' });
-  });
-
-  test('globalowner(nonmember) inviting non-member', () => {
-    clearV1();
-    const globalowner = authRegisterV1('ahahahahahahaha@bar.com', 'g00dsdadpassword', 'itsme', 'mario');
-    const channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    const channelId = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
-
-    const nonMember1 = authRegisterV1('ethan@bar.com', 'okpassword', 'Ethan', 'Chew');
-    expect(channelInviteV1(globalowner.authUserId, channelId.channelId, nonMember1.authUserId)).toStrictEqual({ error: 'error' });
-  });
-
-  test('globalowner(nonmember) inviting itself', () => {
-    clearV1();
-    const globalowner = authRegisterV1('ahahahahahahaha@bar.com', 'g00dsdadpassword', 'itsme', 'mario');
-    const channelOwnerId = authRegisterV1('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    const channelId = channelsCreateV1(channelOwnerId.authUserId, 'Boost', true);
-
-    expect(channelInviteV1(globalowner.authUserId, channelId.channelId, globalowner.authUserId)).toStrictEqual({ error: 'error' });
+    const nonMember1 = postRequest(SERVER_URL + '/auth/register/v2', {
+      email: 'chicken@bar.com',
+      password: 'goodpassword',
+      nameFirst: 'Ronald',
+      nameLast: 'Mcdonald',
+    });
+    expect(channelInviteV1(globalOwnerId.token, channelId.channelId, nonMember1.authUserId)).toStrictEqual({ error: 'error' });
+    expect(channelInviteV1(globalOwnerId.token, channelId.channelId, globalOwnerId.authUserId)).toStrictEqual({ error: 'error' });
   });
 });
 
