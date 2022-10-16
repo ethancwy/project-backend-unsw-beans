@@ -1,4 +1,7 @@
 import { getData } from './dataStore';
+import request from 'sync-request';
+
+const OK = 200;
 
 export type authUserId = { authUserId: number };
 
@@ -70,4 +73,46 @@ export function isGlobalOwner(authUserId: number) {
     }
   }
   return false;
+}
+
+// Helper function post request
+export function postRequest(url: string, data: any) {
+  const res = request(
+    'POST',
+    url,
+    {
+      json: data,
+    }
+  );
+  const bodyObj = JSON.parse(res.getBody() as string);
+  expect(res.statusCode).toBe(OK);
+  return bodyObj;
+}
+
+// Helper function get request
+export function getRequest(url: string, data: any) {
+  const res = request(
+    'GET',
+    url,
+    {
+      qs: data,
+    }
+  );
+  const bodyObj = JSON.parse(res.getBody() as string);
+  expect(res.statusCode).toBe(OK);
+  return bodyObj;
+}
+
+// Helper function delete request
+export function deleteRequest(url: string, data: any) {
+  const res = request(
+    'DELETE',
+    url,
+    {
+      qs: data,
+    }
+  );
+  const bodyObj = JSON.parse(res.getBody() as string);
+  expect(res.statusCode).toBe(OK);
+  return bodyObj;
 }
