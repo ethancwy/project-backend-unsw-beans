@@ -89,6 +89,28 @@ export function isGlobalOwner(authUserId: number) {
   return false;
 }
 
+export function isValidToken(token: string) {
+  const data = getData();
+  let found = false;
+  for (const user of data.users) {
+    if (user.token.includes(token)) {
+      found = true;
+    }
+  }
+  return found;
+}
+
+export function getUserId(token: string) {
+  const data = getData();
+  let userId = 0;
+  for (const user of data.users) {
+    if (user.token.includes(token)) {
+      userId = user.uId;
+    }
+  }
+  return userId;
+}
+
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //
 
 export function requestHelper(method: HttpVerb, path: string, payload: object) {
