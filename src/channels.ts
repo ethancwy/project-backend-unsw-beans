@@ -54,8 +54,14 @@ function channelsCreateV2(token: string, name: string, isPublic: boolean) {
   *
 */
 
-function channelsListV2(authUserId: number) {
+function channelsListV2(token: string) {
   const data = getData();
+
+  if (!isValidToken(token)) {
+    return { error: 'error' };
+  }
+
+  const authUserId = getUserId(token);
 
   if (!isValidUser(authUserId)) {
     return { error: 'error' };
@@ -92,8 +98,14 @@ function channelsListV2(authUserId: number) {
  *
 */
 
-function channelsListAllV2(authUserId: number) {
+function channelsListAllV2(token: string) {
   const data = getData();
+
+  if (!isValidToken(token)) {
+    return { error: 'error' };
+  }
+
+  const authUserId = getUserId(token);
 
   if (!isValidUser(authUserId)) {
     return { error: 'error' };
@@ -102,12 +114,10 @@ function channelsListAllV2(authUserId: number) {
   const array = [];
 
   for (const ch of data.channels) {
-    if (!isNaN(ch.channelId)) {
-      array.push({
-        channelId: ch.channelId,
-        name: ch.name,
-      });
-    }
+    array.push({
+      channelId: ch.channelId,
+      name: ch.name,
+    });
   }
 
   return {

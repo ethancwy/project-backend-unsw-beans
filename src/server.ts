@@ -4,10 +4,10 @@ import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
-import { channelsCreateV2 } from './channels';
+import { channelsCreateV2, channelsListV2, channelsListAllV2 } from './channels';
 import { clearV1 } from './other';
 import { channelJoinV2, channelInviteV2, channelDetailsV2 } from './channel';
-import { userProfileV2 } from './users'
+import { userProfileV2 } from './users';
 
 // Set up web app
 const app = express();
@@ -44,6 +44,16 @@ app.post('/channels/create/v2', (req: Request, res: Response) => {
   return res.json(channelsCreateV2(token, name, isPublic));
 });
 
+app.get('/channels/list/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  return res.json(channelsListV2(token));
+});
+
+app.get('/channels/listAll/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  return res.json(channelsListAllV2(token));
+});
+
 app.post('/auth/logout/v1', (req: Request, res: Response) => {
   const { token } = req.body;
   return res.json(authLogoutV1(token));
@@ -70,7 +80,8 @@ app.get('/channel/details/v2', (req: Request, res: Response) => {
 });
 
 app.get('/user/profile/v2', (req: Request, res: Response) => {
-  const { token, uId } = req.query as string;
+  const token = req.query.token as string;
+  const uId = parseInt(req.query.uId as string);
   return res.json(userProfileV2(token, uId));
 });
 

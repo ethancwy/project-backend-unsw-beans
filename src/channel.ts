@@ -211,7 +211,7 @@ function channelDetailsV2(token: string, channelId: number) {
 
   // checking if token is valid
   let isUser = false;
-  const uid = 0;
+  let uid = 0;
   for (const user of data.users) {
     if (user.tokens.includes(token)) {
       isUser = true;
@@ -222,7 +222,6 @@ function channelDetailsV2(token: string, channelId: number) {
   if (isUser === false) {
     return { error: 'error' };
   }
-
 
   // checking if channelId is valid
   let channelCheck = false;
@@ -287,7 +286,6 @@ function channelDetailsV2(token: string, channelId: number) {
     allMembers: arrayMemb,
   };
 }
-
 
 export {
   channelJoinV2,

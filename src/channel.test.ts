@@ -1,7 +1,7 @@
 import {
   authRegister, channelsCreate, channelDetails,
-  channelJoin, channelInvite, clear, channelMessages
-} from './global'
+  channelJoin, channelInvite, clear
+} from './global';
 
 describe('Testing that channelDetailsV2 works standard', () => {
   test('when given id, returns relevant info of channels if the user is apart of it', () => {
@@ -81,7 +81,6 @@ describe('Testing channelDetailsV2 edge cases', () => {
     clear();
     const channelOwnerPrivId = authRegister('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
     const channelIdPriv = channelsCreate(channelOwnerPrivId.token, 'Priv', false);
-    let fakeUserId = channelOwnerPrivId.authUserId + 5;
 
     let fakeToken = channelOwnerPrivId.token + 'hi';
     if (fakeToken === channelOwnerPrivId.token) {
@@ -101,9 +100,8 @@ describe('Testing channelDetailsV2 edge cases', () => {
   });
 });
 
-
-//===================================== channelJoin =====================================//
-describe('Testing channelJoinV1', () => {
+// channelJoin
+describe('Testing channelJoinV2', () => {
   test('Normal joining procedures for public channel, and displaying via channelDetails', () => {
     clear();
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
@@ -252,7 +250,7 @@ describe('Testing channelInviteV2', () => {
   });
 });
 
-describe('Error checking channelInviteV1', () => {
+describe('Error checking channelInviteV2', () => {
   test('Testing invalid token, channelId, and uId, and already a member', () => {
     clear();
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
@@ -286,7 +284,7 @@ describe('Error checking channelInviteV1', () => {
 
     const nonMember1 = authRegister('ethan@bar.com', 'okpassword', 'Ethan', 'Chew');
     const nonMember2 = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
-    expect(channelInvite(nonMember1.token, channelId.channelId, nonMember2.authUserId)).toStrictEqual({ error: 'error' })
+    expect(channelInvite(nonMember1.token, channelId.channelId, nonMember2.authUserId)).toStrictEqual({ error: 'error' });
     expect(channelInvite(nonMember1.token, channelId.channelId, nonMember1.authUserId)).toStrictEqual({ error: 'error' });
   });
 

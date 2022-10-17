@@ -14,7 +14,7 @@ import { isValidToken } from './global';
  * @returns {error} - return error object in invalid cases
 */
 
-function userProfileV2(token: number, uId: number) {
+function userProfileV2(token: string, uId: number) {
   const data = getData();
 
   if (!isValidToken(token)) {
