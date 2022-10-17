@@ -47,6 +47,11 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
   return res.json(channelsListV2(token));
 });
 
+app.get('/channels/listAll/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  return res.json(channelsListV2(token));
+});
+
 app.post('/auth/logout/v1', (req: Request, res: Response) => {
   const { token } = req.body;
   return res.json(authLogoutV1(token));
