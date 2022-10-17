@@ -1,6 +1,6 @@
 import {
   authRegister, channelsCreate, channelDetails,
-  channelJoin, channelInvite, clear
+  channelJoin, channelInvite, clear, channelLeave
 } from './global';
 
 describe('Testing that channelDetailsV2 works standard', () => {
@@ -297,5 +297,50 @@ describe('Error checking channelInviteV2', () => {
     const nonMember1 = authRegister('ethan@bar.com', 'okpassword', 'Ethan', 'Chew');
     expect(channelInvite(globalowner.token, channelId.channelId, nonMember1.authUserId)).toStrictEqual({ error: 'error' });
     expect(channelInvite(globalowner.token, channelId.channelId, globalowner.authUserId)).toStrictEqual({ error: 'error' });
+  });
+});
+
+describe('Testing channelLeaveV1 success', () => {
+  test('Testing channel owner leaving channel, and channel remaining', () => {
+    clear();
+    const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const memberId = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+
+    const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
+    channelJoin(memberId.token, channelId.channelId);
+
+    expect(channelLeave(channelOwnerId.token, channelId.channelId)).toStrictEqual({});
+    expect(channelDetails(channelOwnerId.token, channelId.channelId)).toStrictEqual({
+      name: 'Boost',
+      isPublic: true,
+      ownerMembers: [],
+      allMembers: [
+        {
+          uId: memberId.authUserId,
+          email: 'chicken@bar.com',
+          nameFirst: 'Ronald',
+          nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        }
+      ]
+    });
+  });
+});
+
+describe('Error checking channelLeaveV1', () => {
+  test('Invalid channelId & token', () => {
+    const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
+
+    const nonMember = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
+
+    const invalidChannelId = channelId.channelId + 1;
+    let invalidToken = channelOwnerId.token + 'hi';
+    if (invalidToken === nonMember.token) {
+      invalidToken += 'bye';
+    }
+    expect(channelLeave(channelOwnerId.token, invalidChannelId)).toStrictEqual({ error: 'error' }); // invalid channel
+    expect(channelLeave(invalidToken, channelId.channelId)).toStrictEqual({ error: 'error' });  // invalid token
+    expect(channelLeave(nonMember.token, channelId.channelId)).toStrictEqual({ error: 'error' });  // nonMember
   });
 });

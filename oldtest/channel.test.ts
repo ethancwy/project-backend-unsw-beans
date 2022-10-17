@@ -83,11 +83,14 @@ describe('Testing channelDetailsV2 edge cases', () => {
   });
 
   test('Testing invalid token', () => {
-    clearV1();
+    clear();
     const channelOwnerPrivId = authRegister('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
     const channelIdPriv = channelsCreate(channelOwnerPrivId.token, 'Priv', false);
-    let fakeUserId = channelOwnerPrivId.authUserId + 5;
-    fakeToken = 'sdfgsjhfgehfjsdf';
+
+    let fakeToken = channelOwnerPrivId.token + 'hi';
+    if (fakeToken === channelOwnerPrivId.token) {
+      fakeToken += 'bye';
+    }
 
     expect(channelDetails(fakeToken, channelIdPriv.channelId)).toEqual({ error: 'error' });
   });
@@ -102,9 +105,8 @@ describe('Testing channelDetailsV2 edge cases', () => {
   });
 });
 
-
-//===================================== channelJoin =====================================//
-describe('Testing channelJoinV1', () => {
+// channelJoin
+describe('Testing channelJoinV2', () => {
   test('Normal joining procedures for public channel, and displaying via channelDetails', () => {
     clear();
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
@@ -253,7 +255,7 @@ describe('Testing channelInviteV2', () => {
   });
 });
 
-describe('Error checking channelInviteV1', () => {
+describe('Error checking channelInviteV2', () => {
   test('Testing invalid token, channelId, and uId, and already a member', () => {
     clear();
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
@@ -281,18 +283,18 @@ describe('Error checking channelInviteV1', () => {
   });
 
   test('Non-member inviting a non-member, and inviting itself', () => {
-    clearV1();
+    clear();
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
 
     const nonMember1 = authRegister('ethan@bar.com', 'okpassword', 'Ethan', 'Chew');
     const nonMember2 = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
-    expect(channelInvite(nonMember1.token, channelId.channelId, nonMember2.authUserId)).toStrictEqual({ error: 'error' })
+    expect(channelInvite(nonMember1.token, channelId.channelId, nonMember2.authUserId)).toStrictEqual({ error: 'error' });
     expect(channelInvite(nonMember1.token, channelId.channelId, nonMember1.authUserId)).toStrictEqual({ error: 'error' });
   });
 
   test('globalowner(nonmember) inviting non-member, and inviting itself', () => {
-    clearV1();
+    clear();
     const globalowner = authRegister('ahahahahahahaha@bar.com', 'g00dsdadpassword', 'itsme', 'mario');
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
