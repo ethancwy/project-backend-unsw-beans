@@ -1,12 +1,7 @@
-import { channelDetailsV2, channelJoinV2, channelInviteV2, channelMessagesV2 } from './channel';
-import { channelsCreateV2 } from './channels';
-import { authRegisterV2 } from './auth';
-import { clearV1 } from './other';
-
 import {
   authRegister, channelsCreate, channelDetails,
   channelJoin, channelInvite, clear
-} from './global'
+} from './global';
 
 describe('Testing that channelDetailsV2 works standard', () => {
   test('when given id, returns relevant info of channels if the user is apart of it', () => {
@@ -83,11 +78,14 @@ describe('Testing channelDetailsV2 edge cases', () => {
   });
 
   test('Testing invalid token', () => {
-    clearV1();
+    clear();
     const channelOwnerPrivId = authRegister('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
     const channelIdPriv = channelsCreate(channelOwnerPrivId.token, 'Priv', false);
-    let fakeUserId = channelOwnerPrivId.authUserId + 5;
-    fakeToken = 'sdfgsjhfgehfjsdf';
+
+    let fakeToken = channelOwnerPrivId.token + 'hi';
+    if (fakeToken === channelOwnerPrivId.token) {
+      fakeToken += 'bye';
+    }
 
     expect(channelDetails(fakeToken, channelIdPriv.channelId)).toEqual({ error: 'error' });
   });
@@ -102,9 +100,8 @@ describe('Testing channelDetailsV2 edge cases', () => {
   });
 });
 
-
-//===================================== channelJoin =====================================//
-describe('Testing channelJoinV1', () => {
+// channelJoin
+describe('Testing channelJoinV2', () => {
   test('Normal joining procedures for public channel, and displaying via channelDetails', () => {
     clear();
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
@@ -253,7 +250,7 @@ describe('Testing channelInviteV2', () => {
   });
 });
 
-describe('Error checking channelInviteV1', () => {
+describe('Error checking channelInviteV2', () => {
   test('Testing invalid token, channelId, and uId, and already a member', () => {
     clear();
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
@@ -281,18 +278,18 @@ describe('Error checking channelInviteV1', () => {
   });
 
   test('Non-member inviting a non-member, and inviting itself', () => {
-    clearV1();
+    clear();
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
 
     const nonMember1 = authRegister('ethan@bar.com', 'okpassword', 'Ethan', 'Chew');
     const nonMember2 = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
-    expect(channelInvite(nonMember1.token, channelId.channelId, nonMember2.authUserId)).toStrictEqual({ error: 'error' })
+    expect(channelInvite(nonMember1.token, channelId.channelId, nonMember2.authUserId)).toStrictEqual({ error: 'error' });
     expect(channelInvite(nonMember1.token, channelId.channelId, nonMember1.authUserId)).toStrictEqual({ error: 'error' });
   });
 
   test('globalowner(nonmember) inviting non-member, and inviting itself', () => {
-    clearV1();
+    clear();
     const globalowner = authRegister('ahahahahahahaha@bar.com', 'g00dsdadpassword', 'itsme', 'mario');
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
@@ -301,75 +298,4 @@ describe('Error checking channelInviteV1', () => {
     expect(channelInvite(globalowner.token, channelId.channelId, nonMember1.authUserId)).toStrictEqual({ error: 'error' });
     expect(channelInvite(globalowner.token, channelId.channelId, globalowner.authUserId)).toStrictEqual({ error: 'error' });
   });
-});
-
-//===================================== channelMessages =====================================//
-describe('test block for channelMessagesV2', () => {
-  test('invalid input(invalid user and channel)', () => {
-    clearV1();
-
-    const personId = authRegisterV2('ethanchew@mail.com', 'paswword123', 'ethan', 'chew');
-    const channelId = channelsCreateV2(personId.authUserId, 'achannel', true);
-
-    clearV1();
-
-    expect(channelMessagesV2(personId.authUserId, channelId.channelId, 0)).toStrictEqual({ error: 'error' });
-  });
-
-  test('invalid input(user not in channel)', () => {
-    clearV1();
-
-    const personId = authRegisterV2('ethanchew@mail.com', 'paswword123', 'ethan', 'chew');
-    const person2 = authRegisterV2('donaldduck@mail.com', 'duck4life', 'donald', 'duck');
-    const channelId = channelsCreateV2(personId.authUserId, 'achannel', true);
-
-    expect(channelMessagesV2(person2.authUserId, channelId.channelId, 0)).toStrictEqual({ error: 'error' });
-  });
-
-  test('testing for invalid input(start > amount)', () => {
-    clearV1();
-
-    const personId = authRegisterV2('tony@mail.com', 'tonytony1', 'tony', 'yeung');
-    const channelId = channelsCreateV2(personId.authUserId, 'tonyschannel', true);
-
-    expect(channelMessagesV2(personId.authUserId, channelId.channelId, 1)).toStrictEqual({
-      error: 'error'
-    });
-  });
-
-  test('testing for invalid input(start < 0)', () => {
-    clearV1();
-
-    const personId = authRegisterV2('tony@mail.com', 'tonytony1', 'tony', 'yeung');
-    const channelId = channelsCreateV2(personId.authUserId, 'tonyschannel', true);
-
-    expect(channelMessagesV2(personId.authUserId, channelId.channelId, -10)).toStrictEqual({
-      error: 'error'
-    });
-  });
-
-  test('testing for valid input(empty messages)', () => {
-    clearV1();
-
-    const personId = authRegisterV2('tony@mail.com', 'tonytony1', 'tony', 'yeung');
-    const channelId = channelsCreateV2(personId.authUserId, 'tonyschannel', true);
-
-    expect(channelMessagesV2(personId.authUserId, channelId.channelId, 0)).toStrictEqual({
-      messages: [],
-      start: 0,
-      end: -1,
-    });
-  });
-});
-
-// =================================================== //
-//                                                     //
-//              Iteration 2 new tests                  //
-//                                                     //
-// ==================================================  //
-
-//===================================== channelLeave =====================================//
-describe('channelLeave success', () => {
-
-
 });

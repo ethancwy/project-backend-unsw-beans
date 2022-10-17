@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { isValidUser, isValidChannel, isGlobalOwner } from './global';
+import { isValidUser, isValidChannel, isGlobalOwner, isValidToken, getUserId } from './global';
 
 /**
   * Given a channelId of a channel that the authorised user can join,
@@ -12,12 +12,14 @@ import { isValidUser, isValidChannel, isGlobalOwner } from './global';
   * @returns {error} - return error object in invalid cases
 */
 
-function channelJoinV2(authUserId: number, channelId: number) {
+function channelJoinV2(token: string, channelId: number) {
   const data = getData();
 
-  if (!isValidUser(authUserId)) {
+  if (!isValidToken(token)) {
     return { error: 'error' };
   }
+
+  const authUserId = getUserId(token);
 
   for (const channel of data.channels) {
     if (channelId === channel.channelId) {
@@ -52,12 +54,14 @@ function channelJoinV2(authUserId: number, channelId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelInviteV2(authUserId: number, channelId: number, uId: number) {
+function channelInviteV2(token: string, channelId: number, uId: number) {
   const data = getData();
 
-  if (!isValidUser(authUserId) || !isValidUser(uId) || !isValidChannel(channelId)) {
+  if (!isValidToken(token) || !isValidUser(uId) || !isValidChannel(channelId)) {
     return { error: 'error' };
   }
+
+  const authUserId = getUserId(token);
 
   let authMember = false;
   for (const channel of data.channels) {
@@ -202,42 +206,50 @@ function channelMessagesV2(authUserId: number, channelId: number, start: number)
   * @returns {error} - return error object in invalid cases
 */
 
-function channelDetailsV2(authUserId: number, channelId: number) {
+function channelDetailsV2(token: string, channelId: number) {
   const data = getData();
 
-  // checking if authUserId is valid
-  if (!isValidUser(authUserId)) {
+  // checking if token is valid
+  let isUser = false;
+  let uid = 0;
+  for (const user of data.users) {
+    if (user.tokens.includes(token)) {
+      isUser = true;
+      uid = user.uId;
+    }
+  }
+
+  if (isUser === false) {
     return { error: 'error' };
   }
 
   // checking if channelId is valid
-  let channelCheck = 0;
+  let channelCheck = false;
   let channelPos = 0;
   for (const chans in data.channels) {
     if (data.channels[chans].channelId === channelId) {
-      channelCheck = 1;
+      channelCheck = true;
       channelPos = parseInt(chans);
     }
   }
 
-  if (channelCheck === 0) {
+  if (channelCheck === false) {
     return { error: 'error' };
   }
 
   // checking if authUserId is in the channel
-  let userCheck = 0;
+  let userCheck = false;
   for (const membs of data.channels[channelPos].memberIds) {
-    if (membs === authUserId) {
-      userCheck = 1;
+    if (membs === uid) {
+      userCheck = true;
     }
   }
 
-  if (userCheck === 0) {
+  if (userCheck === false) {
     return { error: 'error' };
   }
 
   const arrayOwners = [];
-
   for (const membs of data.channels[channelPos].ownerIds) {
     for (const users of data.users) {
       if (users.uId === membs) {
@@ -253,7 +265,6 @@ function channelDetailsV2(authUserId: number, channelId: number) {
   }
 
   const arrayMemb = [];
-
   for (const membs of data.channels[channelPos].memberIds) {
     for (const users of data.users) {
       if (users.uId === membs) {

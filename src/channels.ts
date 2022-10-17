@@ -23,10 +23,6 @@ function channelsCreateV2(token: string, name: string, isPublic: boolean) {
 
   const authUserId = getUserId(token);
 
-  if (!isValidUser(authUserId)) {
-    return { error: 'error' };
-  }
-
   // checking if name is valid
   if (name.length > 20 || name.length < 1) { return { error: 'error' }; }
 

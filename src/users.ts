@@ -1,5 +1,5 @@
 import { getData } from './dataStore';
-import { isValidUser } from './global';
+import { isValidToken } from './global';
 
 /**
   * For a valid user, returns information about their user ID, email,
@@ -14,10 +14,10 @@ import { isValidUser } from './global';
  * @returns {error} - return error object in invalid cases
 */
 
-function userProfileV2(authUserId: number, uId: number) {
+function userProfileV2(token: string, uId: number) {
   const data = getData();
 
-  if (!isValidUser(authUserId)) {
+  if (!isValidToken(token)) {
     return { error: 'error' };
   }
 
