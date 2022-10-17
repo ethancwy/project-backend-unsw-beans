@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { isValidUser, getUserId, isValidToken } from './global';
+import { isValidUser, getUserId } from './global';
 
 /**
   *
@@ -17,11 +17,11 @@ import { isValidUser, getUserId, isValidToken } from './global';
 function channelsCreateV2(token: string, name: string, isPublic: boolean) {
   const data = getData();
 
-  if (!isValidToken(token)) {
+  const authUserId = getUserId(token);
+
+  if (!isValidUser(authUserId)) {
     return { error: 'error' };
   }
-
-  const authUserId = getUserId(token);
 
   // checking if name is valid
   if (name.length > 20 || name.length < 1) { return { error: 'error' }; }

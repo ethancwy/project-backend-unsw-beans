@@ -6,8 +6,6 @@ import cors from 'cors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { channelsCreateV2 } from './channels';
 import { clearV1 } from './other';
-import { channelJoinV2, channelInviteV2, channelDetailsV2 } from './channel';
-import { userProfileV2 } from './users'
 
 // Set up web app
 const app = express();
@@ -50,28 +48,7 @@ app.post('/auth/logout/v1', (req: Request, res: Response) => {
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
-  return res.json(clearV1());
-});
-
-app.post('/channel/join/v2', (req: Request, res: Response) => {
-  const { token, channelId } = req.body;
-  return res.json(channelJoinV2(token, channelId));
-});
-
-app.post('/channel/invite/v2', (req: Request, res: Response) => {
-  const { token, channelId, uId } = req.body;
-  return res.json(channelInviteV2(token, channelId, uId));
-});
-
-app.get('/channel/details/v2', (req: Request, res: Response) => {
-  const token = req.query.token as string;
-  const channelId = parseInt(req.query.channelId as string);
-  return res.json(channelDetailsV2(token, channelId));
-});
-
-app.get('/user/profile/v2', (req: Request, res: Response) => {
-  const { token, uId } = req.query as string;
-  return res.json(userProfileV2(token, uId));
+  res.json(clearV1());
 });
 
 // for logging errors (print to terminal)
