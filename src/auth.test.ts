@@ -1,104 +1,155 @@
-import { authLoginV1, authRegisterV1 } from './auth';
+import { authLogin, authRegister, authLogout, clear } from './global';
 
-describe('Testing for authRegisterV1: ', () => {
+// =================================================== //
+//                                                     //
+//              AUTH FUNCTION TESTS                    //
+//                                                     //
+// ==================================================  //
+
+describe('Testing for authRegisterV2: ', () => {
   // Valid register
   test('Testing for valid register', () => {
-    expect(authRegisterV1('p.file@gmail.com', 'Bob100', 'Peter', 'File'))
+    expect(authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File'))
       .toStrictEqual(
         {
-          authUserId: expect.any(Number)
+          authUserId: expect.any(Number),
+          token: expect.any(String)
         });
   });
 
   // Invalid email
   test('Testing for invalid register: Invalid email', () => {
-    expect(authRegisterV1('Invalid email', 'Bob100', 'Peter', 'File'))
+    expect(authRegister('Invalid email', 'Bob100', 'Peter', 'File'))
       .toStrictEqual({ error: 'error' });
   });
 
   test('Testing for invalid register: Invalid email', () => {
-    expect(authRegisterV1('', 'Bob100', 'Peter', 'File'))
+    expect(authRegister('', 'Bob100', 'Peter', 'File'))
       .toStrictEqual({ error: 'error' });
   });
 
   // Email already used
   test('Testing for already used email in first test', () => {
-    expect(authRegisterV1('p.file@gmail.com', 'Bob100', 'Peter', 'File'))
+    expect(authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File'))
       .toStrictEqual({ error: 'error' });
   });
 
   // Invalid password
   test('Testing for invalid password: Invalid password', () => {
-    expect(authRegisterV1('p.file@gmail.com', '123', 'Peter', 'File'))
+    expect(authRegister('p.file@gmail.com', '123', 'Peter', 'File'))
       .toStrictEqual({ error: 'error' });
   });
 
   test('Testing for invalid password: Invalid password', () => {
-    expect(authRegisterV1('p.file@gmail.com', '', 'Peter', 'File'))
+    expect(authRegister('p.file@gmail.com', '', 'Peter', 'File'))
       .toStrictEqual({ error: 'error' });
   });
 
   // Invalid first name
   test('Testing for invalid name: Invalid first name', () => {
-    expect(authRegisterV1('p.file@gmail.com', 'Bob100',
+    expect(authRegister('p.file@gmail.com', 'Bob100',
       'Thisnameis50characterstoolongandwillprobablyfail123', 'File'))
       .toStrictEqual({ error: 'error' });
   });
 
   test('Testing for invalid name: Invalid first name', () => {
-    expect(authRegisterV1('p.file@gmail.com', 'Bob100', '', 'File'))
+    expect(authRegister('p.file@gmail.com', 'Bob100', '', 'File'))
       .toStrictEqual({ error: 'error' });
   });
 
   // Invalid last name
   test('Testing for invalid name: Invalid last name', () => {
-    expect(authRegisterV1('p.file@gmail.com', 'Bob100', 'Peter',
+    expect(authRegister('p.file@gmail.com', 'Bob100', 'Peter',
       'Thisnameis50characterstoolongandwillprobablyfail123'))
       .toStrictEqual({ error: 'error' });
   });
 
   test('Testing for invalid name: Invalid last name', () => {
-    expect(authRegisterV1('p.file@gmail.com', 'Bob100', 'Peter', ''))
+    expect(authRegister('p.file@gmail.com', 'Bob100', 'Peter', ''))
       .toStrictEqual({ error: 'error' });
   });
 });
 
-describe('Testing for authLoginV1: ', () => {
+describe('Testing for authLoginV2: ', () => {
   // Valid login
   test('Testing for Valid login: ', () => {
-    authRegisterV1('p.file@gmail.com', 'Bob100',
+    clear();
+    authRegister('p.file@gmail.com', 'Bob100',
       'Peter', 'File');
-    expect(authLoginV1('p.file@gmail.com', 'Bob100')).toStrictEqual(
+    expect(authLogin('p.file@gmail.com', 'Bob100')).toStrictEqual(
       {
-        authUserId: expect.any(Number)
+        authUserId: expect.any(Number),
+        token: expect.any(String)
       });
   });
 
   // Invalid email
   test('Testing for invalid login email: Invalid email', () => {
-    authRegisterV1('p.file@gmail.com', 'Bob100',
+    clear();
+    authRegister('p.file@gmail.com', 'Bob100',
       'Peter', 'File');
-    expect(authLoginV1('invalid email', 'Bob100'))
+    expect(authLogin('invalid email', 'Bob100'))
       .toStrictEqual({ error: 'error' });
   });
 
   test('Testing for invalid login email: Invalid email', () => {
-    authRegisterV1('p.file@gmail.com', 'Bob100',
+    clear();
+    authRegister('p.file@gmail.com', 'Bob100',
       'Peter', 'File');
-    expect(authLoginV1('', 'Bob100')).toStrictEqual({ error: 'error' });
+    expect(authLogin('', 'Bob100')).toStrictEqual({ error: 'error' });
   });
 
-  // Invalid password
+  //  Invalid password
   test('Testing for invalid login password: Invalid password', () => {
-    authRegisterV1('p.file@gmail.com', 'Bob100',
+    clear();
+    authRegister('p.file@gmail.com', 'Bob100',
       'Peter', 'File');
-    expect(authLoginV1('p.file@gmail.com', 'bob10'))
+    expect(authLogin('p.file@gmail.com', 'bob10'))
       .toStrictEqual({ error: 'error' });
   });
 
   test('Testing for invalid login password: Invalid password', () => {
-    authRegisterV1('p.file@gmail.com', 'Bob100',
+    clear();
+    authRegister('p.file@gmail.com', 'Bob100',
       'Peter', 'File');
-    expect(authLoginV1('p.file@gmail.com', '')).toStrictEqual({ error: 'error' });
+    expect(authLogin('p.file@gmail.com', '')).toStrictEqual({ error: 'error' });
+  });
+});
+
+describe('Testing for auth/logout/v1', () => {
+  // Valid logout
+  test('Testing for valid logout', () => {
+    clear();
+    authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    const user = authLogin('p.file@gmail.com', 'Bob100');
+    expect(authLogout(user.token)).toStrictEqual({});
+  });
+
+  // Invalid token
+  test('Testing for invalid logout', () => {
+    clear();
+    authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    expect(authLogout('token')).toStrictEqual({ error: 'error' });
+  });
+
+  // Invalid logout (logout twice)
+  test('Testing for invalid logout', () => {
+    clear();
+    authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    const user = authLogin('p.file@gmail.com', 'Bob100');
+    expect(authLogout(user.token)).toStrictEqual({});
+    expect(authLogout(user.token)).toStrictEqual({ error: 'error' });
+  });
+
+  test('Testing for invalid logout', () => {
+    clear();
+    authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    authRegister('m.hunt@gmail.com', 'Bob100', 'Mike', 'Hunt');
+    const user = authLogin('p.file@gmail.com', 'Bob100');
+    const user1 = authLogin('m.hunt@gmail.com', 'Bob100');
+    expect(authLogout(user.token)).toStrictEqual({});
+    expect(authLogout(user.token)).toStrictEqual({ error: 'error' });
+    expect(authLogout(user1.token)).toStrictEqual({});
+    expect(authLogout(user1.token)).toStrictEqual({ error: 'error' });
   });
 });

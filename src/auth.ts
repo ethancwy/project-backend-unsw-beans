@@ -8,17 +8,21 @@ import validator from 'validator';
 * @param {String} email - User enters a valid email address
 * @param {String} password - User input password that is >= 6 characters long
 *
-* @returns {Object { authUserId: Number}} - Returns a valid authUserId
+* @returns {Object { authUserId: Number, token: String }} - Returns a valid authUserId and token
 * @returns {{error: 'error'}} - on error
 */
 
-function authLoginV1(email: string, password: string) {
+function authLoginV2(email: string, password: string) {
   const data = getData();
 
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].email === email) {
       if (data.users[i].password === password) {
-        return { authUserId: data.users[i].uId };
+        if (data.users[i].token.length === 0) {
+          const token = generateToken();
+          data.users[i].token = token;
+        }
+        return { authUserId: data.users[i].uId, token: data.users[i].token };
       } else {
         return { error: 'error' };
       }
@@ -36,11 +40,11 @@ function authLoginV1(email: string, password: string) {
   * @param {String} nameFirst - User input name that's 1-50 characters long
   * @param {String} nameLast - User input name that's 1-50 characters long
   *
-  * @returns {Object { authUserId: Number}} - Returns a valid authUserId
+  * @returns {Object { authUserId: Number, token: String }} - Returns a valid authUserId and token
   * @returns {{error: 'error'}} - on error
 */
 
-function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string) {
+function authRegisterV2(email: string, password: string, nameFirst: string, nameLast: string) {
   const data = getData();
 
   if (!validEmail(email) || !validPass(password) || !validName(nameFirst) ||
@@ -51,6 +55,8 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   const handle = getHandleStr(nameFirst, nameLast);
   const handleStr = validHandle(handle);
 
+  const token = generateToken();
+
   data.users.push({
     uId: data.users.length,
     nameFirst: nameFirst,
@@ -59,6 +65,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     password: password,
     handleStr: handleStr,
     isGlobalOwner: false,
+    token: token,
   });
 
   if (data.users.length === 1) {
@@ -66,7 +73,50 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   }
 
   setData(data);
-  return { authUserId: data.users[data.users.length - 1].uId };
+  return { authUserId: data.users[data.users.length - 1].uId, token: data.users[data.users.length - 1].token };
+}
+
+/**
+  * Allows a user to logout when provided a valid token
+  * returns nothing if valid
+  *
+  * @param {String} token - User enters a valid token
+  *
+  * @returns {{}} - Returns nothing if valid
+  * @returns {{error: 'error'}} - on error
+*/
+
+function authLogoutV1(token: string) {
+  const data = getData();
+
+  if (!validToken(token) && token !== '') {
+    return { error: 'error' };
+  }
+
+  for (const user of data.users) {
+    if (user.token === token) {
+      user.token = '';
+    }
+  }
+  setData(data);
+  return {};
+}
+
+function validToken(token: string) {
+  const data = getData();
+  let found = false;
+  for (const user of data.users) {
+    if (user.token.includes(token)) {
+      found = true;
+    }
+  }
+  return found;
+}
+
+function generateToken() {
+  const data = getData();
+  const newToken = data.users.length + 1000;
+  return String(newToken);
 }
 
 // Helper function to generate a valid handle string
@@ -134,6 +184,7 @@ function sameEmail(email: string) {
 }
 
 export {
-  authLoginV1,
-  authRegisterV1
+  authLoginV2,
+  authRegisterV2,
+  authLogoutV1
 };

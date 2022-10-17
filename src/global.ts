@@ -5,6 +5,12 @@ const SERVER_URL = `${url}:${port}`;
 
 const OK = 200;
 
+// =================================================== //
+//                                                     //
+//                       Types                         //
+//                                                     //
+// ==================================================  //
+
 export type authUserId = { authUserId: number };
 
 export type channelId = { channelId: number };
@@ -40,6 +46,12 @@ export type channelInfo = {
 };
 
 export type error = { error: string };
+
+// =================================================== //
+//                                                     //
+//                  Helper functions                   //
+//                                                     //
+// ==================================================  //
 
 // Helper function to check if user is valid
 export function isValidUser(authUserId: number) {
