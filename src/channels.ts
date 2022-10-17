@@ -54,8 +54,10 @@ function channelsCreateV2(token: string, name: string, isPublic: boolean) {
   *
 */
 
-function channelsListV2(authUserId: number) {
+function channelsListV2(token: string) {
   const data = getData();
+
+  const authUserId = getUserId(token);
 
   if (!isValidUser(authUserId)) {
     return { error: 'error' };
