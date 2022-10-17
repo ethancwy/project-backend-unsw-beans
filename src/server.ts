@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
-import { channelsCreateV2, channelsListV2 } from './channels';
+import { channelsCreateV2, channelsListV2, channelsListAllV2 } from './channels';
 import { clearV1 } from './other';
 
 // Set up web app
