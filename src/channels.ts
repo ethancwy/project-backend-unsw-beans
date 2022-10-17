@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { isValidUser, getUserId } from './global';
+import { isValidUser, getUserId, isValidToken } from './global';
 
 /**
   *
@@ -16,6 +16,10 @@ import { isValidUser, getUserId } from './global';
 
 function channelsCreateV2(token: string, name: string, isPublic: boolean) {
   const data = getData();
+
+  if (!isValidToken(token)) {
+    return { error: 'error' };
+  }
 
   const authUserId = getUserId(token);
 
@@ -57,6 +61,10 @@ function channelsCreateV2(token: string, name: string, isPublic: boolean) {
 function channelsListV2(token: string) {
   const data = getData();
 
+  if (!isValidToken(token)) {
+    return { error: 'error' };
+  }
+
   const authUserId = getUserId(token);
 
   if (!isValidUser(authUserId)) {
@@ -96,6 +104,10 @@ function channelsListV2(token: string) {
 
 function channelsListAllV2(token: string) {
   const data = getData();
+
+  if (!isValidToken(token)) {
+    return { error: 'error' };
+  }
 
   const authUserId = getUserId(token);
 

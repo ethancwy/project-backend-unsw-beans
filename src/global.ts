@@ -91,6 +91,18 @@ export function isGlobalOwner(authUserId: number) {
   return false;
 }
 
+// Helper function to check if token is valid
+export function isValidToken(token: string) {
+  const data = getData();
+
+  for (const user of data.users) {
+    if (user.tokens.includes(token)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // Helper function to find authUserId of token owner
 export function getUserId(token: string): number {
   const data = getData();
