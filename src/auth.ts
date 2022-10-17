@@ -18,11 +18,9 @@ function authLoginV2(email: string, password: string) {
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].email === email) {
       if (data.users[i].password === password) {
-        if (data.users[i].token.length === 0) {
-          const token = generateToken();
-          data.users[i].token = token;
-        }
-        return { authUserId: data.users[i].uId, token: data.users[i].token };
+        const token = generateToken();
+        data.users[i].tokens.push(token);
+        return { authUserId: data.users[i].uId, token: token };
       } else {
         return { error: 'error' };
       }
@@ -45,7 +43,7 @@ function authLoginV2(email: string, password: string) {
 */
 
 function authRegisterV2(email: string, password: string, nameFirst: string, nameLast: string) {
-  const data = getData();
+  let data = getData();
 
   if (!validEmail(email) || !validPass(password) || !validName(nameFirst) ||
     !validName(nameLast) || sameEmail(email)) {
@@ -57,6 +55,8 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
 
   const token = generateToken();
 
+  
+
   data.users.push({
     uId: data.users.length,
     nameFirst: nameFirst,
@@ -65,7 +65,7 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
     password: password,
     handleStr: handleStr,
     isGlobalOwner: false,
-    token: token,
+    tokens: [token],
   });
 
   if (data.users.length === 1) {
@@ -73,7 +73,7 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
   }
 
   setData(data);
-  return { authUserId: data.users[data.users.length - 1].uId, token: data.users[data.users.length - 1].token };
+  return { authUserId: data.users[data.users.length - 1].uId, token: token };
 }
 
 /**
@@ -87,15 +87,18 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
 */
 
 function authLogoutV1(token: string) {
-  const data = getData();
+  let data = getData();
 
-  if (!validToken(token) && token !== '') {
+  if (!validToken(token)) {
     return { error: 'error' };
   }
 
   for (const user of data.users) {
-    if (user.token === token) {
-      user.token = '';
+    for ( const index in user.tokens ) {
+      if ( user.tokens[index] === token ) {
+        user.tokens.splice(parseInt(index), 1);
+        break;
+      }
     }
   }
   setData(data);
@@ -103,19 +106,22 @@ function authLogoutV1(token: string) {
 }
 
 function validToken(token: string) {
+  if ( token === '' ) return false;
   const data = getData();
-  let found = false;
   for (const user of data.users) {
-    if (user.token.includes(token)) {
-      found = true;
+    if (user.tokens.includes(token)) {
+      return true;
     }
   }
-  return found;
+  return false;
 }
 
 function generateToken() {
   const data = getData();
-  const newToken = data.users.length + 1000;
+  let newToken = 1;
+  for ( const user of data.users ) {
+    newToken += user.tokens.length;
+  }
   return String(newToken);
 }
 

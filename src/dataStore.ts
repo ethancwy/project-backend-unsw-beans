@@ -7,7 +7,7 @@ type user = {
   password: string;
   handleStr: string;
   isGlobalOwner: boolean;
-  token?: string;
+  tokens: Array<string>;
 }
 
 type channelmessages = {

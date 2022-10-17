@@ -29,6 +29,8 @@ export type user = {
     nameFirst: string;
     nameLast: string;
     handleStr: string;
+    isGlobalOwner: boolean;
+    tokens: Array<string>;
   }
 };
 
