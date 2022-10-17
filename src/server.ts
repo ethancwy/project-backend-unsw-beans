@@ -56,8 +56,8 @@ app.get('/channels/listAll/v2', (req: Request, res: Response) => {
 
 app.get('/channel/messages/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
-  const channelId = parseInt(req.query.token as string);
-  const start = parseInt(req.query.token as string);
+  const channelId = parseInt(req.query.channelId as string);
+  const start = parseInt(req.query.start as string);
   return res.json(channelMessagesV2(token, channelId, start));
 });
 
