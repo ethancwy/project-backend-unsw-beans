@@ -12,7 +12,7 @@ import validator from 'validator';
 * @returns {{error: 'error'}} - on error
 */
 
-function authLoginV1(email: string, password: string) {
+function authLoginV2(email: string, password: string) {
   const data = getData();
 
   for (let i = 0; i < data.users.length; i++) {
@@ -44,7 +44,7 @@ function authLoginV1(email: string, password: string) {
   * @returns {{error: 'error'}} - on error
 */
 
-function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string) {
+function authRegisterV2(email: string, password: string, nameFirst: string, nameLast: string) {
   const data = getData();
 
   if (!validEmail(email) || !validPass(password) || !validName(nameFirst) ||
@@ -184,7 +184,7 @@ function sameEmail(email: string) {
 }
 
 export {
-  authLoginV1,
-  authRegisterV1,
+  authLoginV2,
+  authRegisterV2,
   authLogoutV1
 };
