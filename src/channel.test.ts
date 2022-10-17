@@ -1,6 +1,6 @@
 import {
   authRegister, channelsCreate, channelDetails,
-  channelJoin, channelInvite, clear
+  channelJoin, channelInvite, clear, channelMessages
 } from './global';
 
 describe('Testing that channelDetailsV2 works standard', () => {
@@ -297,5 +297,64 @@ describe('Error checking channelInviteV2', () => {
     const nonMember1 = authRegister('ethan@bar.com', 'okpassword', 'Ethan', 'Chew');
     expect(channelInvite(globalowner.token, channelId.channelId, nonMember1.authUserId)).toStrictEqual({ error: 'error' });
     expect(channelInvite(globalowner.token, channelId.channelId, globalowner.authUserId)).toStrictEqual({ error: 'error' });
+  });
+});
+
+// channelMessages
+describe('test block for channelMessagesV2', () => {
+  test('invalid input(invalid user and channel)', () => {
+    clear();
+
+    const personId = authRegister('ethanchew@mail.com', 'paswword123', 'ethan', 'chew');
+    const channelId = channelsCreate(personId.authUserId, 'achannel', true);
+
+    clear();
+
+    expect(channelMessages(personId.authUserId, channelId.channelId, 0)).toStrictEqual({ error: 'error' });
+  });
+
+  test('invalid input(user not in channel)', () => {
+    clear();
+
+    const personId = authRegister('ethanchew@mail.com', 'paswword123', 'ethan', 'chew');
+    const person2 = authRegister('donaldduck@mail.com', 'duck4life', 'donald', 'duck');
+    const channelId = channelsCreate(personId.authUserId, 'achannel', true);
+
+    expect(channelMessages(person2.authUserId, channelId.channelId, 0)).toStrictEqual({ error: 'error' });
+  });
+
+  test('testing for invalid input(start > amount)', () => {
+    clear();
+
+    const personId = authRegister('tony@mail.com', 'tonytony1', 'tony', 'yeung');
+    const channelId = channelsCreate(personId.authUserId, 'tonyschannel', true);
+
+    expect(channelMessages(personId.authUserId, channelId.channelId, 1)).toStrictEqual({
+      error: 'error'
+    });
+  });
+
+  test('testing for invalid input(start < 0)', () => {
+    clear();
+
+    const personId = authRegister('tony@mail.com', 'tonytony1', 'tony', 'yeung');
+    const channelId = channelsCreate(personId.authUserId, 'tonyschannel', true);
+
+    expect(channelMessages(personId.authUserId, channelId.channelId, -10)).toStrictEqual({
+      error: 'error'
+    });
+  });
+
+  test('testing for valid input(empty messages)', () => {
+    clear();
+
+    const personId = authRegister('tony@mail.com', 'tonytony1', 'tony', 'yeung');
+    const channelId = channelsCreate(personId.authUserId, 'tonyschannel', true);
+
+    expect(channelMessages(personId.authUserId, channelId.channelId, 0)).toStrictEqual({
+      messages: [],
+      start: 0,
+      end: -1,
+    });
   });
 });
