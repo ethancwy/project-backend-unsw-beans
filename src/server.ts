@@ -68,7 +68,6 @@ app.get('/user/profile/v2', (req: Request, res: Response) => {
   return res.json(userProfileV2(token, uId));
 });
 
-const message = req.query.message as string;
 // for logging errors (print to terminal)
 app.use(morgan('dev'));
 
