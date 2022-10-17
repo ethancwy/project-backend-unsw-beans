@@ -142,7 +142,7 @@ describe('Testing the edge cases', () => {
   test('Test for when authuserId is invalid', () => {
     clear();
 
-    const fakeUser = -20;
+    const fakeUser = '-20';
 
     expect(channelsListAll(fakeUser)).toEqual({ error: 'error' });
   });

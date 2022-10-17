@@ -49,7 +49,7 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
 
 app.get('/channels/listAll/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
-  return res.json(channelsListV2(token));
+  return res.json(channelsListAllV2(token));
 });
 
 app.post('/auth/logout/v1', (req: Request, res: Response) => {
