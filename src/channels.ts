@@ -90,8 +90,11 @@ function channelsListV2(authUserId: number) {
  *
 */
 
-function channelsListAllV2(authUserId: number) {
+function channelsListAllV2(token: string) {
   const data = getData();
+
+  // include helper function when made
+  // function will correlate token to userId
 
   if (!isValidUser(authUserId)) {
     return { error: 'error' };
