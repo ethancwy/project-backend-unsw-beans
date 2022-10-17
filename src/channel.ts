@@ -110,7 +110,7 @@ function channelInviteV2(token: string, channelId: number, uId: number) {
 function channelMessagesV2(token: string, channelId: number, start: number) {
   const data = getData();
 
-  if ( !isValidToken(token) ) {
+  if (!isValidToken(token)) {
     return { error: 'error' };
   }
 
@@ -145,7 +145,7 @@ function channelMessagesV2(token: string, channelId: number, start: number) {
   }
 
   // getting amount of msgs in channel
-  let amountOfMsgs = data.channels[index].channelmessages.length;
+  const amountOfMsgs = data.channels[index].channelmessages.length;
   let end = 0;
 
   if (start > amountOfMsgs) {
