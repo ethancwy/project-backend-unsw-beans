@@ -267,6 +267,77 @@ describe('Testing dm/details/v1 errors', () => {
 });
 
 // Tests for dm/messages/v1
+describe('Testing dm/messages/v1 standard', () => {
+  
+  test('Testing that function works', () => {
+    clear();
+    const sender = authRegister('pollos@hhm.com', 'password', 'Gus', 'Fring');
+    const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill'); 
+    const recipient2 = authRegister('heisenberg@hhm.com', 'bluecrystal', 'Walter', 'White');
+    const dm = dmCreate(sender.token, [recipient.uId, recipient2.uId]);
+    
+    expect(dmDetails(sender.token, dm.dmId)).toStrictEqual({
+      name: expect.any(String),
+      members: [
+        {
+          uId: sender.uId,
+          email: 'pollos@hhm.com',
+          nameFirst: 'Gus',
+          nameLast: 'Fring',
+          handleStr: expect.any(String),
+        },
+        {
+          uId: recipient.uId,
+          email: 'goodman@hhm.com',
+          nameFirst: 'Jimmy',
+          nameLast: 'McGill',
+          handleStr: expect.any(String),
+        },
+        {
+          uId: recipient2.uId,
+          email: 'heisenberg@hhm.com',
+          nameFirst: 'Walter',
+          nameLast: 'White',
+          handleStr: expect.any(String),
+        },
+      ],
+    });
+  });  
+
+});
+
+describe('Testing dm/details/v1 errors', () => {
+
+  test('Invalid dmId', () => {
+    clear();
+    const sender = authRegister('pollos@hhm.com', 'password', 'Gus', 'Fring');
+    const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill'); 
+    const dm = dmCreate(sender.token, [recipient.uId]);  
+
+    expect(dmDetails(sender.token, dm.dmId + 1)).toStrictEqual({ error: expect.any(String) });
+  });
+
+  test('User is not a member of dm', () => {
+    clear();
+    const sender = authRegister('pollos@hhm.com', 'password', 'Gus', 'Fring');
+    const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill'); 
+    const notMember = authRegister('heisenberg@hhm.com', 'bluecrystal', 'Walter', 'White');
+    const dm = dmCreate(sender.token, [recipient.uId]);  
+
+    expect(dmDetails(notMember.token, dm.dmId)).toStrictEqual({ error: expect.any(String) });
+  });
+
+  test('Invalid token', () => {
+    clear();
+    const sender = authRegister('pollos@hhm.com', 'password', 'Gus', 'Fring');
+    const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill'); 
+    const dm = dmCreate(sender.token, [recipient.uId]);  
+    fakeToken = 'sdfjskdfuhwefbvsdfguwyfsgjndfs';
+
+    expect(dmDetails(fakeToken, dm.dmId)).toStrictEqual({ error: expect.any(String) });
+  });
+
+});
 
 
 
