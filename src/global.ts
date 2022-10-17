@@ -29,6 +29,7 @@ export type user = {
     nameFirst: string;
     nameLast: string;
     handleStr: string;
+    tokens: Array<string>;
   }
 };
 
