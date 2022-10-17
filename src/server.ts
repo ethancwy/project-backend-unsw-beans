@@ -43,8 +43,8 @@ app.post('/auth/logout/v1', (req: Request, res: Response) => {
 });
 
 app.get('/channel/details/v2', (req: Request, res: Response) => {
-  const token = req.body.token;
-  const channelId = parseInt(req.body.channelId);
+  const token = req.query.token as string;
+  const channelId = parseInt(req.query.channelId as string);
   return res.json(channelDetails(token, channelId));
 });
 
