@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
-import { channelsCreateV2, channelsListV2 } from './channels';
+import { channelsCreateV2, channelsListV2, channelsListAllV2 } from './channels';
 import { clearV1 } from './other';
 
 // Set up web app
@@ -45,6 +45,11 @@ app.post('/channels/create/v2', (req: Request, res: Response) => {
 app.get('/channels/list/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
   return res.json(channelsListV2(token));
+});
+
+app.get('/channels/listAll/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  return res.json(channelsListAllV2(token));
 });
 
 app.post('/auth/logout/v1', (req: Request, res: Response) => {

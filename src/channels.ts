@@ -94,8 +94,10 @@ function channelsListV2(token: string) {
  *
 */
 
-function channelsListAllV2(authUserId: number) {
+function channelsListAllV2(token: string) {
   const data = getData();
+
+  const authUserId = getUserId(token);
 
   if (!isValidUser(authUserId)) {
     return { error: 'error' };
@@ -104,12 +106,10 @@ function channelsListAllV2(authUserId: number) {
   const array = [];
 
   for (const ch of data.channels) {
-    if (!isNaN(ch.channelId)) {
-      array.push({
-        channelId: ch.channelId,
-        name: ch.name,
-      });
-    }
+    array.push({
+      channelId: ch.channelId,
+      name: ch.name,
+    });
   }
 
   return {
