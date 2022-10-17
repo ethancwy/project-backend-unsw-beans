@@ -43,7 +43,7 @@ function authLoginV2(email: string, password: string) {
 */
 
 function authRegisterV2(email: string, password: string, nameFirst: string, nameLast: string) {
-  let data = getData();
+  const data = getData();
 
   if (!validEmail(email) || !validPass(password) || !validName(nameFirst) ||
     !validName(nameLast) || sameEmail(email)) {
@@ -54,8 +54,6 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
   const handleStr = validHandle(handle);
 
   const token = generateToken();
-
-  
 
   data.users.push({
     uId: data.users.length,
@@ -87,15 +85,15 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
 */
 
 function authLogoutV1(token: string) {
-  let data = getData();
+  const data = getData();
 
   if (!validToken(token)) {
     return { error: 'error' };
   }
 
   for (const user of data.users) {
-    for ( const index in user.tokens ) {
-      if ( user.tokens[index] === token ) {
+    for (const index in user.tokens) {
+      if (user.tokens[index] === token) {
         user.tokens.splice(parseInt(index), 1);
         break;
       }
@@ -106,7 +104,7 @@ function authLogoutV1(token: string) {
 }
 
 function validToken(token: string) {
-  if ( token === '' ) return false;
+  if (token === '') return false;
   const data = getData();
   for (const user of data.users) {
     if (user.tokens.includes(token)) {
@@ -119,7 +117,7 @@ function validToken(token: string) {
 function generateToken() {
   const data = getData();
   let newToken = 1;
-  for ( const user of data.users ) {
+  for (const user of data.users) {
     newToken += user.tokens.length;
   }
   return String(newToken);
