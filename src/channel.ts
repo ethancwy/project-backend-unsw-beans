@@ -107,8 +107,14 @@ function channelInviteV2(token: string, channelId: number, uId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelMessagesV2(authUserId: number, channelId: number, start: number) {
+function channelMessagesV2(token: string, channelId: number, start: number) {
   const data = getData();
+
+  if ( !isValidToken(token) ) {
+    return { error: 'error' };
+  }
+
+  const authUserId = getUserId(token);
 
   if (start < 0) {
     return { error: 'error' };

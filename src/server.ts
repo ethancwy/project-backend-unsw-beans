@@ -6,7 +6,7 @@ import cors from 'cors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { channelsCreateV2, channelsListV2, channelsListAllV2 } from './channels';
 import { clearV1 } from './other';
-import { channelJoinV2, channelInviteV2, channelDetailsV2 } from './channel';
+import { channelJoinV2, channelInviteV2, channelDetailsV2, channelMessagesV2 } from './channel';
 import { userProfileV2 } from './users';
 
 // Set up web app
@@ -52,6 +52,13 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
 app.get('/channels/listAll/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
   return res.json(channelsListAllV2(token));
+});
+
+app.get('/channel/messages/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const channelId = parseInt(req.query.token as string);
+  const start = parseInt(req.query.token as string);
+  return res.json(channelMessagesV2(token, channelId, start));
 });
 
 app.post('/auth/logout/v1', (req: Request, res: Response) => {
