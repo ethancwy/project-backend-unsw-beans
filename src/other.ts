@@ -4,7 +4,7 @@ function clearV1() {
   let data = getData();
   data = {
     users: [],
-    channels: [],
+    channels: []
   };
   setData(data);
   return {};
