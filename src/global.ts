@@ -93,13 +93,13 @@ export function isGlobalOwner(authUserId: number) {
 
 export function isValidToken(token: string) {
   const data = getData();
-  let found = false;
+
   for (const user of data.users) {
-    if (user.token.includes(token)) {
-      found = true;
+    if (user.tokens.includes(token)) {
+      return true;;
     }
   }
-  return found;
+  return false;
 }
 
 //Helper function to find authUserId of token owner

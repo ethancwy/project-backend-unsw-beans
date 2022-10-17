@@ -7,6 +7,7 @@ import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { channelsCreateV2 } from './channels';
 import { clearV1 } from './other';
 import { channelJoinV2, channelInviteV2 } from './channel';
+import { userProfileV2 } from './users'
 
 // Set up web app
 const app = express();
@@ -62,6 +63,12 @@ app.post('/channel/invite/v2', (req: Request, res: Response) => {
   return res.json(channelInviteV2(token, channelId, uId));
 });
 
+app.get('/user/profile/v2', (req: Request, res: Response) => {
+  const { token, uId } = req.query as string;
+  return res.json(userProfileV2(token, uId));
+});
+
+const message = req.query.message as string;
 // for logging errors (print to terminal)
 app.use(morgan('dev'));
 
