@@ -17,10 +17,10 @@ import { isValidUser, getUserId, isValidToken } from './global';
 function channelsCreateV2(token: string, name: string, isPublic: boolean) {
   const data = getData();
 
-  if ( !isValidToken(token) ) {
+  if (!isValidToken(token)) {
     return { error: 'error' };
   }
-  
+
   const authUserId = getUserId(token);
 
   if (!isValidUser(authUserId)) {
@@ -61,7 +61,7 @@ function channelsCreateV2(token: string, name: string, isPublic: boolean) {
 function channelsListV2(token: string) {
   const data = getData();
 
-  if ( !isValidToken(token) ) {
+  if (!isValidToken(token)) {
     return { error: 'error' };
   }
 
@@ -105,7 +105,7 @@ function channelsListV2(token: string) {
 function channelsListAllV2(token: string) {
   const data = getData();
 
-  if ( !isValidToken(token) ) {
+  if (!isValidToken(token)) {
     return { error: 'error' };
   }
 

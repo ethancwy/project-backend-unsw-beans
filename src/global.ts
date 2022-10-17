@@ -91,7 +91,7 @@ export function isGlobalOwner(authUserId: number) {
   return false;
 }
 
-//Helper function to check if token is valid
+// Helper function to check if token is valid
 export function isValidToken(token: string) {
   const data = getData();
 
