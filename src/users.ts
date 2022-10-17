@@ -14,7 +14,7 @@ import { isValidUser } from './global';
  * @returns {error} - return error object in invalid cases
 */
 
-function userProfileV1(authUserId: number, uId: number) {
+function userProfileV2(authUserId: number, uId: number) {
   const data = getData();
 
   if (!isValidUser(authUserId)) {
@@ -37,4 +37,4 @@ function userProfileV1(authUserId: number, uId: number) {
   return { error: 'error' };
 }
 
-export { userProfileV1 };
+export { userProfileV2 };
