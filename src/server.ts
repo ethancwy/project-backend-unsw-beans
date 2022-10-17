@@ -37,7 +37,7 @@ app.post('/auth/login/v2', (req: Request, res: Response) => {
   return res.json(authLoginV2(email, password));
 });
 
-app.post('channels/create/v2', (req: Request, res: Response) => {
+app.post('/channels/create/v2', (req: Request, res: Response) => {
   const { token, name, isPublic } = req.body;
   return res.json(channelsCreateV2(token, name, isPublic));
 });

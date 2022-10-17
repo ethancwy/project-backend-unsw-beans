@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { isValidUser } from './global';
+import { isValidUser, getUserId } from './global';
 
 /**
   *
@@ -14,8 +14,10 @@ import { isValidUser } from './global';
   * @returns {integer} - channelId of the channel created
 */
 
-function channelsCreateV2(authUserId: number, name: string, isPublic: boolean) {
+function channelsCreateV2(token: string, name: string, isPublic: boolean) {
   const data = getData();
+
+  const authUserId = getUserId(token);
 
   if (!isValidUser(authUserId)) {
     return { error: 'error' };
