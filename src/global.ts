@@ -5,6 +5,12 @@ const SERVER_URL = `${url}:${port}`;
 
 const OK = 200;
 
+// =================================================== //
+//                                                     //
+//                       Types                         //
+//                                                     //
+// ==================================================  //
+
 export type authUserId = { authUserId: number };
 
 export type channelId = { channelId: number };
@@ -40,6 +46,12 @@ export type channelInfo = {
 };
 
 export type error = { error: string };
+
+// =================================================== //
+//                                                     //
+//                  Helper functions                   //
+//                                                     //
+// ==================================================  //
 
 // Helper function to check if user is valid
 export function isValidUser(authUserId: number) {
@@ -191,18 +203,4 @@ export function userSetEmail(token: string, email: string) {
 }
 export function userSetHandle(token: string, handleStr: string) {
   return requestHelper('PUT', '/user/profile/sethandle/v1', { token, handleStr });
-}
-
-export function requestHelper(method: HttpVerb, path: string, payload: object) {
-  let qs = {};
-  let json = {};
-  if (['GET', 'DELETE'].includes(method)) {
-    qs = payload;
-  } else {
-    // PUT/POST
-    json = payload;
-  }
-  // const headers = { token: token };
-  const res = request(method, SERVER_URL + path, { qs, json });
-  return JSON.parse(res.getBody() as string);
 }
