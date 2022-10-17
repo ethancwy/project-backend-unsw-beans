@@ -91,12 +91,12 @@ export function isGlobalOwner(authUserId: number) {
   return false;
 }
 
-// Helper function to find authUserId of token owner
+//Helper function to find authUserId of token owner
 export function getUserId(token: string): number {
   const data = getData();
 
-  for (const user of data.users) {
-    if (user.tokens.includes(token)) {
+  for ( const user of data.users ) {
+    if ( user.tokens.includes(token) ) {
       return user.uId;
     }
   }

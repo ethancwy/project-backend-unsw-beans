@@ -1,5 +1,5 @@
 import { authRegister } from './global';
-import { channelsList, channelsCreate, channelsListAll } from './global';
+import { channelsCreate } from './global';
 import { clear } from './global';
 
 describe('channelsCreateV2 tests:', () => {
