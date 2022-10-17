@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { isValidUser, isValidChannel, isGlobalOwner } from './global';
+import { isValidUser, isValidChannel, isGlobalOwner, isValidToken, getUserId } from './global';
 
 /**
   * Given a channelId of a channel that the authorised user can join,
@@ -12,12 +12,14 @@ import { isValidUser, isValidChannel, isGlobalOwner } from './global';
   * @returns {error} - return error object in invalid cases
 */
 
-function channelJoinV2(authUserId: number, channelId: number) {
+function channelJoinV2(token: string, channelId: number) {
   const data = getData();
 
-  if (!isValidUser(authUserId)) {
+  if (!isValidToken(token)) {
     return { error: 'error' };
   }
+
+  const authUserId = getUserId(token);
 
   for (const channel of data.channels) {
     if (channelId === channel.channelId) {
@@ -52,12 +54,14 @@ function channelJoinV2(authUserId: number, channelId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelInviteV2(authUserId: number, channelId: number, uId: number) {
+function channelInviteV2(token: string, channelId: number, uId: number) {
   const data = getData();
 
-  if (!isValidUser(authUserId) || !isValidUser(uId) || !isValidChannel(channelId)) {
+  if (!isValidToken(token) || !isValidUser(uId) || !isValidChannel(channelId)) {
     return { error: 'error' };
   }
+
+  const authUserId = getUserId(token);
 
   let authMember = false;
   for (const channel of data.channels) {
