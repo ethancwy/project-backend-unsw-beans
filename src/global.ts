@@ -103,6 +103,21 @@ export function isValidToken(token: string) {
   return false;
 }
 
+export function isInChannel(uId: number, channelId: number) {
+  const data = getData();
+
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      for (const member of channel.memberIds) {
+        if (uId === member) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 // Helper function to find authUserId of token owner
 export function getUserId(token: string): number {
   const data = getData();

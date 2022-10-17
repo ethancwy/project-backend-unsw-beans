@@ -310,20 +310,9 @@ describe('Testing channelLeaveV1 success', () => {
     channelJoin(memberId.token, channelId.channelId);
 
     expect(channelLeave(channelOwnerId.token, channelId.channelId)).toStrictEqual({});
-    expect(channelDetails(channelOwnerId.token, channelId.channelId)).toStrictEqual({
-      name: 'Boost',
-      isPublic: true,
-      ownerMembers: [],
-      allMembers: [
-        {
-          uId: memberId.authUserId,
-          email: 'chicken@bar.com',
-          nameFirst: 'Ronald',
-          nameLast: 'Mcdonald',
-          handleStr: expect.any(String),
-        }
-      ]
-    });
+
+    // expect error since channelOwner no longer in channel
+    expect(channelDetails(channelOwnerId.token, channelId.channelId)).toStrictEqual({ error: 'error' });
   });
 });
 
@@ -340,7 +329,7 @@ describe('Error checking channelLeaveV1', () => {
       invalidToken += 'bye';
     }
     expect(channelLeave(channelOwnerId.token, invalidChannelId)).toStrictEqual({ error: 'error' }); // invalid channel
-    expect(channelLeave(invalidToken, channelId.channelId)).toStrictEqual({ error: 'error' });  // invalid token
-    expect(channelLeave(nonMember.token, channelId.channelId)).toStrictEqual({ error: 'error' });  // nonMember
+    expect(channelLeave(invalidToken, channelId.channelId)).toStrictEqual({ error: 'error' }); // invalid token
+    expect(channelLeave(nonMember.token, channelId.channelId)).toStrictEqual({ error: 'error' }); // nonMember
   });
 });
