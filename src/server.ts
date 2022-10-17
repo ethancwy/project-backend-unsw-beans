@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
+import { channelsCreateV2 } from './channels';
 import { clearV1 } from './other';
 import { channelJoinV2, channelInviteV2 } from './channel';
 
@@ -35,6 +36,11 @@ app.post('/auth/register/v2', (req: Request, res: Response) => {
 app.post('/auth/login/v2', (req: Request, res: Response) => {
   const { email, password } = req.body;
   return res.json(authLoginV2(email, password));
+});
+
+app.post('channels/create/v2', (req: Request, res: Response) => {
+  const { token, name, isPublic } = req.body;
+  return res.json(channelsCreateV2(token, name, isPublic));
 });
 
 app.post('/auth/logout/v1', (req: Request, res: Response) => {

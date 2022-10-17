@@ -29,6 +29,7 @@ export type user = {
     nameFirst: string;
     nameLast: string;
     handleStr: string;
+    isGlobalOwner: boolean;
     tokens: Array<string>;
   }
 };
@@ -101,16 +102,17 @@ export function isValidToken(token: string) {
   return found;
 }
 
-export function getUserId(token: string) {
+//Helper function to find authUserId of token owner
+export function getUserId(token: string): number {
   const data = getData();
-  let userId = 0;
+
   for (const user of data.users) {
-    if (user.token.includes(token)) {
-      userId = user.uId;
+    if (user.tokens.includes(token)) {
+      return user.uId;
     }
   }
-  return userId;
 }
+
 
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //
 
