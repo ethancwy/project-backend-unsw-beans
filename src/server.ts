@@ -5,6 +5,7 @@ import config from './config.json';
 import cors from 'cors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
+import { channelJoinV2, channelInviteV2 } from './channel';
 
 // Set up web app
 const app = express();
@@ -42,7 +43,17 @@ app.post('/auth/logout/v1', (req: Request, res: Response) => {
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
-  res.json(clearV1());
+  return res.json(clearV1());
+});
+
+app.post('/channel/join/v2', (req: Request, res: Response) => {
+  const { token, channelId } = req.body;
+  return res.json(channelJoinV2(token, channelId));
+});
+
+app.post('/channel/invite/v2', (req: Request, res: Response) => {
+  const { token, channelId, uId } = req.body;
+  return res.json(channelInviteV2(token, channelId, uId));
 });
 
 // for logging errors (print to terminal)
