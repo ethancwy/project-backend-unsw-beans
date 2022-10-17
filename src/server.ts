@@ -5,6 +5,7 @@ import config from './config.json';
 import cors from 'cors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
+import { channelDetails } from './global';
 
 // Set up web app
 const app = express();
@@ -39,6 +40,12 @@ app.post('/auth/login/v2', (req: Request, res: Response) => {
 app.post('/auth/logout/v1', (req: Request, res: Response) => {
   const { token } = req.body;
   return res.json(authLogoutV1(token));
+});
+
+app.get('/channel/details/v2', (req: Request, res: Response) => {
+  const token = req.body.token;
+  const channelId = parseInt(req.body.channelId);
+  return res.json(channelDetails(token, channelId));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
