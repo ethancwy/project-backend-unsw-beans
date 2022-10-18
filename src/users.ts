@@ -1,6 +1,9 @@
 import { getData, setData } from './dataStore';
 import { isValidToken } from './global';
-import { validName, validEmail, anotherUserEmail } from './global';
+import {
+  validName, validEmail, anotherUserEmail, alphanumeric,
+  isValidHandleLength, anotherUserHandle
+} from './global';
 
 /**
   * For a valid user, returns information about their user ID, email,
@@ -132,4 +135,35 @@ function userSetEmailV1(token: string, email: string) {
   return {};
 }
 
-export { userProfileV2, usersAllV1, userSetNameV1, userSetEmailV1 };
+/**
+  * Update the authorised user's handle (i.e. display name)
+  *
+  * @param {string} token - a valid token
+  * @param {string} handleStr - a valid handle string
+  *
+  * @returns {} - empty object
+ *
+ * @returns {error} - return error object in invalid cases
+*/
+
+function userSetHandleV1(token: string, handleStr: string) {
+  const data = getData();
+  // invalid token, length of handleStr, non-alphanumeric, handle already in use
+  if (!isValidToken(token) || !alphanumeric(handleStr) ||
+    !isValidHandleLength(handleStr) || anotherUserHandle(token, handleStr)) {
+    return { error: 'error' };
+  }
+
+  // change handle
+  for (const user of data.users) {
+    if (user.tokens.includes(token)) {
+      user.handleStr = handleStr;
+      break;
+    }
+  }
+
+  setData(data);
+  return {};
+}
+
+export { userProfileV2, usersAllV1, userSetNameV1, userSetEmailV1, userSetHandleV1 };
