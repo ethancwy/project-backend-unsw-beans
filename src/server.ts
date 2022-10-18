@@ -10,7 +10,7 @@ import {
   channelJoinV2, channelInviteV2, channelDetailsV2,
   channelMessagesV2, channelLeaveV1, channelAddOwnerV1, channelRemoveOwnerV1
 } from './channel';
-import { userProfileV2, usersAllV1 } from './users';
+import { userProfileV2, usersAllV1, userSetNameV1 } from './users';
 
 // Set up web app
 const app = express();
@@ -113,6 +113,11 @@ app.get('/user/profile/v2', (req: Request, res: Response) => {
 app.get('/users/all/v1', (req: Request, res: Response) => {
   const token = req.query.token as string;
   return res.json(usersAllV1(token));
+});
+
+app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
+  const { token, nameFirst, nameLast } = req.body;
+  return res.json(userSetNameV1(token, nameFirst, nameLast));
 });
 
 // for logging errors (print to terminal)
