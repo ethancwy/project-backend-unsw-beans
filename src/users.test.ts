@@ -229,7 +229,7 @@ describe('Error checking userSetEmailV1', () => {
   test('Email already in use', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-    const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+    authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
 
     expect(userSetEmail(member1.token, 'chicken@bar.com')).toStrictEqual({ error: 'error' });
   });
