@@ -1,11 +1,14 @@
 import { getData, setData } from './dataStore';
-import { isValidUser, isValidChannel, isGlobalOwner, isValidToken, getUserId } from './global';
+import {
+  isValidUser, isValidChannel, isGlobalOwner, isValidToken,
+  getUserId, isInChannel, isChannelOwner, isOnlyOwner
+} from './global';
 
 /**
   * Given a channelId of a channel that the authorised user can join,
   * adds them to that channel.
   *
-  * @param {integer} authUserId - a valid authUserId from dataStore
+  * @param {string} token - a valid token
   * @param {integer} channelId - a valid channelId from dataStore
   *
   * @returns {} - return empty
@@ -46,7 +49,7 @@ function channelJoinV2(token: string, channelId: number) {
   * The authUser invites a user with uId to join a channel with channelId.
   * Once invited, the user is added to the channel immediately.
   *
-  * @param {integer} authUserId - a valid authUserId from dataStore
+  * @param {string} token - a valid token
   * @param {integer} channelId - a valid channelId from dataStore
   * @param {integer} uId - a valid uId from dataStore
   *
@@ -184,7 +187,7 @@ function channelMessagesV2(token: string, channelId: number, start: number) {
   * Given a channel with ID channelId that the authorised user is a
   * member of, provides basic details about the channel.
   *
-  * @param {integer} authUserId - a valid authUserId from dataStore
+  * @param {string} token - a valid authUserId from dataStore
   * @param {integer} channelId - a valid channelId from dataStore
   *
   * @returns { name:
@@ -197,20 +200,7 @@ function channelMessagesV2(token: string, channelId: number, start: number) {
 
 function channelDetailsV2(token: string, channelId: number) {
   const data = getData();
-
-  // checking if token is valid
-  let isUser = false;
-  let uid = 0;
-  for (const user of data.users) {
-    if (user.tokens.includes(token)) {
-      isUser = true;
-      uid = user.uId;
-    }
-  }
-
-  if (isUser === false) {
-    return { error: 'error' };
-  }
+  const uId = getUserId(token);
 
   // checking if channelId is valid
   let channelCheck = false;
@@ -226,15 +216,8 @@ function channelDetailsV2(token: string, channelId: number) {
     return { error: 'error' };
   }
 
-  // checking if authUserId is in the channel
-  let userCheck = false;
-  for (const membs of data.channels[channelPos].memberIds) {
-    if (membs === uid) {
-      userCheck = true;
-    }
-  }
-
-  if (userCheck === false) {
+  // checking if token is valid and if in channel
+  if (!isValidToken(token) || !isInChannel(uId, channelId)) {
     return { error: 'error' };
   }
 
@@ -276,9 +259,134 @@ function channelDetailsV2(token: string, channelId: number) {
   };
 }
 
+/**
+  * Given a channel with ID channelId that the authorised user is a
+  * member of, remove them as a member of the channel.
+  *
+  * @param {string} token - a valid token
+  * @param {integer} channelId - a valid channelId from dataStore
+  *
+  * @returns {} - return empty
+  * @returns {error} - return error object in invalid cases
+*/
+
+function channelLeaveV1(token: string, channelId: number) {
+  const data = getData();
+  const uId = getUserId(token);
+
+  if (!isValidToken(token) || !isValidChannel(channelId) || !isInChannel(uId, channelId)) {
+    return { error: 'error' };
+  }
+
+  // if owner, remove from ownerids and memberids
+  // if normal member, remove from memberids
+  for (const channel of data.channels) {
+    if (channelId === channel.channelId) {
+      for (const index in channel.ownerIds) {
+        if (channel.ownerIds[index] === uId) {
+          channel.ownerIds.splice(parseInt(index), 1);
+          break;
+        }
+      }
+      for (const index in channel.memberIds) {
+        if (channel.memberIds[index] === uId) {
+          channel.memberIds.splice(parseInt(index), 1);
+          break;
+        }
+      }
+      break;
+    }
+  }
+  setData(data);
+  return {};
+}
+
+/**
+  * Make user with user id uId an owner of the channel.
+  *
+  * @param {string} token - a valid token
+  * @param {integer} channelId - a valid channelId from dataStore
+  *
+  * @returns {} - return empty
+  * @returns {error} - return error object in invalid cases
+*/
+
+function channelAddOwnerV1(token: string, channelId: number, uId: number) {
+  const data = getData();
+  if (!isValidToken(token) || !isValidChannel(channelId) || !isValidUser(uId)) {
+    // Invalid token, channelId, or uId
+    return { error: 'error' };
+  } else if (!isInChannel(uId, channelId) || isChannelOwner(uId, channelId)) {
+    // uId not a member of channel, uId already an owner
+    return { error: 'error' };
+  }
+
+  const authUserId = getUserId(token);
+  // authUserId no owner perms
+  if (!isGlobalOwner(authUserId) && !isChannelOwner(authUserId, channelId)) {
+    return { error: 'error' };
+  }
+
+  for (const channel of data.channels) {
+    if (channelId === channel.channelId) {
+      channel.ownerIds.push(uId);
+      break;
+    }
+  }
+  setData(data);
+  return {};
+}
+
+/**
+  * Remove user with user id uId as an owner of the channel.
+  *
+  * @param {string} token - a valid token
+  * @param {integer} channelId - a valid channelId from dataStore
+  *
+  * @returns {} - return empty
+  * @returns {error} - return error object in invalid cases
+*/
+
+function channelRemoveOwnerV1(token: string, channelId: number, uId: number) {
+  const data = getData();
+  // Invalid token, channelId, uId, and not a channelOwner
+  if (!isValidToken(token) || !isValidChannel(channelId) || !isValidUser(uId) ||
+    !isChannelOwner(uId, channelId)) {
+    return { error: 'error' };
+  }
+
+  // Only owner in channel
+  if (isOnlyOwner(uId, channelId)) {
+    return { error: 'error' };
+  }
+
+  const authUserId = getUserId(token);
+  // authUserId no owner perms
+  if (!isGlobalOwner(authUserId) && !isChannelOwner(authUserId, channelId)) {
+    return { error: 'error' };
+  }
+
+  for (const channel of data.channels) {
+    if (channelId === channel.channelId) {
+      for (const index in channel.ownerIds) {
+        if (channel.ownerIds[index] === uId) {
+          channel.ownerIds.splice(parseInt(index), 1);
+          break;
+        }
+      }
+      break;
+    }
+  }
+  setData(data);
+  return {};
+}
+
 export {
   channelJoinV2,
   channelInviteV2,
   channelMessagesV2,
-  channelDetailsV2
+  channelDetailsV2,
+  channelLeaveV1,
+  channelAddOwnerV1,
+  channelRemoveOwnerV1
 };

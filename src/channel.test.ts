@@ -1,6 +1,8 @@
 import {
   authRegister, channelsCreate, channelDetails,
-  channelJoin, channelInvite, clear, channelMessages
+  channelJoin, channelInvite, clear,
+  channelMessages, channelLeave, channelAddOwner,
+  channelRemoveOwner
 } from './global';
 
 describe('Testing that channelDetailsV2 works standard', () => {
@@ -358,5 +360,335 @@ describe('test block for channelMessagesV2', () => {
       start: 0,
       end: -1,
     });
+  });
+});
+
+// channelLeaveV1
+describe('Testing channelLeaveV1 success', () => {
+  test('Testing channel owner leaving channel, and channel remaining', () => {
+    clear();
+    const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const memberId = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+
+    const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
+    channelJoin(memberId.token, channelId.channelId);
+
+    expect(channelLeave(channelOwnerId.token, channelId.channelId)).toStrictEqual({});
+
+    // expect error since channelOwner no longer in channel
+    expect(channelDetails(channelOwnerId.token, channelId.channelId)).toStrictEqual({ error: 'error' });
+  });
+});
+
+describe('Error checking channelLeaveV1', () => {
+  test('Invalid channelId & token', () => {
+    clear();
+    const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
+
+    const nonMember = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
+
+    const invalidChannelId = channelId.channelId + 1;
+    let invalidToken = channelOwnerId.token + 'hi';
+    if (invalidToken === nonMember.token) {
+      invalidToken += 'bye';
+    }
+    expect(channelLeave(channelOwnerId.token, invalidChannelId)).toStrictEqual({ error: 'error' }); // invalid channel
+    expect(channelLeave(invalidToken, channelId.channelId)).toStrictEqual({ error: 'error' }); // invalid token
+    expect(channelLeave(nonMember.token, channelId.channelId)).toStrictEqual({ error: 'error' }); // nonMember
+  });
+});
+
+// channelAddOwnerV1
+describe('Testing channelAddOwnerV1 success', () => {
+  test('Channel Owner successfuly make member an owner of a channel', () => {
+    clear();
+    const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const member = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+
+    const channel = channelsCreate(channelOwner.token, 'Boost', true);
+    channelJoin(member.token, channel.channelId);
+
+    expect(channelAddOwner(channelOwner.token, channel.channelId, member.authUserId)).toStrictEqual({});
+    expect(channelDetails(channelOwner.token, channel.channelId)).toStrictEqual({
+      name: 'Boost',
+      isPublic: true,
+      ownerMembers: [
+        {
+          uId: channelOwner.authUserId,
+          email: 'chocolate@bar.com',
+          nameFirst: 'Willy',
+          nameLast: 'Wonka',
+          handleStr: expect.any(String),
+        },
+        {
+          uId: member.authUserId,
+          email: 'chicken@bar.com',
+          nameFirst: 'Ronald',
+          nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        }
+      ],
+      allMembers: [
+        {
+          uId: channelOwner.authUserId,
+          email: 'chocolate@bar.com',
+          nameFirst: 'Willy',
+          nameLast: 'Wonka',
+          handleStr: expect.any(String),
+        },
+        {
+          uId: member.authUserId,
+          email: 'chicken@bar.com',
+          nameFirst: 'Ronald',
+          nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        }
+      ],
+    });
+  });
+
+  test('Global Owner (regular member with channel perms) successfuly make member an owner of a channel', () => {
+    clear();
+    const globalOwner = authRegister('ahahahahahahaha@bar.com', 'g00dsdadpassword', 'itsme', 'mario');
+    const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const member = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+
+    const channel = channelsCreate(channelOwner.token, 'Boost', true);
+    channelJoin(member.token, channel.channelId);
+    channelJoin(globalOwner.token, channel.channelId);
+
+    expect(channelAddOwner(globalOwner.token, channel.channelId, member.authUserId)).toStrictEqual({});
+    expect(channelDetails(channelOwner.token, channel.channelId)).toStrictEqual({
+      name: 'Boost',
+      isPublic: true,
+      ownerMembers: [
+        {
+          uId: channelOwner.authUserId,
+          email: 'chocolate@bar.com',
+          nameFirst: 'Willy',
+          nameLast: 'Wonka',
+          handleStr: expect.any(String),
+        },
+        {
+          uId: member.authUserId,
+          email: 'chicken@bar.com',
+          nameFirst: 'Ronald',
+          nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        },
+
+      ],
+      allMembers: [
+        {
+          uId: channelOwner.authUserId,
+          email: 'chocolate@bar.com',
+          nameFirst: 'Willy',
+          nameLast: 'Wonka',
+          handleStr: expect.any(String),
+        },
+        {
+          uId: member.authUserId,
+          email: 'chicken@bar.com',
+          nameFirst: 'Ronald',
+          nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        },
+        {
+          uId: globalOwner.authUserId,
+          email: 'ahahahahahahaha@bar.com',
+          nameFirst: 'itsme',
+          nameLast: 'mario',
+          handleStr: expect.any(String),
+        }
+      ],
+    });
+  });
+});
+
+describe('Error checking channelAddOwnerV1', () => {
+  test('Invalid channelId, token, and uId', () => {
+    clear();
+    const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const channel = channelsCreate(channelOwner.token, 'Boost', true);
+
+    const member = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
+    channelJoin(member.token, channel.channelId);
+
+    const invalidChannel = channel.channelId + 1;
+    let invalidToken = channelOwner.token + 'hi';
+    if (invalidToken === member.token) {
+      invalidToken += 'bye';
+    }
+    let invalidUser = channelOwner.authUserId + 21;
+    if (invalidUser === member.authUserId) {
+      invalidUser += 21;
+    }
+    // invalid channel
+    expect(channelAddOwner(channelOwner.token, invalidChannel, member.authUserId)).toStrictEqual({ error: 'error' });
+    // invalid token
+    expect(channelAddOwner(invalidToken, channel.channelId, member.authUserId)).toStrictEqual({ error: 'error' });
+    // invalid uId
+    expect(channelAddOwner(channelOwner.token, channel.channelId, invalidUser)).toStrictEqual({ error: 'error' });
+  });
+
+  test('uId not a member, uId already an owner, authorised user no perms', () => {
+    clear();
+    const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const channel = channelsCreate(channelOwner.token, 'Boost', true);
+
+    const user = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
+    // not a member of channel
+    expect(channelAddOwner(channelOwner.token, channel.channelId, user.authUserId)).toStrictEqual({ error: 'error' });
+    // already an owner
+    expect(channelAddOwner(channelOwner.token, channel.channelId, channelOwner.authUserId)).toStrictEqual({ error: 'error' });
+
+    // no channel perms
+    channelJoin(user.token, channel.channelId);
+    const anotherUser = authRegister('joanna@bar.com', 'johnwickssister', 'Joanna', 'Wick');
+
+    expect(channelAddOwner(user.token, channel.channelId, anotherUser.authUserId)).toStrictEqual({ error: 'error' });
+  });
+});
+
+// channelRemoveOwnerV1
+describe('Testing channelRemoveOwnerV1 success', () => {
+  test('Channel Owner successfuly remove an owner of a channel', () => {
+    clear();
+    const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const member = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+
+    const channel = channelsCreate(channelOwner.token, 'Boost', true);
+    channelJoin(member.token, channel.channelId);
+    channelAddOwner(channelOwner.token, channel.channelId, member.authUserId);
+    expect(channelRemoveOwner(channelOwner.token, channel.channelId, member.authUserId)).toStrictEqual({});
+    expect(channelDetails(channelOwner.token, channel.channelId)).toStrictEqual({
+      name: 'Boost',
+      isPublic: true,
+      ownerMembers: [
+        {
+          uId: channelOwner.authUserId,
+          email: 'chocolate@bar.com',
+          nameFirst: 'Willy',
+          nameLast: 'Wonka',
+          handleStr: expect.any(String),
+        }
+      ],
+      allMembers: [
+        {
+          uId: channelOwner.authUserId,
+          email: 'chocolate@bar.com',
+          nameFirst: 'Willy',
+          nameLast: 'Wonka',
+          handleStr: expect.any(String),
+        },
+        {
+          uId: member.authUserId,
+          email: 'chicken@bar.com',
+          nameFirst: 'Ronald',
+          nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        }
+      ],
+    });
+  });
+
+  test('Global Owner (not a channel owner) successfully remove channelOwner', () => {
+    clear();
+    const globalOwner = authRegister('ahahahahahahaha@bar.com', 'g00dsdadpassword', 'itsme', 'mario');
+    const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const member = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+
+    const channel = channelsCreate(channelOwner.token, 'Boost', true);
+    channelJoin(member.token, channel.channelId);
+    channelJoin(globalOwner.token, channel.channelId);
+
+    channelAddOwner(channelOwner.token, channel.channelId, member.authUserId);
+
+    // globalOwner remove original channelOwner
+    expect(channelRemoveOwner(globalOwner.token, channel.channelId, channelOwner.authUserId)).toStrictEqual({});
+    expect(channelDetails(channelOwner.token, channel.channelId)).toStrictEqual({
+      name: 'Boost',
+      isPublic: true,
+      ownerMembers: [
+        {
+          uId: member.authUserId,
+          email: 'chicken@bar.com',
+          nameFirst: 'Ronald',
+          nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        }
+      ],
+      allMembers: [
+        {
+          uId: channelOwner.authUserId,
+          email: 'chocolate@bar.com',
+          nameFirst: 'Willy',
+          nameLast: 'Wonka',
+          handleStr: expect.any(String),
+        },
+        {
+          uId: member.authUserId,
+          email: 'chicken@bar.com',
+          nameFirst: 'Ronald',
+          nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        },
+        {
+          uId: globalOwner.authUserId,
+          email: 'ahahahahahahaha@bar.com',
+          nameFirst: 'itsme',
+          nameLast: 'mario',
+          handleStr: expect.any(String),
+        }
+      ],
+    });
+  });
+});
+
+describe('Error checking channelRemoveOwnerV1', () => {
+  test('Invalid channelId, token, and uId', () => {
+    clear();
+    const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const channel = channelsCreate(channelOwner.token, 'Boost', true);
+
+    const member = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
+    channelJoin(member.token, channel.channelId);
+    channelAddOwner(channelOwner.token, channel.channelId, member.authUserId);
+
+    const invalidChannel = channel.channelId + 1;
+    let invalidToken = channelOwner.token + 'hi';
+    if (invalidToken === member.token) {
+      invalidToken += 'bye';
+    }
+    let invalidUser = channelOwner.authUserId + 21;
+    if (invalidUser === member.authUserId) {
+      invalidUser += 21;
+    }
+    // invalid channel
+    expect(channelRemoveOwner(channelOwner.token, invalidChannel, member.authUserId)).toStrictEqual({ error: 'error' });
+    // invalid token
+    expect(channelRemoveOwner(invalidToken, channel.channelId, member.authUserId)).toStrictEqual({ error: 'error' });
+    // invalid uId
+    expect(channelRemoveOwner(channelOwner.token, channel.channelId, invalidUser)).toStrictEqual({ error: 'error' });
+  });
+
+  test('uId not an owner, uId only owner, authorised user no perms', () => {
+    clear();
+    const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const channel = channelsCreate(channelOwner.token, 'Boost', true);
+
+    const member = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
+    channelJoin(member.token, channel.channelId);
+
+    // not an owner
+    expect(channelRemoveOwner(channelOwner.token, channel.channelId, member.authUserId)).toStrictEqual({ error: 'error' });
+    // uId only owner
+    expect(channelRemoveOwner(channelOwner.token, channel.channelId, channelOwner.authUserId)).toStrictEqual({ error: 'error' });
+
+    // no perms
+    const anotherMember = authRegister('joanna@bar.com', 'johnwickssister', 'Joanna', 'Wick');
+    channelAddOwner(channelOwner.token, channel.channelId, member.authUserId);
+    expect(channelRemoveOwner(anotherMember.token, channel.channelId, member.authUserId)).toStrictEqual({ error: 'error' });
   });
 });

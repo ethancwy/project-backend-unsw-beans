@@ -5,7 +5,7 @@ import { isValidToken } from './global';
   * For a valid user, returns information about their user ID, email,
   * first name, last name, and handle
   *
-  * @param {integer} authUserId - a valid authUserId from dataStore
+  * @param {string} token - a valid token
   * @param {integer} uId - a valid uId from dataStore
   *
   * @returns {Object {uId: integer, email: string, nameFirst: string,
