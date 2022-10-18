@@ -289,6 +289,10 @@ describe('Error checking userSetHandleV1', () => {
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
 
-    expect(userSetHandle(member2.token, member1.handleStr)).toStrictEqual({ error: 'error' });
+    // member2 trying to change handle
+    // get handleStr using userProfile function
+    const member1Details = userProfile(member2.token, member1.authUserId);
+
+    expect(userSetHandle(member2.token, member1Details.user.handleStr)).toStrictEqual({ error: 'error' });
   });
 });
