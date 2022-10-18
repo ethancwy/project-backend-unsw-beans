@@ -197,6 +197,33 @@ export function anotherUserEmail(token: string, email: string) {
   return false;
 }
 
+export function alphanumeric(handleStr: string) {
+  return /^[A-Za-z0-9]*$/.test(handleStr);
+}
+
+export function isValidHandleLength(handleStr: string) {
+  if (handleStr.length < 3 || handleStr.length > 20) {
+    return false;
+  }
+  return true;
+}
+
+export function anotherUserHandle(token: string, handleStr: string) {
+  const data = getData();
+
+  for (const user of data.users) {
+    if (handleStr === user.handleStr) {
+      if (user.tokens.includes(token)) {
+        // own handleStr
+        return false;
+      }
+      // someone else's handleStr
+      return true;
+    }
+  }
+  return false;
+}
+
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //
 
 export function requestHelper(method: HttpVerb, path: string, payload: object) {
