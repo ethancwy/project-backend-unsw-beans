@@ -300,6 +300,7 @@ describe('Error checking channelInviteV2', () => {
   });
 });
 
+// channelLeaveV1
 describe('Testing channelLeaveV1 success', () => {
   test('Testing channel owner leaving channel, and channel remaining', () => {
     clear();
@@ -333,3 +334,5 @@ describe('Error checking channelLeaveV1', () => {
     expect(channelLeave(nonMember.token, channelId.channelId)).toStrictEqual({ error: 'error' }); // nonMember
   });
 });
+
+// channelAddOwnerV1
