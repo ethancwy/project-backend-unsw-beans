@@ -37,4 +37,27 @@ function userProfileV2(token: string, uId: number) {
   return { error: 'error' };
 }
 
-export { userProfileV2 };
+function usersAllV1(token: string) {
+  const data = getData();
+
+  if (!isValidToken(token)) {
+    return { error: 'error' };
+  }
+
+  let userArr = [];
+  for (const user of data.users) {
+    userArr.push({
+      uId: user.uId,
+      email: user.email,
+      nameFirst: user.nameFirst,
+      nameLast: user.nameLast,
+      handleStr: user.handleStr,
+    });
+  }
+
+
+  return { users: userArr };
+
+}
+
+export { userProfileV2, usersAllV1 };
