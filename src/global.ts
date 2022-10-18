@@ -55,7 +55,7 @@ export type error = { error: string };
 //                                                     //
 // ==================================================  //
 
-// Check if user is valid
+// Checks if user is valid
 export function isValidUser(authUserId: number) {
   const data = getData();
   for (const user of data.users) {
@@ -66,7 +66,7 @@ export function isValidUser(authUserId: number) {
   return false;
 }
 
-// Check if channel is valid
+// Checks if channel is valid
 export function isValidChannel(channelId: number) {
   const data = getData();
   for (const channel of data.channels) {
@@ -77,7 +77,7 @@ export function isValidChannel(channelId: number) {
   return false;
 }
 
-// Check if user is global owner
+// Checks if user is global owner
 export function isGlobalOwner(authUserId: number) {
   const data = getData();
 
@@ -91,7 +91,7 @@ export function isGlobalOwner(authUserId: number) {
   return false;
 }
 
-// Check if token is valid
+// Checks if token is valid
 export function isValidToken(token: string) {
   const data = getData();
 
@@ -103,7 +103,7 @@ export function isValidToken(token: string) {
   return false;
 }
 
-// Check if user is in channel
+// Checks if user is in channel
 export function isInChannel(uId: number, channelId: number) {
   const data = getData();
 
@@ -118,7 +118,8 @@ export function isInChannel(uId: number, channelId: number) {
   }
   return false;
 }
-// Check if user is channel owner or global owner (to check for channel perms)
+
+// Checks if user is channel owner or global owner (to check for channel perms)
 // Return true if either, false otherwise
 export function isChannelOwner(uId: number, channelId: number) {
   const data = getData();
@@ -130,6 +131,24 @@ export function isChannelOwner(uId: number, channelId: number) {
         if (uId === owner) {
           return true;
         }
+      }
+    }
+  }
+  return false;
+}
+
+// Checks if user is the only channel owner in given channel
+export function isOnlyOwner(uId: number, channelId: number) {
+  const data = getData();
+
+  if (!isChannelOwner(uId, channelId)) {
+    return { error: 'error' };
+  }
+
+  for (const channel of data.channels) {
+    if (channelId === channel.channelId) {
+      if (channel.ownerIds.length === 1) {
+        return true;
       }
     }
   }
