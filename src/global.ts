@@ -1,4 +1,5 @@
 import { getData } from './dataStore';
+import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
@@ -164,6 +165,63 @@ export function getUserId(token: string): number {
       return user.uId;
     }
   }
+}
+
+// Checks if valid email address
+export function validEmail(email: string) {
+  return validator.isEmail(email);
+}
+
+// Checks if valid first name
+export function validName(name: string) {
+  if (name.length < 1 || name.length > 50) {
+    return false;
+  }
+  return true;
+}
+
+// Checks if another user has email in use
+export function anotherUserEmail(token: string, email: string) {
+  const data = getData();
+
+  for (const user of data.users) {
+    if (email === user.email) {
+      if (user.tokens.includes(token)) {
+        // own email
+        return false;
+      }
+      // someone else's email
+      return true;
+    }
+  }
+  return false;
+}
+
+export function alphanumeric(handleStr: string) {
+  return /^[A-Za-z0-9]*$/.test(handleStr);
+}
+
+export function isValidHandleLength(handleStr: string) {
+  if (handleStr.length < 3 || handleStr.length > 20) {
+    return false;
+  }
+  return true;
+}
+
+export function anotherUserHandle(token: string, handleStr: string) {
+  const data = getData();
+
+  for (const user of data.users) {
+    if (handleStr === user.handleStr) {
+      if (user.tokens.includes(token)) {
+        // own handleStr
+        return false;
+      }
+      // someone else's handleStr
+      return true;
+    }
+  }
+  return false;
 }
 
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //
