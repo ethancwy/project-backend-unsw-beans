@@ -1,6 +1,6 @@
 import { getData, setData } from './dataStore';
 import { isValidToken } from './global';
-import { validName } from './global';
+import { validName, validEmail, anotherUserEmail } from './global';
 
 /**
   * For a valid user, returns information about their user ID, email,
@@ -103,4 +103,33 @@ function userSetNameV1(token: string, nameFirst: string, nameLast: string) {
   return {};
 }
 
-export { userProfileV2, usersAllV1, userSetNameV1 };
+/**
+  * Update the authorised user's email address
+  *
+  * @param {string} token - a valid token
+  * @param {string} email - a valid email
+  *
+  * @returns {} - empty object
+ *
+ * @returns {error} - return error object in invalid cases
+*/
+
+function userSetEmailV1(token: string, email: string) {
+  const data = getData();
+  if (!isValidToken(token) || !validEmail(email) || anotherUserEmail(token, email)) {
+    return { error: 'error' };
+  }
+
+  // change email
+  for (const user of data.users) {
+    if (user.tokens.includes(token)) {
+      user.email = email;
+      break;
+    }
+  }
+
+  setData(data);
+  return {};
+}
+
+export { userProfileV2, usersAllV1, userSetNameV1, userSetEmailV1 };
