@@ -172,8 +172,8 @@ export function validEmail(email: string) {
 }
 
 // Checks if valid first name
-export function validName(nameFirst: string) {
-  if (nameFirst.length < 1 || nameFirst.length > 50) {
+export function validName(name: string) {
+  if (name.length < 1 || name.length > 50) {
     return false;
   }
   return true;
