@@ -5,6 +5,7 @@ import config from './config.json';
 import cors from 'cors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
+import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './message';
 
 // Set up web app
 const app = express();
@@ -43,6 +44,26 @@ app.post('/auth/logout/v1', (req: Request, res: Response) => {
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
+});
+
+// message
+app.post('/message/send/v1', (req: Request, res: Response) => {
+  const { token, chaannelId, message } = req.body;
+  return res.json(messageSendV1(token, channelId, message));
+});
+
+app.put('/message/edit/v1' , (req: Request, res: Response) => {
+  const { token, channelId, message } = req.body;
+  return res.json(messageEditV1(token, messageId, message));
+});
+
+app.delete ('/message/remove/v1', (req: Request, res: Response) => {
+  return res.json(messageRemoveV1(token,messageId));
+});
+
+app.post('/message/senddm/v1', (req: Request, res: Response) => {
+  const { token, dmId, message} = req.body;
+  return res.json(messageSenddmV1(token, dmId, message));
 });
 
 // for logging errors (print to terminal)
