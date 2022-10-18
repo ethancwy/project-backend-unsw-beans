@@ -1,5 +1,4 @@
 import { getData, setData } from './dataStore';
-import validator from 'validator';
 import { validEmail, validName } from './global';
 
 /**
@@ -171,7 +170,6 @@ function sameEmail(email: string) {
       return true;
     }
   }
-
   return false;
 }
 
