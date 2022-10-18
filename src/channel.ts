@@ -1,7 +1,7 @@
 import { getData, setData } from './dataStore';
 import {
   isValidUser, isValidChannel, isGlobalOwner, isValidToken,
-  getUserId, isInChannel
+  getUserId, isInChannel, isChannelOwner
 } from './global';
 
 /**
@@ -301,10 +301,37 @@ function channelLeaveV1(token: string, channelId: number) {
   return {};
 }
 
+function channelAddOwnerV1(token: string, channelId: number, uId: number) {
+  const data = getData();
+  if (!isValidToken(token) || !isValidChannel(channelId) || !isValidUser(uId)) {
+    // Invalid token, channelId, or uId
+    return { error: 'error' };
+  } else if (!isInChannel(uId, channelId) || isChannelOwner(uId, channelId)) {
+    // uId not a member of channel, uId already an owner
+    return { error: 'error' };
+  }
+
+  const authUserId = getUserId(token);
+  // authUserId no owner perms
+  if (!isGlobalOwner(authUserId) && !isChannelOwner(authUserId, channelId)) {
+    return { error: 'error' };
+  }
+
+  for (const channel of data.channels) {
+    if (channelId === channel.channelId) {
+      channel.ownerIds.push(uId);
+    }
+  }
+
+  return {};
+}
+
+
 export {
   channelJoinV2,
   channelInviteV2,
   channelMessagesV2,
   channelDetailsV2,
-  channelLeaveV1
+  channelLeaveV1,
+  channelAddOwnerV1
 };

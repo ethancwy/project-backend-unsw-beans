@@ -118,6 +118,23 @@ export function isInChannel(uId: number, channelId: number) {
   }
   return false;
 }
+// Check if user is channel owner or global owner (to check for channel perms)
+// Return true if either, false otherwise
+export function isChannelOwner(uId: number, channelId: number) {
+  const data = getData();
+
+  // check for channel owner
+  for (const channel of data.channels) {
+    if (channelId === channel.channelId) {
+      for (const owner of channel.ownerIds) {
+        if (uId === owner) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
 
 // Helper function to find authUserId of token owner
 export function getUserId(token: string): number {
