@@ -55,7 +55,7 @@ export type error = { error: string };
 //                                                     //
 // ==================================================  //
 
-// Helper function to check if user is valid
+// Check if user is valid
 export function isValidUser(authUserId: number) {
   const data = getData();
   for (const user of data.users) {
@@ -66,7 +66,7 @@ export function isValidUser(authUserId: number) {
   return false;
 }
 
-// Helper function to check if channel is valid
+// Check if channel is valid
 export function isValidChannel(channelId: number) {
   const data = getData();
   for (const channel of data.channels) {
@@ -77,7 +77,7 @@ export function isValidChannel(channelId: number) {
   return false;
 }
 
-// Helper function to check if user is global owner
+// Check if user is global owner
 export function isGlobalOwner(authUserId: number) {
   const data = getData();
 
@@ -91,7 +91,7 @@ export function isGlobalOwner(authUserId: number) {
   return false;
 }
 
-// Helper function to check if token is valid
+// Check if token is valid
 export function isValidToken(token: string) {
   const data = getData();
 
@@ -103,6 +103,7 @@ export function isValidToken(token: string) {
   return false;
 }
 
+// Check if user is in channel
 export function isInChannel(uId: number, channelId: number) {
   const data = getData();
 

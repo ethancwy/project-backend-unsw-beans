@@ -110,8 +110,14 @@ function channelInviteV2(token: string, channelId: number, uId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelMessagesV2(authUserId: number, channelId: number, start: number) {
+function channelMessagesV2(token: string, channelId: number, start: number) {
   const data = getData();
+
+  if (!isValidToken(token)) {
+    return { error: 'error' };
+  }
+
+  const authUserId = getUserId(token);
 
   if (start < 0) {
     return { error: 'error' };
@@ -142,25 +148,8 @@ function channelMessagesV2(authUserId: number, channelId: number, start: number)
   }
 
   // getting amount of msgs in channel
-  let amount = 0;
-  for (const i in data.channels[index].channelmessages) {
-    amount = parseInt(i);
-  }
-  if (data.channels[index].channelmessages.length === 0) {
-    amount = 0;
-  }
-  let amountOfMsgs = amount;
+  const amountOfMsgs = data.channels[index].channelmessages.length;
   let end = 0;
-  // const emptyMsg = {
-  //   messageId: NaN,
-  //   uId: NaN,
-  //   message: '',
-  //   timeSent: NaN,
-  // };
-
-  if (amountOfMsgs === 1 && amount === 0) {
-    amountOfMsgs = 0;
-  }
 
   if (start > amountOfMsgs) {
     return { error: 'error' };
@@ -169,7 +158,7 @@ function channelMessagesV2(authUserId: number, channelId: number, start: number)
   let count = 0;
   let isMore = false;
   const list = [];
-  if (amount > 0) {
+  if (amountOfMsgs > 0) {
     for (const msg of data.channels[index].channelmessages) {
       if (count === 50) {
         isMore = true;
