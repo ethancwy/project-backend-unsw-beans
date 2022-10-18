@@ -64,7 +64,7 @@ describe('Error checking usersAllV1', () => {
   test('Invalid token', () => {
     clear();
     const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-    const invalidToken = member.token + 'lolol'
+    const invalidToken = member.token + 'lolol';
 
     expect(usersAll(invalidToken)).toStrictEqual({ error: 'error' });
   });
@@ -154,7 +154,7 @@ describe('Error checking userSetNameV1', () => {
   test('Invalid token', () => {
     clear();
     const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-    const invalidToken = member.token + 'lolol'
+    const invalidToken = member.token + 'lolol';
 
     expect(userSetName(invalidToken, 'Jamie', 'Charlie')).toStrictEqual({ error: 'error' });
   });
