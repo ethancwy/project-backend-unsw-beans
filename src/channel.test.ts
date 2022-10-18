@@ -446,10 +446,6 @@ describe('Testing channelAddOwnerV1 success', () => {
         }
       ],
     });
-
-
-
-
   });
 
   test('Global Owner (regular member with channel perms) successfuly make member an owner of a channel', () => {
@@ -552,6 +548,5 @@ describe('Error checking channelAddOwnerV1', () => {
     const anotherUser = authRegister('joanna@bar.com', 'johnwickssister', 'Joanna', 'Wick');
 
     expect(channelAddOwner(user.token, channel.channelId, anotherUser.authUserId)).toStrictEqual({ error: 'error' });
-
   });
 });
