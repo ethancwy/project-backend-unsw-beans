@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import validator from 'validator';
+import { validEmail, validName } from './global';
 
 /**
 * Allows user to login with email and password that they have registered
@@ -138,11 +139,6 @@ function getHandleStr(nameFirst: string, nameLast: string) {
   return handleStr;
 }
 
-// Helper function to get valid email address
-function validEmail(email: string) {
-  return validator.isEmail(email);
-}
-
 // Helper function to get valid password
 function validPass(password: string) {
   if (password.match(/.{6,}/)) {
@@ -150,14 +146,6 @@ function validPass(password: string) {
   } else {
     return false;
   }
-}
-
-// Helper function to get valid first name
-function validName(nameFirst: string) {
-  if (nameFirst.length < 1 || nameFirst.length > 50) {
-    return false;
-  }
-  return true;
 }
 
 // Helper function to get valid handle string

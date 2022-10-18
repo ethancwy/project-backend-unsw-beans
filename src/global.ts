@@ -166,6 +166,19 @@ export function getUserId(token: string): number {
   }
 }
 
+// Checks if valid email address
+export function validEmail(email: string) {
+  return validator.isEmail(email);
+}
+
+// Checks if valid first name
+export function validName(nameFirst: string) {
+  if (nameFirst.length < 1 || nameFirst.length > 50) {
+    return false;
+  }
+  return true;
+}
+
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //
 
 export function requestHelper(method: HttpVerb, path: string, payload: object) {
