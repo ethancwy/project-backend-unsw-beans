@@ -1,6 +1,6 @@
 import {
   authRegister, userProfile, clear, usersAll, userSetName,
-  userSetEmail
+  userSetEmail, userSetHandle
 } from './global';
 
 describe('Testing userProfileV2', () => {
@@ -232,5 +232,63 @@ describe('Error checking userSetEmailV1', () => {
     authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
 
     expect(userSetEmail(member1.token, 'chicken@bar.com')).toStrictEqual({ error: 'error' });
+  });
+});
+
+describe('Testing userSetHandleV1', () => {
+  test('Successfully updating two handles', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+
+    expect(userSetHandle(member1.token, 'ja3')).toStrictEqual({});
+    expect(userSetHandle(member2.token, 'ronalddddddddddddddd')).toStrictEqual({});
+    expect(usersAll(member1.token)).toStrictEqual({
+      users: [
+        {
+          uId: member1.authUserId,
+          email: 'foo@bar.com',
+          nameFirst: 'James',
+          nameLast: 'Charles',
+          handleStr: 'ja3',
+        },
+        {
+          uId: member2.authUserId,
+          email: 'chicken@bar.com',
+          nameFirst: 'Ronald',
+          nameLast: 'Mcdonald',
+          handleStr: 'ronalddddddddddddddd',
+        },
+      ],
+    });
+  });
+});
+
+describe('Error checking userSetHandleV1', () => {
+  test('Invalid token, length of handleStr, non-alphanumeric characters, spacings, empty strings', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+
+    const invalidToken = member1.token + 'lolol';
+    // invalid token
+    expect(userSetHandle(invalidToken, 'jameshehe123')).toStrictEqual({ error: 'error' });
+    // invalid length: 2 characters
+    expect(userSetHandle(member1.token, 'ja')).toStrictEqual({ error: 'error' });
+    // invalid length: 21 characters
+    expect(userSetHandle(member1.token, 'jaaaaaaaaaaamesssssss')).toStrictEqual({ error: 'error' });
+    // non-alphanumeric characters
+    expect(userSetHandle(member1.token, 'james@foo')).toStrictEqual({ error: 'error' });
+    // space in between
+    expect(userSetHandle(member1.token, 'james charlesteehee')).toStrictEqual({ error: 'error' });
+    // empty string
+    expect(userSetHandle(member1.token, '')).toStrictEqual({ error: 'error' });
+  });
+
+  test('handleStr already in use', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+
+    expect(userSetHandle(member2.token, member1.handleStr)).toStrictEqual({ error: 'error' });
   });
 });
