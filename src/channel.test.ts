@@ -1,7 +1,8 @@
 import {
   authRegister, channelsCreate, channelDetails,
   channelJoin, channelInvite, clear,
-  channelMessages, channelLeave, channelAddOwner
+  channelMessages, channelLeave, channelAddOwner,
+  channelRemoveOwner
 } from './global';
 
 describe('Testing that channelDetailsV2 works standard', () => {
@@ -402,7 +403,6 @@ describe('Error checking channelLeaveV1', () => {
 describe('Testing channelAddOwnerV1 success', () => {
   test('Channel Owner successfuly make member an owner of a channel', () => {
     clear();
-    const globalOwner = authRegister('ahahahahahahaha@bar.com', 'g00dsdadpassword', 'itsme', 'mario');
     const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     const member = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
 
@@ -540,7 +540,7 @@ describe('Error checking channelAddOwnerV1', () => {
     const user = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
     // not a member of channel
     expect(channelAddOwner(channelOwner.token, channel.channelId, user.authUserId)).toStrictEqual({ error: 'error' });
-    // already an owner 
+    // already an owner
     expect(channelAddOwner(channelOwner.token, channel.channelId, channelOwner.authUserId)).toStrictEqual({ error: 'error' });
 
     // no channel perms
@@ -551,6 +551,7 @@ describe('Error checking channelAddOwnerV1', () => {
   });
 });
 
+// channelRemoveOwnerV1
 describe('Testing channelRemoveOwnerV1 success', () => {
   test('Channel Owner successfuly remove an owner of a channel', () => {
     clear();
@@ -592,7 +593,7 @@ describe('Testing channelRemoveOwnerV1 success', () => {
     });
   });
 
-  test('Global Owner (not a channel owner) successfuly remove channelOwner', () => {
+  test('Global Owner (not a channel owner) successfully remove channelOwner', () => {
     clear();
     const globalOwner = authRegister('ahahahahahahaha@bar.com', 'g00dsdadpassword', 'itsme', 'mario');
     const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
