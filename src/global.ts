@@ -180,6 +180,23 @@ export function validName(name: string) {
   return true;
 }
 
+// Checks if another user has email in use
+export function anotherUserEmail(token: string, email: string) {
+  const data = getData();
+
+  for (const user of data.users) {
+    if (email === user.email) {
+      if (user.tokens.includes(token)) {
+        // own email
+        return false;
+      }
+      // someone else's email
+      return true;
+    }
+  }
+  return false;
+}
+
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //
 
 export function requestHelper(method: HttpVerb, path: string, payload: object) {
