@@ -63,9 +63,117 @@ describe('Testing usersAllV1', () => {
 describe('Error checking usersAllV1', () => {
   test('Invalid token', () => {
     clear();
-    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-    const invalidToken = member1.token + 'lolol'
+    const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const invalidToken = member.token + 'lolol'
 
     expect(usersAll(invalidToken)).toStrictEqual({ error: 'error' });
+  });
+});
+
+describe('Testing userSetNameV1', () => {
+  test('Succesfully setting nameFirst and nameLast', () => {
+    clear();
+    const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+
+    expect(userSetName(member.token, 'Jamie', 'Charlie')).toStrictEqual({});
+    expect(userProfile(member.token, member.authUserId)).toStrictEqual({
+      user: {
+        uId: member.authUserId,
+        email: 'foo@bar.com',
+        nameFirst: 'Jamie',
+        nameLast: 'Charlie',
+        handleStr: expect.any(String),
+      }
+    });
+  });
+
+  test('Succesfully setting nameFirst, not changing nameLast', () => {
+    clear();
+    const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+
+    expect(userSetName(member.token, 'Jamie', 'Charles')).toStrictEqual({});
+    expect(userProfile(member.token, member.authUserId)).toStrictEqual({
+      user: {
+        uId: member.authUserId,
+        email: 'foo@bar.com',
+        nameFirst: 'Jamie',
+        nameLast: 'Charles',
+        handleStr: expect.any(String),
+      }
+    });
+  });
+
+  test('Succesfully setting nameLast, not changing nameFirst', () => {
+    clear();
+    const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    expect(userSetName(member.token, 'James', 'Charlie')).toStrictEqual({});
+    expect(userProfile(member.token, member.authUserId)).toStrictEqual({
+      user: {
+        uId: member.authUserId,
+        email: 'foo@bar.com',
+        nameFirst: 'James',
+        nameLast: 'Charlie',
+        handleStr: expect.any(String),
+      }
+    });
+  });
+
+  test('1 letter name', () => {
+    clear();
+    const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    expect(userSetName(member.token, 'h', 'i')).toStrictEqual({});
+    expect(userProfile(member.token, member.authUserId)).toStrictEqual({
+      user: {
+        uId: member.authUserId,
+        email: 'foo@bar.com',
+        nameFirst: 'h',
+        nameLast: 'i',
+        handleStr: expect.any(String),
+      }
+    });
+  });
+
+  test('51 letters name', () => {
+    clear();
+    const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    expect(userSetName(member.token, 'dsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsds',
+      'blalalallalalalalallalalalallalalalallalalalalalal')).toStrictEqual({});
+    expect(userProfile(member.token, member.authUserId)).toStrictEqual({
+      user: {
+        uId: member.authUserId,
+        email: 'foo@bar.com',
+        nameFirst: 'dsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsds',
+        nameLast: 'blalalallalalalalallalalalallalalalallalalalalalal',
+        handleStr: expect.any(String),
+      }
+    });
+  });
+});
+
+describe('Error checking userSetNameV1', () => {
+  test('Invalid token', () => {
+    clear();
+    const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const invalidToken = member.token + 'lolol'
+
+    expect(userSetName(invalidToken, 'Jamie', 'Charlie')).toStrictEqual({ error: 'error' });
+  });
+
+  test('Invalid nameFirst', () => {
+    clear();
+    const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+
+    expect(userSetName(member.token, '', 'Charlie')).toStrictEqual({ error: 'error' });
+    expect(userSetName(member.token, 'dsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsd',
+      'Charlie')).toStrictEqual({ error: 'error' });
+  });
+
+  test('Invalid nameLast', () => {
+    clear();
+    const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+
+    expect(userSetName(member.token, 'Jamie', '')).toStrictEqual({ error: 'error' });
+    expect(userSetName(member.token, 'Jamie',
+      'dsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsd')).toStrictEqual({ error: 'error' });
   });
 });
