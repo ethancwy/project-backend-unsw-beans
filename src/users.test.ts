@@ -1,4 +1,4 @@
-import { authRegister, userProfile, clear, usersAll } from './global';
+import { authRegister, userProfile, clear, usersAll, userSetName } from './global';
 
 describe('Testing userProfileV2', () => {
   test('Testing for valid user', () => {

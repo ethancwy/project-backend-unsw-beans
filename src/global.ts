@@ -1,4 +1,5 @@
 import { getData } from './dataStore';
+import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
