@@ -319,7 +319,6 @@ describe('Error checking channelInviteV1', () => {
   });
 });
 
-
 describe('test block for channelMessagesV1', () => {
   test('invalid input(invalid user and channel)', () => {
     clearV1();
