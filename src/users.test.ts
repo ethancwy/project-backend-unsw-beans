@@ -1,4 +1,7 @@
-import { authRegister, userProfile, clear, usersAll, userSetName } from './global';
+import {
+  authRegister, userProfile, clear, usersAll, userSetName,
+  userSetEmail
+} from './global';
 
 describe('Testing userProfileV2', () => {
   test('Testing for valid user', () => {
@@ -175,5 +178,59 @@ describe('Error checking userSetNameV1', () => {
     expect(userSetName(member.token, 'Jamie', '')).toStrictEqual({ error: 'error' });
     expect(userSetName(member.token, 'Jamie',
       'dsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsd')).toStrictEqual({ error: 'error' });
+  });
+});
+
+describe('Testing userSetEmailV1', () => {
+  test('Successfully updating two emails', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+
+    expect(userSetEmail(member1.token, 'aintnofoo@bar.com')).toStrictEqual({});
+    expect(userSetEmail(member2.token, 'fish@bar.com')).toStrictEqual({});
+    expect(usersAll(member1.token)).toStrictEqual({
+      users: [
+        {
+          uId: member1.authUserId,
+          email: 'aintnofoo@bar.com',
+          nameFirst: 'James',
+          nameLast: 'Charles',
+          handleStr: expect.any(String),
+        },
+        {
+          uId: member2.authUserId,
+          email: 'fish@bar.com',
+          nameFirst: 'Ronald',
+          nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        },
+      ],
+    });
+  });
+});
+
+describe('Error checking userSetEmailV1', () => {
+  test('Invalid token and emails', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+
+    const invalidToken = member1.token + 'lolol';
+
+    expect(userSetEmail(invalidToken, 'aintnofoo@bar.com')).toStrictEqual({ error: 'error' });
+
+    expect(userSetEmail(member1.token, '@bar.com')).toStrictEqual({ error: 'error' });
+    expect(userSetEmail(member1.token, '@bar@chicken.com')).toStrictEqual({ error: 'error' });
+    expect(userSetEmail(member1.token, 'chicken.com')).toStrictEqual({ error: 'error' });
+    expect(userSetEmail(member1.token, 'chicken')).toStrictEqual({ error: 'error' });
+    expect(userSetEmail(member1.token, '')).toStrictEqual({ error: 'error' });
+  });
+
+  test('Email already in use', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+
+    expect(userSetEmail(member1.token, 'chicken@bar.com')).toStrictEqual({ error: 'error' });
   });
 });
