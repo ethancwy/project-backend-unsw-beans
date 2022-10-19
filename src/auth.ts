@@ -20,7 +20,7 @@ function authLoginV2(email: string, password: string) {
       if (data.users[i].password === password) {
         const token = generateToken();
         data.users[i].tokens.push(token);
-        return { authUserId: data.users[i].uId, token: token };
+        return { token: token, authUserId: data.users[i].uId };
       } else {
         return { error: 'error' };
       }
@@ -71,7 +71,7 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
   }
 
   setData(data);
-  return { authUserId: data.users[data.users.length - 1].uId, token: token };
+  return { token: token, authUserId: data.users[data.users.length - 1].uId };
 }
 
 /**

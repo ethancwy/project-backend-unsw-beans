@@ -12,8 +12,8 @@ describe('Testing for authRegisterV2: ', () => {
     expect(authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File'))
       .toStrictEqual(
         {
-          authUserId: expect.any(Number),
-          token: expect.any(String)
+          token: expect.any(String),
+          authUserId: expect.any(Number)
         });
   });
 
@@ -78,8 +78,8 @@ describe('Testing for authLoginV2: ', () => {
       'Peter', 'File');
     expect(authLogin('p.file@gmail.com', 'Bob100')).toStrictEqual(
       {
-        authUserId: expect.any(Number),
-        token: expect.any(String)
+        token: expect.any(String),
+        authUserId: expect.any(Number)
       });
   });
 
