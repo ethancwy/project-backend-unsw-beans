@@ -228,8 +228,8 @@ export function anotherUserHandle(token: string, handleStr: string) {
 export function isDmValid(dmId: number) {
   let data = getData();
   
-  for (const dms of data.dm) {
-    if (dms.dmId === dmId) {
+  for (const Dms of data.dms) {
+    if (Dms.dmId === dmId) {
       return true;
     }
   }
@@ -241,7 +241,7 @@ export function isDmValid(dmId: number) {
 export function isDmMember(uid: number, dmId: number) {
   let data = getData();
   
-  for (const uids of data.dm[dmId].members) {
+  for (const uids of data.dms[dmId].members) {
     if (uids === uid) {
       return true;
     }

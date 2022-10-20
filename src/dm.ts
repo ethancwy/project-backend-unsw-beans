@@ -64,15 +64,16 @@ function dmCreatev1(token: string, uId: number[]) {
   }
 
   // Creating dm
-  data.dm.push({
-    dmId: data.dm.length,
+  data.dms.push({
+    dmId: data.dms.length,
     name: name,
     owner: ownerId,
     members: members,
+    //messages: [],
   });
 
   setData(data);
-  return { dmId: data.dm.length - 1 };
+  return { dmId: data.dms.length - 1 };
 }
 
 function dmListv1(token: string)  {
@@ -87,12 +88,12 @@ function dmListv1(token: string)  {
   const array = [];
 
   // Storing all relevant dms in array
-  for (const dms of data.dm) {
-    for (const uids of dms.members) {
+  for (const Dms of data.dms) {
+    for (const uids of Dms.members) {
       if (uids === id) {
         array.push({
-          dmId: dms.dmId,
-          name: dms.name,
+          dmId: Dms.dmId,
+          name: Dms.name,
         })
       }
     }
@@ -102,7 +103,42 @@ function dmListv1(token: string)  {
 }
 
 function dmRemovev1(token: string, dmId: number) {
+  let data = getData();
+  
+  // Checking if token is valid
+  if (isValidToken(token) === false) {
+    return { error: 'error' };
+  }
 
+  // Checking if dmId is valid
+  if (isDmValid(dmId) === false) {
+    return { error: 'error' };
+  }
+
+  // Checking that token user is apart of dm
+  const userId = getUserId(token);
+  if (isDmMember(userId, dmId) === false) {
+    return { error: 'error' };
+  }
+
+  // Checking that the token belongs to the owner
+  if (data.dms[dmId].owner !== userId) {
+    return { error: 'error' };
+  }
+
+  let found = false;
+  for (let i = 0; i < data.dms.length - 1; i++) {
+    if (data.dms[i].dmId === dmId) {
+      found = true;
+    }   
+    if (found === true) {
+      data.dms[i] = data.dms[i + 1];   
+    }
+  }
+  data.dms[dmId].members.pop();
+  
+  setData(data);
+  return {};
 }
 
 function dmDetailsv1(token: string, dmId: number) {
@@ -127,7 +163,7 @@ function dmDetailsv1(token: string, dmId: number) {
   // Creating array of users
   const memberArray = [];
 
-  for (const uids of data.dm[dmId].members) {
+  for (const uids of data.dms[dmId].members) {
     memberArray.push({
       uId: data.users[uids].uId,
       email: data.users[uids].email,
@@ -138,7 +174,7 @@ function dmDetailsv1(token: string, dmId: number) {
   }
 
   return {
-    name: data.dm[dmId].name,
+    name: data.dms[dmId].name,
     members: memberArray,
   };
 }
@@ -163,16 +199,24 @@ function dmLeavev1(token: string, dmId: number) {
   }
 
   let found = false;
-  for (let i = 0; i < data.dm[dmId].members.length - 1, i++) {
-    if (data.dm[dmId].members[i] === userId) {
+  for (let i = 0; i < data.dms[dmId].members.length - 1; i++) {
+    if (data.dms[dmId].members[i] === userId) {
       found = true;
     }   
     if (found === true) {
-      data.dm[dmId].members[i] = data.dm[dmId].members[i + 1];   
+      data.dms[dmId].members[i] = data.dms[dmId].members[i + 1];   
     }
   }
-  data.dm[dmId].members.pop();
+  data.dms[dmId].members.pop();
   
   setData(data);
   return {};
 }
+
+export {
+  dmCreatev1,
+  dmListv1,
+  dmRemovev1,
+  dmDetailsv1,
+  dmLeavev1
+};
