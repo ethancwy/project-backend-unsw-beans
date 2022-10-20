@@ -1,4 +1,3 @@
-import { StringifyOptions } from 'querystring';
 import { getData, setData } from './dataStore';
 import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember } from './global';
 
@@ -27,7 +26,6 @@ function dmCreatev1(token: string, uId: number[]) {
   }
 
   const ownerId = getUserId(token);
-
   // Sorting names
   // Pushing owners name
   let ownerName = data.users[ownerId].handleStr;
@@ -213,10 +211,30 @@ function dmLeavev1(token: string, dmId: number) {
   return {};
 }
 
+/*function dmMessagesv1(token: string, dmId: number, start: number) {
+  let data = getData();
+  
+  // Checking if token is valid
+  if (isValidToken(token) === false) {
+    return { error: 'error' };
+  }
+  // Checking if dmId is valid
+  if (isDmValid(dmId) === false) {
+    return { error: 'error' };
+  }
+  // Checking that token user is apart of dm
+  const userId = getUserId(token);
+  if (isDmMember(userId, dmId) === false) {
+    return { error: 'error' };
+  }
+  // Checking that 
+}*/
+
 export {
   dmCreatev1,
   dmListv1,
   dmRemovev1,
   dmDetailsv1,
-  dmLeavev1
+  dmLeavev1,
+  dmMessagesv1
 };

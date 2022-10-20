@@ -4,12 +4,13 @@ function clearV1() {
   let data = getData();
   data = {
     users: [],
-    channels: []
+    channels: [],
+    dms: []
   };
   setData(data);
   return {};
 }
 
 export {
-  clearV1,
+  clearV1
 };
