@@ -241,7 +241,7 @@ export function isDmValid(dmId: number) {
 export function isDmMember(uid: number, dmId: number) {
   let data = getData();
   
-  for (const uids of data.dm.members) {
+  for (const uids of data.dm[dmId].members) {
     if (uids === uid) {
       return true;
     }

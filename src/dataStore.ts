@@ -36,7 +36,9 @@ type dms = {
 type datatype = {
   users: Array<user>;
   channels: Array<channel>;
-  dm: Array<dms>
+  dm: Array<dms>;
+  // Check the messages type
+  messages: Array<channelmessages>
 }
 
 let data: datatype = {

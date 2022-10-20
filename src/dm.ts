@@ -124,6 +124,55 @@ function dmDetailsv1(token: string, dmId: number) {
     return { error: 'error' };
   }
 
-  // returns something needa look into it
+  // Creating array of users
+  const memberArray = [];
+
+  for (const uids of data.dm[dmId].members) {
+    memberArray.push({
+      uId: data.users[uids].uId,
+      email: data.users[uids].email,
+      nameFirst: data.users[uids].nameFirst,
+      nameLast: data.users[uids].nameLast,
+      handleStr: data.users[uids].handleStr,
+    });
+  }
+
+  return {
+    name: data.dm[dmId].name,
+    members: memberArray,
+  };
+}
+
+function dmLeavev1(token: string, dmId: number) {
+  let data = getData();
+
+  // Checking if token is valid
+  if (isValidToken(token) === false) {
+    return { error: 'error' };
+  }
+
+  // Checking if dmId is valid
+  if (isDmValid(dmId) === false) {
+    return { error: 'error' };
+  }
+
+  // Checking that token user is apart of dm
+  const userId = getUserId(token);
+  if (isDmMember(userId, dmId) === false) {
+    return { error: 'error' };
+  }
+
+  let found = false;
+  for (let i = 0; i < data.dm[dmId].members.length - 1, i++) {
+    if (data.dm[dmId].members[i] === userId) {
+      found = true;
+    }   
+    if (found === true) {
+      data.dm[dmId].members[i] = data.dm[dmId].members[i + 1];   
+    }
+  }
+  data.dm[dmId].members.pop();
   
+  setData(data);
+  return {};
 }
