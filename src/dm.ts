@@ -53,12 +53,10 @@ function dmCreatev1(token: string, uId: number[]) {
   }
 
   // Creating members array
-  let members = [];
-  members[0] = ownerId;
-  let i = 1;
-  for (const uids of uId) {
-    members[i] = uids;
-    i++
+  let membersArray = [];
+  membersArray[0] = ownerId;
+  for (let i = 0; i < uId.length; i++) {
+    membersArray[i + 1] = uId[i];
   }
 
   // Creating dm
@@ -66,7 +64,7 @@ function dmCreatev1(token: string, uId: number[]) {
     dmId: data.dms.length,
     name: name,
     owner: ownerId,
-    members: members,
+    members: membersArray,
     //messages: [],
   });
 
@@ -180,7 +178,7 @@ function dmDetailsv1(token: string, dmId: number) {
 function dmLeavev1(token: string, dmId: number) {
   let data = getData();
 
-  // Checking if token is valid
+  //Checking if token is valid
   if (isValidToken(token) === false) {
     return { error: 'error' };
   }
@@ -218,16 +216,25 @@ function dmLeavev1(token: string, dmId: number) {
   if (isValidToken(token) === false) {
     return { error: 'error' };
   }
+
   // Checking if dmId is valid
   if (isDmValid(dmId) === false) {
     return { error: 'error' };
   }
+
   // Checking that token user is apart of dm
   const userId = getUserId(token);
   if (isDmMember(userId, dmId) === false) {
     return { error: 'error' };
   }
-  // Checking that 
+
+  // Checking that start is less than the number of messages in dms
+  if (start > data.dms[dmId].messages.length) {
+    return { error: 'error' };
+  } 
+
+  const messages = [];
+
 }*/
 
 export {
@@ -236,5 +243,5 @@ export {
   dmRemovev1,
   dmDetailsv1,
   dmLeavev1,
-  dmMessagesv1
+  //dmMessagesv1
 };
