@@ -1,5 +1,4 @@
 import { getData } from './dataStore';
-import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
@@ -56,7 +55,7 @@ export type error = { error: string };
 //                                                     //
 // ==================================================  //
 
-// Checks if user is valid
+// Helper function to check if user is valid
 export function isValidUser(authUserId: number) {
   const data = getData();
   for (const user of data.users) {
@@ -67,7 +66,7 @@ export function isValidUser(authUserId: number) {
   return false;
 }
 
-// Checks if channel is valid
+// Helper function to check if channel is valid
 export function isValidChannel(channelId: number) {
   const data = getData();
   for (const channel of data.channels) {
@@ -78,7 +77,7 @@ export function isValidChannel(channelId: number) {
   return false;
 }
 
-// Checks if user is global owner
+// Helper function to check if user is global owner
 export function isGlobalOwner(authUserId: number) {
   const data = getData();
 
@@ -92,136 +91,15 @@ export function isGlobalOwner(authUserId: number) {
   return false;
 }
 
-// Checks if token is valid
-export function isValidToken(token: string) {
-  const data = getData();
-
-  for (const user of data.users) {
-    if (user.tokens.includes(token)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-// Checks if user is in channel
-export function isInChannel(uId: number, channelId: number) {
-  const data = getData();
-
-  for (const channel of data.channels) {
-    if (channel.channelId === channelId) {
-      for (const member of channel.memberIds) {
-        if (uId === member) {
-          return true;
-        }
-      }
-    }
-  }
-  return false;
-}
-
-// Checks if user is channel owner or global owner (to check for channel perms)
-// Return true if either, false otherwise
-export function isChannelOwner(uId: number, channelId: number) {
-  const data = getData();
-
-  // check for channel owner
-  for (const channel of data.channels) {
-    if (channelId === channel.channelId) {
-      for (const owner of channel.ownerIds) {
-        if (uId === owner) {
-          return true;
-        }
-      }
-    }
-  }
-  return false;
-}
-
-// Checks if user is the only channel owner in given channel
-export function isOnlyOwner(uId: number, channelId: number) {
-  const data = getData();
-
-  if (!isChannelOwner(uId, channelId)) {
-    return { error: 'error' };
-  }
-
-  for (const channel of data.channels) {
-    if (channelId === channel.channelId) {
-      if (channel.ownerIds.length === 1) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-// Helper function to find authUserId of token owner
+//Helper function to find authUserId of token owner
 export function getUserId(token: string): number {
   const data = getData();
 
-  for (const user of data.users) {
-    if (user.tokens.includes(token)) {
+  for ( const user of data.users ) {
+    if ( user.tokens.includes(token) ) {
       return user.uId;
     }
   }
-}
-
-// Checks if valid email address
-export function validEmail(email: string) {
-  return validator.isEmail(email);
-}
-
-// Checks if valid first name
-export function validName(name: string) {
-  if (name.length < 1 || name.length > 50) {
-    return false;
-  }
-  return true;
-}
-
-// Checks if another user has email in use
-export function anotherUserEmail(token: string, email: string) {
-  const data = getData();
-
-  for (const user of data.users) {
-    if (email === user.email) {
-      if (user.tokens.includes(token)) {
-        // own email
-        return false;
-      }
-      // someone else's email
-      return true;
-    }
-  }
-  return false;
-}
-
-export function alphanumeric(handleStr: string) {
-  return /^[A-Za-z0-9]*$/.test(handleStr);
-}
-
-export function isValidHandleLength(handleStr: string) {
-  if (handleStr.length < 3 || handleStr.length > 20) {
-    return false;
-  }
-  return true;
-}
-
-export function anotherUserHandle(token: string, handleStr: string) {
-  const data = getData();
-
-  for (const user of data.users) {
-    if (handleStr === user.handleStr) {
-      if (user.tokens.includes(token)) {
-        // own handleStr
-        return false;
-      }
-      // someone else's handleStr
-      return true;
-    }
-  }
-  return false;
 }
 
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //

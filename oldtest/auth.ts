@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { validEmail, validName } from './global';
+import validator from 'validator';
 
 /**
 * Allows user to login with email and password that they have registered
@@ -20,7 +20,7 @@ function authLoginV2(email: string, password: string) {
       if (data.users[i].password === password) {
         const token = generateToken();
         data.users[i].tokens.push(token);
-        return { token: token, authUserId: data.users[i].uId };
+        return { authUserId: data.users[i].uId, token: token };
       } else {
         return { error: 'error' };
       }
@@ -71,7 +71,7 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
   }
 
   setData(data);
-  return { token: token, authUserId: data.users[data.users.length - 1].uId };
+  return { authUserId: data.users[data.users.length - 1].uId, token: token };
 }
 
 /**
@@ -138,6 +138,11 @@ function getHandleStr(nameFirst: string, nameLast: string) {
   return handleStr;
 }
 
+// Helper function to get valid email address
+function validEmail(email: string) {
+  return validator.isEmail(email);
+}
+
 // Helper function to get valid password
 function validPass(password: string) {
   if (password.match(/.{6,}/)) {
@@ -145,6 +150,14 @@ function validPass(password: string) {
   } else {
     return false;
   }
+}
+
+// Helper function to get valid first name
+function validName(nameFirst: string) {
+  if (nameFirst.length < 1 || nameFirst.length > 50) {
+    return false;
+  }
+  return true;
 }
 
 // Helper function to get valid handle string
@@ -170,6 +183,7 @@ function sameEmail(email: string) {
       return true;
     }
   }
+
   return false;
 }
 

@@ -1,28 +1,23 @@
 import { getData, setData } from './dataStore';
-import {
-  isValidUser, isValidChannel, isGlobalOwner, isValidToken,
-  getUserId, isInChannel, isChannelOwner, isOnlyOwner
-} from './global';
+import { isValidUser, isValidChannel, isGlobalOwner } from './global';
 
 /**
   * Given a channelId of a channel that the authorised user can join,
   * adds them to that channel.
   *
-  * @param {string} token - a valid token
+  * @param {integer} authUserId - a valid authUserId from dataStore
   * @param {integer} channelId - a valid channelId from dataStore
   *
   * @returns {} - return empty
   * @returns {error} - return error object in invalid cases
 */
 
-function channelJoinV2(token: string, channelId: number) {
+function channelJoinV2(authUserId: number, channelId: number) {
   const data = getData();
 
-  if (!isValidToken(token)) {
+  if (!isValidUser(authUserId)) {
     return { error: 'error' };
   }
-
-  const authUserId = getUserId(token);
 
   for (const channel of data.channels) {
     if (channelId === channel.channelId) {
@@ -49,7 +44,7 @@ function channelJoinV2(token: string, channelId: number) {
   * The authUser invites a user with uId to join a channel with channelId.
   * Once invited, the user is added to the channel immediately.
   *
-  * @param {string} token - a valid token
+  * @param {integer} authUserId - a valid authUserId from dataStore
   * @param {integer} channelId - a valid channelId from dataStore
   * @param {integer} uId - a valid uId from dataStore
   *
@@ -57,14 +52,12 @@ function channelJoinV2(token: string, channelId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelInviteV2(token: string, channelId: number, uId: number) {
+function channelInviteV2(authUserId: number, channelId: number, uId: number) {
   const data = getData();
 
-  if (!isValidToken(token) || !isValidUser(uId) || !isValidChannel(channelId)) {
+  if (!isValidUser(authUserId) || !isValidUser(uId) || !isValidChannel(channelId)) {
     return { error: 'error' };
   }
-
-  const authUserId = getUserId(token);
 
   let authMember = false;
   for (const channel of data.channels) {
@@ -110,14 +103,8 @@ function channelInviteV2(token: string, channelId: number, uId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelMessagesV2(token: string, channelId: number, start: number) {
+function channelMessagesV2(authUserId: number, channelId: number, start: number) {
   const data = getData();
-
-  if (!isValidToken(token)) {
-    return { error: 'error' };
-  }
-
-  const authUserId = getUserId(token);
 
   if (start < 0) {
     return { error: 'error' };
@@ -148,8 +135,25 @@ function channelMessagesV2(token: string, channelId: number, start: number) {
   }
 
   // getting amount of msgs in channel
-  const amountOfMsgs = data.channels[index].channelmessages.length;
+  let amount = 0;
+  for (const i in data.channels[index].channelmessages) {
+    amount = parseInt(i);
+  }
+  if (data.channels[index].channelmessages.length === 0) {
+    amount = 0;
+  }
+  let amountOfMsgs = amount;
   let end = 0;
+  // const emptyMsg = {
+  //   messageId: NaN,
+  //   uId: NaN,
+  //   message: '',
+  //   timeSent: NaN,
+  // };
+
+  if (amountOfMsgs === 1 && amount === 0) {
+    amountOfMsgs = 0;
+  }
 
   if (start > amountOfMsgs) {
     return { error: 'error' };
@@ -158,7 +162,7 @@ function channelMessagesV2(token: string, channelId: number, start: number) {
   let count = 0;
   let isMore = false;
   const list = [];
-  if (amountOfMsgs > 0) {
+  if (amount > 0) {
     for (const msg of data.channels[index].channelmessages) {
       if (count === 50) {
         isMore = true;
@@ -187,7 +191,7 @@ function channelMessagesV2(token: string, channelId: number, start: number) {
   * Given a channel with ID channelId that the authorised user is a
   * member of, provides basic details about the channel.
   *
-  * @param {string} token - a valid authUserId from dataStore
+  * @param {integer} authUserId - a valid authUserId from dataStore
   * @param {integer} channelId - a valid channelId from dataStore
   *
   * @returns { name:
@@ -198,30 +202,42 @@ function channelMessagesV2(token: string, channelId: number, start: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelDetailsV2(token: string, channelId: number) {
+function channelDetailsV2(authUserId: number, channelId: number) {
   const data = getData();
-  const uId = getUserId(token);
+
+  // checking if authUserId is valid
+  if (!isValidUser(authUserId)) {
+    return { error: 'error' };
+  }
 
   // checking if channelId is valid
-  let channelCheck = false;
+  let channelCheck = 0;
   let channelPos = 0;
   for (const chans in data.channels) {
     if (data.channels[chans].channelId === channelId) {
-      channelCheck = true;
+      channelCheck = 1;
       channelPos = parseInt(chans);
     }
   }
 
-  if (channelCheck === false) {
+  if (channelCheck === 0) {
     return { error: 'error' };
   }
 
-  // checking if token is valid and if in channel
-  if (!isValidToken(token) || !isInChannel(uId, channelId)) {
+  // checking if authUserId is in the channel
+  let userCheck = 0;
+  for (const membs of data.channels[channelPos].memberIds) {
+    if (membs === authUserId) {
+      userCheck = 1;
+    }
+  }
+
+  if (userCheck === 0) {
     return { error: 'error' };
   }
 
   const arrayOwners = [];
+
   for (const membs of data.channels[channelPos].ownerIds) {
     for (const users of data.users) {
       if (users.uId === membs) {
@@ -237,6 +253,7 @@ function channelDetailsV2(token: string, channelId: number) {
   }
 
   const arrayMemb = [];
+
   for (const membs of data.channels[channelPos].memberIds) {
     for (const users of data.users) {
       if (users.uId === membs) {
@@ -259,134 +276,9 @@ function channelDetailsV2(token: string, channelId: number) {
   };
 }
 
-/**
-  * Given a channel with ID channelId that the authorised user is a
-  * member of, remove them as a member of the channel.
-  *
-  * @param {string} token - a valid token
-  * @param {integer} channelId - a valid channelId from dataStore
-  *
-  * @returns {} - return empty
-  * @returns {error} - return error object in invalid cases
-*/
-
-function channelLeaveV1(token: string, channelId: number) {
-  const data = getData();
-  const uId = getUserId(token);
-
-  if (!isValidToken(token) || !isValidChannel(channelId) || !isInChannel(uId, channelId)) {
-    return { error: 'error' };
-  }
-
-  // if owner, remove from ownerids and memberids
-  // if normal member, remove from memberids
-  for (const channel of data.channels) {
-    if (channelId === channel.channelId) {
-      for (const index in channel.ownerIds) {
-        if (channel.ownerIds[index] === uId) {
-          channel.ownerIds.splice(parseInt(index), 1);
-          break;
-        }
-      }
-      for (const index in channel.memberIds) {
-        if (channel.memberIds[index] === uId) {
-          channel.memberIds.splice(parseInt(index), 1);
-          break;
-        }
-      }
-      break;
-    }
-  }
-  setData(data);
-  return {};
-}
-
-/**
-  * Make user with user id uId an owner of the channel.
-  *
-  * @param {string} token - a valid token
-  * @param {integer} channelId - a valid channelId from dataStore
-  *
-  * @returns {} - return empty
-  * @returns {error} - return error object in invalid cases
-*/
-
-function channelAddOwnerV1(token: string, channelId: number, uId: number) {
-  const data = getData();
-  if (!isValidToken(token) || !isValidChannel(channelId) || !isValidUser(uId)) {
-    // Invalid token, channelId, or uId
-    return { error: 'error' };
-  } else if (!isInChannel(uId, channelId) || isChannelOwner(uId, channelId)) {
-    // uId not a member of channel, uId already an owner
-    return { error: 'error' };
-  }
-
-  const authUserId = getUserId(token);
-  // authUserId no owner perms
-  if (!isGlobalOwner(authUserId) && !isChannelOwner(authUserId, channelId)) {
-    return { error: 'error' };
-  }
-
-  for (const channel of data.channels) {
-    if (channelId === channel.channelId) {
-      channel.ownerIds.push(uId);
-      break;
-    }
-  }
-  setData(data);
-  return {};
-}
-
-/**
-  * Remove user with user id uId as an owner of the channel.
-  *
-  * @param {string} token - a valid token
-  * @param {integer} channelId - a valid channelId from dataStore
-  *
-  * @returns {} - return empty
-  * @returns {error} - return error object in invalid cases
-*/
-
-function channelRemoveOwnerV1(token: string, channelId: number, uId: number) {
-  const data = getData();
-  // Invalid token, channelId, uId, and not a channelOwner
-  if (!isValidToken(token) || !isValidChannel(channelId) || !isValidUser(uId) ||
-    !isChannelOwner(uId, channelId)) {
-    return { error: 'error' };
-  }
-
-  // Only owner in channel
-  if (isOnlyOwner(uId, channelId)) {
-    return { error: 'error' };
-  }
-
-  const authUserId = getUserId(token);
-  // authUserId no owner perms
-  if (!isGlobalOwner(authUserId) && !isChannelOwner(authUserId, channelId)) {
-    return { error: 'error' };
-  }
-
-  for (const channel of data.channels) {
-    if (channelId === channel.channelId) {
-      for (const index in channel.ownerIds) {
-        if (channel.ownerIds[index] === uId) {
-          channel.ownerIds.splice(parseInt(index), 1);
-          break;
-        }
-      }
-      break;
-    }
-  }
-  setData(data);
-  return {};
-}
-
 export {
   channelJoinV2,
   channelInviteV2,
   channelMessagesV2,
-  channelDetailsV2,
-  channelLeaveV1,
-  channelAddOwnerV1,
-  channelRemoveOwnerV1
+  channelDetailsV2
 };

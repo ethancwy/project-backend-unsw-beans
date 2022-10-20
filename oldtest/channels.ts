@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { isValidUser, getUserId, isValidToken } from './global';
+import { isValidUser, getUserId } from './global';
 
 /**
   *
@@ -17,11 +17,11 @@ import { isValidUser, getUserId, isValidToken } from './global';
 function channelsCreateV2(token: string, name: string, isPublic: boolean) {
   const data = getData();
 
-  if (!isValidToken(token)) {
+  const authUserId = getUserId(token);
+
+  if (!isValidUser(authUserId)) {
     return { error: 'error' };
   }
-
-  const authUserId = getUserId(token);
 
   // checking if name is valid
   if (name.length > 20 || name.length < 1) { return { error: 'error' }; }
@@ -54,14 +54,8 @@ function channelsCreateV2(token: string, name: string, isPublic: boolean) {
   *
 */
 
-function channelsListV2(token: string) {
+function channelsListV2(authUserId: number) {
   const data = getData();
-
-  if (!isValidToken(token)) {
-    return { error: 'error' };
-  }
-
-  const authUserId = getUserId(token);
 
   if (!isValidUser(authUserId)) {
     return { error: 'error' };
@@ -98,14 +92,8 @@ function channelsListV2(token: string) {
  *
 */
 
-function channelsListAllV2(token: string) {
+function channelsListAllV2(authUserId: number) {
   const data = getData();
-
-  if (!isValidToken(token)) {
-    return { error: 'error' };
-  }
-
-  const authUserId = getUserId(token);
 
   if (!isValidUser(authUserId)) {
     return { error: 'error' };
@@ -114,10 +102,12 @@ function channelsListAllV2(token: string) {
   const array = [];
 
   for (const ch of data.channels) {
-    array.push({
-      channelId: ch.channelId,
-      name: ch.name,
-    });
+    if (!isNaN(ch.channelId)) {
+      array.push({
+        channelId: ch.channelId,
+        name: ch.name,
+      });
+    }
   }
 
   return {
