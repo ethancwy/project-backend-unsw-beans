@@ -26,9 +26,18 @@ type channel = {
   channelmessages: Array<channelmessages>;
 }
 
+type dm = {
+  dmId: number;
+  name: string;
+  owner: number;
+  members: Array<number>;
+  messages: Array<channelmessages>;
+}
+
 type datatype = {
   users: Array<user>;
   channels: Array<channel>;
+  dms: Array<dm>;
 }
 
 let data: datatype = {
@@ -60,6 +69,10 @@ let data: datatype = {
     //     }
     //   ]
     // },
+  ],
+
+  dms: [
+
   ]
 };
 
