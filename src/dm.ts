@@ -65,7 +65,7 @@ function dmCreatev1(token: string, uId: number[]) {
     name: name,
     owner: ownerId,
     members: membersArray,
-    //messages: [],
+    messages: [],
   });
 
   setData(data);
@@ -209,7 +209,7 @@ function dmLeavev1(token: string, dmId: number) {
   return {};
 }
 
-/*function dmMessagesv1(token: string, dmId: number, start: number) {
+function dmMessagesv1(token: string, dmId: number, start: number) {
   let data = getData();
   
   // Checking if token is valid
@@ -234,8 +234,21 @@ function dmLeavev1(token: string, dmId: number) {
   } 
 
   const messages = [];
+  for (let i = start; i < start + 50 && i < data.dms[dmId].messages.length; i++) {
+    messages.push(data.dms[dmId].messages[i]);
+  }
 
-}*/
+  let end = start + 50;
+  if (start + 50 >= data.dms[dmId].messages.length) {
+    end = -1;
+  }
+  
+  return { 
+    messages: messages,
+    start: start, 
+    end: end,
+  };
+}
 
 export {
   dmCreatev1,
@@ -243,5 +256,5 @@ export {
   dmRemovev1,
   dmDetailsv1,
   dmLeavev1,
-  //dmMessagesv1
+  dmMessagesv1
 };
