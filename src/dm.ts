@@ -2,7 +2,7 @@ import { getData, setData } from './dataStore';
 import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember } from './global';
 
 function dmCreatev1(token: string, uId: number[]) {
-  let data = getData();
+  const data = getData();
 
   // Is the token valid
   if (isValidToken(token) === false) {
@@ -28,8 +28,8 @@ function dmCreatev1(token: string, uId: number[]) {
   const ownerId = getUserId(token);
   // Sorting names
   // Pushing owners name
-  let ownerName = data.users[ownerId].handleStr;
-  let array = [];
+  const ownerName = data.users[ownerId].handleStr;
+  const array = [];
   array.push(ownerName);
   // Pushing members names
   for (const uids of uId) {
@@ -42,7 +42,7 @@ function dmCreatev1(token: string, uId: number[]) {
     if (array[i].localeCompare(array[i - 1]) === -1) {
       temp = array[i];
       array[i] = array[i - 1];
-      array[i - 1] = temp; 
+      array[i - 1] = temp;
     }
   }
 
@@ -53,7 +53,7 @@ function dmCreatev1(token: string, uId: number[]) {
   }
 
   // Creating members array
-  let membersArray = [];
+  const membersArray = [];
   membersArray[0] = ownerId;
   for (let i = 0; i < uId.length; i++) {
     membersArray[i + 1] = uId[i];
@@ -72,8 +72,8 @@ function dmCreatev1(token: string, uId: number[]) {
   return { dmId: data.dms.length - 1 };
 }
 
-function dmListv1(token: string)  {
-  let data = getData();
+function dmListv1(token: string) {
+  const data = getData();
 
   // Checking if token is valid
   if (isValidToken(token) === false) {
@@ -90,7 +90,7 @@ function dmListv1(token: string)  {
         array.push({
           dmId: Dms.dmId,
           name: Dms.name,
-        })
+        });
       }
     }
   }
@@ -99,8 +99,8 @@ function dmListv1(token: string)  {
 }
 
 function dmRemovev1(token: string, dmId: number) {
-  let data = getData();
-  
+  const data = getData();
+
   // Checking if token is valid
   if (isValidToken(token) === false) {
     return { error: 'error' };
@@ -126,19 +126,19 @@ function dmRemovev1(token: string, dmId: number) {
   for (let i = 0; i < data.dms.length - 1; i++) {
     if (data.dms[i].dmId === dmId) {
       found = true;
-    }   
+    }
     if (found === true) {
-      data.dms[i] = data.dms[i + 1];   
+      data.dms[i] = data.dms[i + 1];
     }
   }
   data.dms[dmId].members.pop();
-  
+
   setData(data);
   return {};
 }
 
 function dmDetailsv1(token: string, dmId: number) {
-  let data = getData();
+  const data = getData();
 
   // Checking if token is valid
   if (isValidToken(token) === false) {
@@ -176,9 +176,9 @@ function dmDetailsv1(token: string, dmId: number) {
 }
 
 function dmLeavev1(token: string, dmId: number) {
-  let data = getData();
+  const data = getData();
 
-  //Checking if token is valid
+  // Checking if token is valid
   if (isValidToken(token) === false) {
     return { error: 'error' };
   }
@@ -198,20 +198,20 @@ function dmLeavev1(token: string, dmId: number) {
   for (let i = 0; i < data.dms[dmId].members.length - 1; i++) {
     if (data.dms[dmId].members[i] === userId) {
       found = true;
-    }   
+    }
     if (found === true) {
-      data.dms[dmId].members[i] = data.dms[dmId].members[i + 1];   
+      data.dms[dmId].members[i] = data.dms[dmId].members[i + 1];
     }
   }
   data.dms[dmId].members.pop();
-  
+
   setData(data);
   return {};
 }
 
 function dmMessagesv1(token: string, dmId: number, start: number) {
-  let data = getData();
-  
+  const data = getData();
+
   // Checking if token is valid
   if (isValidToken(token) === false) {
     return { error: 'error' };
@@ -231,7 +231,7 @@ function dmMessagesv1(token: string, dmId: number, start: number) {
   // Checking that start is less than the number of messages in dms
   if (start > data.dms[dmId].messages.length) {
     return { error: 'error' };
-  } 
+  }
 
   const messages = [];
   for (let i = start; i < start + 50 && i < data.dms[dmId].messages.length; i++) {
@@ -242,10 +242,10 @@ function dmMessagesv1(token: string, dmId: number, start: number) {
   if (start + 50 >= data.dms[dmId].messages.length) {
     end = -1;
   }
-  
-  return { 
+
+  return {
     messages: messages,
-    start: start, 
+    start: start,
     end: end,
   };
 }
