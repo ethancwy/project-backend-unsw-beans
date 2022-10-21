@@ -1,5 +1,4 @@
-import { start } from 'repl';
-import { authRegister, dmCreate, clear, dmList, dmRmove, dmDetails, dmLeave, dmMessages } from './global';
+import { authRegister, dmCreate, clear, dmList, dmRmove, dmDetails, dmLeave, dmMessages, isDmMember } from './global';
 
 // Tests for dm/create/v1
 describe ('Testing dm/create/v1 standard', () => {
@@ -56,7 +55,9 @@ describe('Testing dm/list/v1 standard', () => {
     const recipient2 = authRegister('heisenberg@hhm.com', 'bluecrystal', 'Walter', 'White');
     const dm = dmCreate(sender.token, [recipient.authUserId, recipient2.authUserId]);
     
-    expect(dmList(sender.token)).toStrictEqual([{ dmId: dm.dmId, name: expect.any(String) }]);
+    expect(dmList(sender.token)).toStrictEqual({
+      dms: [{ dmId: dm.dmId, name: expect.any(String) }]
+    });
   });  
 
 });
@@ -181,7 +182,7 @@ describe('Testing dm/remove/v1 errors', () => {
     const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill'); 
     const recipient2 = authRegister('heisenberg@hhm.com', 'bluecrystal', 'Walter', 'White');
     const dm = dmCreate(sender.token, [recipient.authUserId, recipient2.authUserId]);
-    dmLeave( sender.token, dm.dmId );
+    dmLeave(sender.token, dm.dmId );
 
     expect(dmRmove(sender.token, dm.dmId)).toStrictEqual({ error: expect.any(String) });
   });
@@ -295,7 +296,7 @@ describe('Testing dm/messages/v1 standard', () => {
 
 });
 
-describe('Testing dm/details/v1 errors', () => {
+describe('Testing dm/messages/v1 errors', () => {
 
   test('Invalid dmId', () => {
     clear();
@@ -339,3 +340,5 @@ describe('Testing dm/details/v1 errors', () => {
   });
 
 });
+
+
