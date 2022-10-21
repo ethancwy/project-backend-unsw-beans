@@ -23,14 +23,13 @@ function messageSendV1 (token: string, channelId: number, message: string) {
   if (!isValidToken || !isValidChannel(channelId) || !isInChannel(uId, channelId) || message.length < 1 || message.length > 1000) {
     return { error: 'error' };
   }
-  
+
   const messageId = data.messages.length;
   const channel = data.channels.find((item: {channelId: number;}) => item.channelId === channelId);
   const newMessage = {
     messageId: messageId,
     uId: uId,
     message: message,
-    // how to get the time sent
     timeSent: requestTimesent(),
   };
   data.messages.push(newMessage);
