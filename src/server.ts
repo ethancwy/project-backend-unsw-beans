@@ -15,6 +15,7 @@ import {
   userSetHandleV1
 } from './users';
 import { dmCreatev1, dmDetailsv1, dmLeavev1, dmListv1, dmRemovev1, dmMessagesv1 } from './dm';
+import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './message';
 
 // Set up web app
 const app = express();
@@ -168,6 +169,27 @@ app.get('/dm/messages/v1', (req: Request, res: Response) => {
   const dmId = parseInt(req.query.dmId as string);
   const start = parseInt(req.query.start as string);
   return res.json(dmMessagesv1(token, dmId, start));
+});
+
+app.post('/message/send/v1', (req: Request, res: Response) => {
+  const { token, channelId, message } = req.body;
+  return res.json(messageSendV1(token, channelId, message));
+});
+
+app.put('/message/edit/v1', (req: Request, res: Response) => {
+  const { token, messageId, message } = req.body;
+  return res.json(messageEditV1(token, messageId, message));
+});
+
+app.delete('/message/remove/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const messageId  = parseInt(req.query.messageId as string);
+  return res.json(messageRemoveV1(token, messageId));
+});
+
+app.post('/message/senddm/v1', (req: Request, res: Response) => {
+  const { token, dmId, message } = req.body;
+  return res.json(messageSenddmV1(token, dmId, message));
 });
 
 // for logging errors (print to terminal)
