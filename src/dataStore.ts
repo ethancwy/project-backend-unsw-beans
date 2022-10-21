@@ -90,3 +90,18 @@ function setData(newData: datatype) {
 }
 
 export { getData, setData };
+
+// import fs from 'fs';
+// import { getData } from './dataStore'
+
+// let data = getData();
+
+// if (fs.existsSync('./database.json')) {
+//   const dbstr = fs.readFileSync('./database.json');
+//   data = JSON.parse(String(dbstr));
+// }
+
+// const save = () => {
+//   const jsonstr = JSON.stringify(data);
+//   fs.writeFileSync('./database.json', jsonstr);
+// }
