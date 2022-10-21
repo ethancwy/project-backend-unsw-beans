@@ -104,7 +104,8 @@ function getData() {
 
 // Use set(newData) to pass in the entire data object, with modifications made
 function setData(newData: datatype) {
-  const dataStr = JSON.stringify(newData, null, 2);
+  data = newData;
+  const dataStr = JSON.stringify(data, null, 2);
   fs.writeFileSync('./database.json', dataStr, { flag: 'w' });
 }
 
