@@ -120,8 +120,8 @@ describe('Testing for auth/logout/v1', () => {
   // Valid logout
   test('Testing for valid logout', () => {
     clear();
-    authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
-    const user = authLogin('p.file@gmail.com', 'Bob100');
+    const user = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    // const user = authLogin('p.file@gmail.com', 'Bob100');
     expect(authLogout(user.token)).toStrictEqual({});
   });
 
@@ -135,18 +135,18 @@ describe('Testing for auth/logout/v1', () => {
   // Invalid logout (logout twice)
   test('Testing for invalid logout', () => {
     clear();
-    authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
-    const user = authLogin('p.file@gmail.com', 'Bob100');
+    const user = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    // const user = authLogin('p.file@gmail.com', 'Bob100');
     expect(authLogout(user.token)).toStrictEqual({});
     expect(authLogout(user.token)).toStrictEqual({ error: 'error' });
   });
 
   test('Testing for invalid logout', () => {
     clear();
-    authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
-    authRegister('m.hunt@gmail.com', 'Bob100', 'Mike', 'Hunt');
-    const user = authLogin('p.file@gmail.com', 'Bob100');
-    const user1 = authLogin('m.hunt@gmail.com', 'Bob100');
+    const user = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    const user1 = authRegister('m.hunt@gmail.com', 'Bob100', 'Mike', 'Hunt');
+    // const user = authLogin('p.file@gmail.com', 'Bob100');
+    // const user1 = authLogin('m.hunt@gmail.com', 'Bob100');
     expect(authLogout(user.token)).toStrictEqual({});
     expect(authLogout(user.token)).toStrictEqual({ error: 'error' });
     expect(authLogout(user1.token)).toStrictEqual({});

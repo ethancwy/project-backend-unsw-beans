@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 // YOU SHOULD MODIFY THIS OBJECT BELOW
 type user = {
   uId: number;
@@ -71,9 +73,7 @@ let data: datatype = {
     // },
   ],
 
-  dms: [
-
-  ]
+  dms: []
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
@@ -94,27 +94,18 @@ Example usage
 
 // Use get() to access the data
 function getData() {
+  if (fs.existsSync('./database.json')) {
+    const dbstr = fs.readFileSync('./database.json', { flag: 'r' });
+    return JSON.parse(String(dbstr));
+  }
+
   return data;
 }
 
 // Use set(newData) to pass in the entire data object, with modifications made
 function setData(newData: datatype) {
-  data = newData;
+  const dataStr = JSON.stringify(newData, null, 2);
+  fs.writeFileSync('./database.json', dataStr, { flag: 'w' });
 }
 
 export { getData, setData };
-
-// import fs from 'fs';
-// import { getData } from './dataStore'
-
-// let data = getData();
-
-// if (fs.existsSync('./database.json')) {
-//   const dbstr = fs.readFileSync('./database.json');
-//   data = JSON.parse(String(dbstr));
-// }
-
-// const save = () => {
-//   const jsonstr = JSON.stringify(data);
-//   fs.writeFileSync('./database.json', jsonstr);
-// }
