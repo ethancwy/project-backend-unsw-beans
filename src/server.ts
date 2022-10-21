@@ -14,6 +14,7 @@ import {
   userProfileV2, usersAllV1, userSetNameV1, userSetEmailV1,
   userSetHandleV1
 } from './users';
+import { dmCreatev1, dmDetailsv1, dmLeavev1, dmListv1, dmRemovev1, dmMessagesv1 } from './dm';
 
 // Set up web app
 const app = express();
@@ -131,6 +132,42 @@ app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
 app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   const { token, handleStr } = req.body;
   return res.json(userSetHandleV1(token, handleStr));
+});
+
+app.post('/dm/create/v1', (req: Request, res: Response) => {
+  const token = req.body.token;
+  const uids = req.body.uIds;
+
+  return res.json(dmCreatev1(token, uids));
+});
+
+app.get('/dm/list/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  return res.json(dmListv1(token));
+});
+
+app.delete('/dm/remove/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = parseInt(req.query.dmId as string);
+  return res.json(dmRemovev1(token, dmId));
+});
+
+app.get('/dm/details/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = parseInt(req.query.dmId as string);
+  return res.json(dmDetailsv1(token, dmId));
+});
+
+app.post('/dm/leave/v1', (req: Request, res: Response) => {
+  const { token, dmId } = req.body;
+  return res.json(dmLeavev1(token, dmId));
+});
+
+app.get('/dm/messages/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = parseInt(req.query.dmId as string);
+  const start = parseInt(req.query.start as string);
+  return res.json(dmMessagesv1(token, dmId, start));
 });
 
 // for logging errors (print to terminal)

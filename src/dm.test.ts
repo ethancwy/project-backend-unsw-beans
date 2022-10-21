@@ -340,5 +340,3 @@ describe('Testing dm/messages/v1 errors', () => {
   });
 
 });
-
-
