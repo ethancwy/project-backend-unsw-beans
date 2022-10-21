@@ -224,6 +224,32 @@ export function anotherUserHandle(token: string, handleStr: string) {
   return false;
 }
 
+// Checks if dmId refers to a valid dm
+export function isDmValid(dmId: number) {
+  const data = getData();
+
+  for (const Dms of data.dms) {
+    if (Dms.dmId === dmId) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// Checks if user is a member of dm
+export function isDmMember(uid: number, dmId: number) {
+  const data = getData();
+
+  for (const uids of data.dms[dmId].members) {
+    if (uids === uid) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //
 
 export function requestHelper(method: HttpVerb, path: string, payload: object) {
