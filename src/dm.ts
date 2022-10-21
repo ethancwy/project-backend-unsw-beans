@@ -1,18 +1,18 @@
 import { getData, setData } from './dataStore';
-import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember, messages } from './global';
+import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember } from './global';
 
 /**
-  * uIds contains the user(s) that this DM is directed to, and will not include 
+  * uIds contains the user(s) that this DM is directed to, and will not include
   * the creator. The creator is the owner of the DM. name should be automatically
-  * generated based on the users that are in this DM. The name should be an 
-  * alphabetically-sorted, comma-and-space-separated list of user handles, 
-  * e.g. 'ahandle1, bhandle2, chandle3'. An empty uIds list indicates the 
+  * generated based on the users that are in this DM. The name should be an
+  * alphabetically-sorted, comma-and-space-separated list of user handles,
+  * e.g. 'ahandle1, bhandle2, chandle3'. An empty uIds list indicates the
   * creator is the only member of the DM.
   *
   * @param {string} token - a valid token from datStore
   * @param {integer} uId - an array of uIds from dataStore
   *
-  * @returns { dmId: 
+  * @returns { dmId:
   *             } - returns an object containing dmId
  * @returns {error} - return error object in invalid cases
 */
@@ -88,12 +88,12 @@ function dmCreatev1(token: string, uId: number[]) {
   return { dmId: data.dms.length - 1 };
 }
 
-/** 
+/**
   * Returns a list of DMs that the user is a member of
   *
   * @param {string} token - a valid token from datStore
   *
-  * @returns { dms 
+  * @returns { dms
   *             } - returns an object containing an array
   *              of {dmId: , name: }
   * @returns {error} - return error object in invalid cases
@@ -125,8 +125,8 @@ function dmListv1(token: string) {
   return { dms: array };
 }
 
-/** 
-  * Remove an existing DM, so all members are no longer in the DM. 
+/**
+  * Remove an existing DM, so all members are no longer in the DM.
   * This can only be done by the original creator of the DM.
   *
   * @param {string} token - a valid token from datStore
@@ -175,15 +175,15 @@ function dmRemovev1(token: string, dmId: number) {
   return {};
 }
 
-/** 
-  * Given a DM with ID dmId that the authorised user is a 
+/**
+  * Given a DM with ID dmId that the authorised user is a
   * member of, provide basic details about the DM.
   *
   * @param {string} token - a valid token from datStore
   * @param {integer} dmId - a valid dmId from dataStore
   *
   * @returns {name
-  *           members 
+  *           members
   *           } - returns object containing
   *                       dm name and dm members
   * @returns {error} - return error object in invalid cases
@@ -227,9 +227,9 @@ function dmDetailsv1(token: string, dmId: number) {
   };
 }
 
-/** 
-  * Given a DM ID, the user is removed as a member of this DM. 
-  * The creator is allowed to leave and the DM will still exist if this 
+/**
+  * Given a DM ID, the user is removed as a member of this DM.
+  * The creator is allowed to leave and the DM will still exist if this
   * happens. This does not update the name of the DM.
   *
   * @param {string} token - a valid token from datStore
@@ -273,12 +273,12 @@ function dmLeavev1(token: string, dmId: number) {
   return {};
 }
 
-/** 
-  * Given a DM with ID dmId that the authorised user is a member of, return 
-  * up to 50 messages between index "start" and "start + 50". Message with 
-  * index 0 is the most recent message in the DM. This function returns a 
-  * new index "end" which is the value of "start + 50", or, if this function 
-  * has returned the least recent messages in the DM, returns -1 in "end" 
+/**
+  * Given a DM with ID dmId that the authorised user is a member of, return
+  * up to 50 messages between index "start" and "start + 50". Message with
+  * index 0 is the most recent message in the DM. This function returns a
+  * new index "end" which is the value of "start + 50", or, if this function
+  * has returned the least recent messages in the DM, returns -1 in "end"
   * to indicate there are no more messages to load after this return.
   *
   * @param {string} token - a valid token from datStore
@@ -286,7 +286,7 @@ function dmLeavev1(token: string, dmId: number) {
   * @param {integer} start - an integer marking the start index
   *
   * @returns {messages
-  *           start   
+  *           start
   *           end
   *           } - returns object containing array of messages
   *             start index and end index
