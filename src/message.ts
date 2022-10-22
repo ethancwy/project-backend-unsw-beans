@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { isValidToken, isValidChannel, isInChannel, getUserId, isChannelOwner, isDmMember } from './global';
+import { isValidToken, isValidChannel, isInChannel, getUserId, isChannelOwner, isDmMember, isDmValid, getChannelIndex, getDmIndex} from './global';
 const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 
 /**
@@ -16,24 +16,32 @@ const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 */
 
 function messageSendV1 (token: string, channelId: number, message: string) {
-  const data = getData();
+  const data = getData(); 
   const uId = getUserId(token);
-
-  // check invalid statement
-  if (!isValidToken || !isValidChannel(channelId) || !isInChannel(uId, channelId) || message.length < 1 || message.length > 1000) {
+  if (!isValidToken) {
     return { error: 'error' };
   }
-
-  const messageId = data.messages.length;
-  const channel = data.channels.find((item: {channelId: number;}) => item.channelId === channelId);
+  if (!isValidChannel(channelId)) {
+    return { error: 'error' };
+  }
+  // check the message exist but the length is wrong
+  if (message.length < 1 || message.length > 1000) {
+    return { error: 'error' };
+  }
+  // check the user is not in the channel
+  if (!isInChannel(uId, channelId) ) {
+    return { error: 'error' };
+  }
+  
+  const cIndex = getChannelIndex(channelId);
+  const messageId = data.channels[cIndex].channelmessages.length;
   const newMessage = {
     messageId: messageId,
     uId: uId,
     message: message,
     timeSent: requestTimesent(),
   };
-  data.messages.push(newMessage);
-  channel.channelmessages.push(newMessage);
+  data.channels[cIndex].channelmessages.push(newMessage);
   setData(data);
   return { messageId: messageId };
 }
@@ -52,60 +60,82 @@ function messageSendV1 (token: string, channelId: number, message: string) {
 
 function messageEditV1 (token: string, messageId: number, message: string) {
   const data = getData();
-  const userId = getUserId(token);
-
-  if (!isValidToken || message.length > 1000) {
-    return { error: 'error' };
-  }
-  // messageId does not refer to valid message within authorised user
-  const channel = data.channels.find((item: { channelmessages: any[]; }) => item.channelmessages.map(mes => mes.messageId).includes(messageId));
-  const dm = data.dms.find((item: { messages: any[]; }) => item.messages.map(mes => messageId).includes(messageId));
-  if (channel === undefined && dm === undefined) {
-    return { error: 'error' };
-  }
-  // the message was not sent by authorised user making the request
-  const findmessage = data.messages.find((item: { messageId: number; }) => item.messageId === messageId);
-  // user doer not have owner permission
-  if (channel === undefined && dm.owner !== userId && findmessage.uId !== userId) {
-    return { error: 'error' };
-  }
-  const permission = isChannelOwner(userId, channel.channelId);
-  if (dm === undefined && !permission) {
+  if (!isValidToken) {
     return { error: 'error' };
   }
 
-  // edit the message
-  if (message === '') {
-    messageRemoveV1(token, messageId);
+  if (message.length > 1000) {
+    return { error: 'error' };
   }
-  if (dm === undefined) {
-    const newCnMessages = channel.channelmessages.map((m: { messageId: number; }) => {
-      if (m.messageId === messageId) {
-        return {
-          ...m,
-          message: message
-        };
+
+  for (var user of data.users) {
+    if (user.tokens.includes(token)) {
+      return user;
+    }
+  }
+
+  let findMessInCha;
+  for(var cIndex = 0; cIndex < data.channels.length; cIndex++) {
+    findMessInCha = data.channels[cIndex].channelmessages.find(m => m.messageId === messageId);
+    if (findMessInCha !== undefined) {
+      break;
+    } 
+  }
+
+  if (findMessInCha === undefined && data.dms !== []) {
+    let findMessageDM;
+    for(var dmIndex = 0; dmIndex < data.dms.length; dmIndex++) {
+      findMessageDM = data.dms[dmIndex].messages.find(m => m.messageId === messageId);
+      if (findMessInCha !== undefined) {
+        break;
+      } 
+    }
+
+    const findDm = data.dms[dmIndex];
+    if (findMessageDM === undefined || findMessageDM.uId !== user.uId || findDm.owner !== user.uId) {
+      return ({ error: 'error' });
+    }
+    if (message.length === 0) {
+      for (const i in findDm.messages) {
+        if (findDm.messages[i].messageId === messageId) {
+          findDm.messages.splice(Number(i), 1);
+          setData(data);
+          return {};
+        }
       }
-      return m;
-    });
-    channel[messageId].channelmessages = newCnMessages;
-  }
+    }
+    findMessageDM.message = message;
+    findMessageDM.timeSent = requestTimesent();
+    setData(data);
+    return { };
+  } 
 
-  if (channel === undefined) {
-    const newDmMessages = dm.messages.map((m: { messageId: number; }) => {
-      if (m.messageId === messageId) {
-        return {
-          ...m,
-          message: message
-        };
+  else {
+    if (findMessInCha.uId !== user.uId) {
+      return ({ error: 'error' });
+    }
+    const findChannel = data.channels[cIndex];
+
+    if (findChannel.ownerIds.find(c => c === user.uId) === undefined) {
+      return ({ error: 'error' });
+    }
+
+    if (message.length === 0) {
+      for (const channel of data.channels) {
+        for (const i in channel.channelmessages) {
+          if (channel.channelmessages[i].messageId === messageId) {
+            channel.channelmessages.splice(Number(i), 1);
+            setData(data);
+            return { };
+          }
+        }
       }
-      return m;
-    });
-    dm[messageId].messages = newDmMessages;
+    }
+    findMessInCha.message = message;
+    findMessInCha.timeSent = requestTimesent();
+    setData(data);
+    return {};
   }
-
-  setData(data);
-  return {};
 }
 
 /**
@@ -120,20 +150,26 @@ function messageEditV1 (token: string, messageId: number, message: string) {
 */
 
 function messageRemoveV1 (token: string, messageId: number) {
-  const data = getData();
+  /*const data = getData();
   const userId = getUserId(token);
-
   if (!isValidToken) {
     return { error: 'error' };
   }
-  // messageId does not refer to valid message within authorised user
+  // message is not in the channel/dm
   const channel = data.channels.find((item: { channelmessages: any[]; }) => item.channelmessages.map(mes => mes.messageId).includes(messageId));
   const dm = data.dms.find((item: { messages: any[]; }) => item.messages.map(mes => messageId).includes(messageId));
   if (channel === undefined && dm === undefined) {
     return { error: 'error' };
   }
+  // check is the author in the channel/dm
+  const userInChannel = isInChannel(userId, channel.channelId);
+  const userInDm = isDmMember(userId, dm.dmId);
+  if (!userInChannel || !userInDm) {
+    return { error: 'error' };
+  }
   // the message was not sent by authorised user making the request
-  const message = data.messages.find((item: { messageId: number; }) => item.messageId === messageId);
+  const message = data.messages.find(m => m.messageId = messageId);
+
   // user doer not have owner permission
   if (channel === undefined && dm.owner !== userId && message.uId !== userId) {
     return { error: 'error' };
@@ -153,8 +189,8 @@ function messageRemoveV1 (token: string, messageId: number) {
     const currentChannelMessages = channel.channelmessages.filter((message: { messageId: number; }) => message.messageId !== messageId);
     channel.channelmessages = currentChannelMessages;
   }
-
   setData(data);
+  */
   return {};
 }
 
@@ -176,24 +212,34 @@ function messageRemoveV1 (token: string, messageId: number) {
 function messageSenddmV1 (token: string, dmId: number, message: string) {
   const data = getData();
   const uId = getUserId(token);
-  const dm = data.dms.find((item: {dmId: number;}) => item.dmId === dmId);
-  const checkdmId = isDmMember(uId, dmId);
-
-  // check invalid statment
-  if (message.length < 1 || message.length > 1000 || !isValidToken(token) || dm === undefined || !checkdmId ){
+  if (!isValidToken) {
     return { error: 'error' };
   }
 
-  const messageId = data.messages.length;
+  if (!isDmValid(dmId)) {
+    return { error: 'error' };
+  } 
+  const checkdmId = isDmMember(uId, dmId);
+  
+  if (message.length < 1 || message.length > 1000 ){
+    return { error: 'error' };
+  }
+  if (!checkdmId) {
+    return { error: 'error' };
+  }
+  
+  const dmIndex = getDmIndex(dmId);
+  const messageId = data.dms[dmIndex].messages.length;
   const newMessage = {
     messageId: messageId,
     uId: uId,
     message: message,
     timeSent: requestTimesent(),
   };
-  data.messages.push(newMessage);
+  data.dms[dmIndex].messages.push(newMessage);
   setData(data);
   return { messageId: messageId };
 }
+ 
 
 export { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 };

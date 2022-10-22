@@ -29,7 +29,7 @@ type channel = {
 type dm = {
   dmId: number;
   name: string;
-  owner: number; //creatorId
+  owner: number; 
   members: Array<number>;
   messages: Array<channelmessages>;
 }
@@ -38,7 +38,6 @@ type datatype = {
   users: Array<user>;
   channels: Array<channel>;
   dms: Array<dm>;
-  messages: Array<channelmessages>;
 }
 
 let data: datatype = {
@@ -73,10 +72,6 @@ let data: datatype = {
   ],
 
   dms: [
-
-  ],
-
-  messages: [
 
   ]
 };

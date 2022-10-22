@@ -67,6 +67,25 @@ export function isValidUser(authUserId: number) {
   return false;
 }
 
+// Fetch the channel index
+export function getChannelIndex(channelId: number) {
+  const data = getData();
+  for(var cIndex = 0; cIndex < data.channels.length; cIndex++) {
+    if (data.channels[cIndex].channelId === channelId) {
+      return cIndex;
+    }
+  }
+}
+
+// Fetch the dm index
+export function getDmIndex(dmId: number) {
+  const data = getData();
+  for(var dmIndex = 0; dmIndex < data.dms.length; dmIndex++) {
+    if (data.dms[dmIndex].dmId === dmId) {
+      return dmIndex;
+    }
+  }
+}
 // Checks if channel is valid
 export function isValidChannel(channelId: number) {
   const data = getData();
@@ -350,7 +369,7 @@ export function dmMessages(token: string, dmId: number, start: number) {
   return requestHelper('GET', '/dm/messages/v1', { token, dmId, start });
 }
 export function messageSendDm(token: string, dmId: number, message: string) {
-  return requestHelper('POST', '/dm/messages/v1', { token, dmId, message });
+  return requestHelper('POST', '/message/senddm/v1', { token, dmId, message });
 }
 // ===============================================================================================//
 export function usersAll(token: string) {
