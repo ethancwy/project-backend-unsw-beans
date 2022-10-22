@@ -5,7 +5,7 @@ function clearV1() {
   data = {
     users: [],
     channels: [],
-    dms: []
+    dms: [],
   };
   setData(data);
   return {};
