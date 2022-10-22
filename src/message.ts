@@ -72,18 +72,18 @@ function messageEditV1(token: string, messageId: number, message: string) {
 
   let isFound = false;
   let isDm = false;
-  const channelIndex = 0;
-  const dmIndex = 0;
-  const messageIndex = 0;
+  let channelIndex = 0;
+  let dmIndex = 0;
+  let messageIndex = 0;
 
-  for (const channelIndex in data.channels) {
-    if (data.channels[channelIndex].memberIds.includes(authUserId)) {
-      for (const messageIndex in data.channels[channelIndex].channelmessages) {
-        if (data.channels[channelIndex].channelmessages[messageIndex].messageId === messageId) {
+  for (const cIndex in data.channels) {
+    if (data.channels[cIndex].memberIds.includes(authUserId)) {
+      for (const mIndex in data.channels[cIndex].channelmessages) {
+        if (data.channels[cIndex].channelmessages[mIndex].messageId === messageId) {
           isFound = true;
           isDm = false;
-          channelIndex = parseInt(channelIndex);
-          messageIndex = parseInt(messageIndex);
+          channelIndex = parseInt(cIndex);
+          messageIndex = parseInt(mIndex);
           break;
         }
       }
@@ -91,14 +91,14 @@ function messageEditV1(token: string, messageId: number, message: string) {
   }
 
   if (!isFound) {
-    for (const dmIndex in data.dms) {
-      if (data.dms[dmIndex].members.includes(authUserId)) {
-        for (const messageIndex in data.dms[dmIndex].messages) {
-          if (data.dms[dmIndex].messages[messageIndex].messageId === messageId) {
+    for (const dIndex in data.dms) {
+      if (data.dms[dIndex].members.includes(authUserId)) {
+        for (const mIndex in data.dms[dIndex].messages) {
+          if (data.dms[dIndex].messages[mIndex].messageId === messageId) {
             isFound = true;
             isDm = true;
-            dmIndex = parseInt(dmIndex);
-            messageIndex = parseInt(messageIndex);
+            dmIndex = parseInt(dIndex);
+            messageIndex = parseInt(mIndex);
             break;
           }
         }
@@ -148,18 +148,18 @@ function messageRemoveV1(token: string, messageId: number) {
 
   let isFound = false;
   let isDm = false;
-  const channelIndex = 0;
-  const dmIndex = 0;
-  const messageIndex = 0;
+  let channelIndex = 0;
+  let dmIndex = 0;
+  let messageIndex = 0;
 
-  for (const channelIndex in data.channels) {
-    if (data.channels[channelIndex].memberIds.includes(authUserId)) {
-      for (const messageIndex in data.channels[channelIndex].channelmessages) {
-        if (data.channels[channelIndex].channelmessages[messageIndex].messageId === messageId) {
+  for (const cIndex in data.channels) {
+    if (data.channels[cIndex].memberIds.includes(authUserId)) {
+      for (const mIndex in data.channels[cIndex].channelmessages) {
+        if (data.channels[cIndex].channelmessages[mIndex].messageId === messageId) {
           isFound = true;
           isDm = false;
-          channelIndex = parseInt(channelIndex);
-          messageIndex = parseInt(messageIndex);
+          channelIndex = parseInt(cIndex);
+          messageIndex = parseInt(mIndex);
           break;
         }
       }
@@ -167,14 +167,14 @@ function messageRemoveV1(token: string, messageId: number) {
   }
 
   if (!isFound) {
-    for (const dmIndex in data.dms) {
-      if (data.dms[dmIndex].members.includes(authUserId)) {
-        for (const messageIndex in data.dms[dmIndex].messages) {
-          if (data.dms[dmIndex].messages[messageIndex].messageId === messageId) {
+    for (const dIndex in data.dms) {
+      if (data.dms[dIndex].members.includes(authUserId)) {
+        for (const mIndex in data.dms[dmIndex].messages) {
+          if (data.dms[dIndex].messages[mIndex].messageId === messageId) {
             isFound = true;
             isDm = true;
-            dmIndex = parseInt(dmIndex);
-            messageIndex = parseInt(messageIndex);
+            dmIndex = parseInt(dIndex);
+            messageIndex = parseInt(mIndex);
             break;
           }
         }

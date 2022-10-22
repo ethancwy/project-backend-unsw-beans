@@ -6,7 +6,6 @@ function clearV1() {
     users: [],
     channels: [],
     dms: [],
-    messages: []
   };
   setData(data);
   return {};
