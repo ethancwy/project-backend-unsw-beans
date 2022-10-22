@@ -1,6 +1,6 @@
 import {
-  authRegister, userProfile, clear, usersAll, userSetName,
-  userSetEmail, userSetHandle
+  authRegister, authLogout, userProfile, clear,
+  usersAll, userSetName, userSetEmail, userSetHandle
 } from './global';
 
 describe('Testing userProfileV2', () => {
@@ -33,6 +33,22 @@ describe('Error checking userProfileV2', () => {
 
     // invalid token, valid uId
     expect(userProfile(invalidToken, member.authUserId)).toStrictEqual({ error: 'error' });
+  });
+
+  test('Testing invalid userProfile following a successful authLogout', () => {
+    clear();
+    const user = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    expect(userProfile(user.token, user.authUserId)).toStrictEqual({
+      user: {
+        uId: user.authUserId,
+        email: 'p.file@gmail.com',
+        nameFirst: 'Peter',
+        nameLast: 'File',
+        handleStr: expect.any(String),
+      }
+    });
+    expect(authLogout(user.token)).toStrictEqual({});
+    expect(userProfile(user.token, user.authUserId)).toStrictEqual({ error: 'error' });
   });
 });
 
