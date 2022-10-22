@@ -183,7 +183,7 @@ app.put('/message/edit/v1', (req: Request, res: Response) => {
 
 app.delete('/message/remove/v1', (req: Request, res: Response) => {
   const token = req.query.token as string;
-  const messageId  = parseInt(req.query.messageId as string);
+  const messageId = parseInt(req.query.messageId as string);
   return res.json(messageRemoveV1(token, messageId));
 });
 

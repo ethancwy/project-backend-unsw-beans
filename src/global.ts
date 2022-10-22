@@ -70,7 +70,7 @@ export function isValidUser(authUserId: number) {
 // Fetch the channel index
 export function getChannelIndex(channelId: number) {
   const data = getData();
-  for(var cIndex = 0; cIndex < data.channels.length; cIndex++) {
+  for (let cIndex = 0; cIndex < data.channels.length; cIndex++) {
     if (data.channels[cIndex].channelId === channelId) {
       return cIndex;
     }
@@ -80,7 +80,7 @@ export function getChannelIndex(channelId: number) {
 // Fetch the dm index
 export function getDmIndex(dmId: number) {
   const data = getData();
-  for(var dmIndex = 0; dmIndex < data.dms.length; dmIndex++) {
+  for (let dmIndex = 0; dmIndex < data.dms.length; dmIndex++) {
     if (data.dms[dmIndex].dmId === dmId) {
       return dmIndex;
     }
@@ -130,6 +130,22 @@ export function isInChannel(uId: number, channelId: number) {
   for (const channel of data.channels) {
     if (channel.channelId === channelId) {
       for (const member of channel.memberIds) {
+        if (uId === member) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+// Checks if user is in dm
+export function isInDm(uId: number, dmId: number) {
+  const data = getData();
+
+  for (const dm of data.dms) {
+    if (dm.dmId === dmId) {
+      for (const member of dm.members) {
         if (uId === member) {
           return true;
         }

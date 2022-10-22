@@ -2,16 +2,15 @@ import { messageSend, messageEdit, messageRemove, clear, dmCreate, channelJoin }
 import { authRegister, authLogout } from './global';
 import { channelsCreate } from './global';
 import { messageSendDm } from './global';
-/*
+
 // Testing for message/send/v1
 describe('Testing  errors for /message/send/v1', () => {
   test('Testing channel id does not refer to valid id', () => {
     clear();
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const token = auth.token;
-    const channelId = channelsCreate(token, 'Dog Channel', true);
+    channelsCreate(token, 'Dog Channel', true);
     const check = messageSend(token, -10, 'helloo');
-    console.log(channelId.channelId);
     expect(check).toStrictEqual({ error: 'error' });
   });
 
@@ -43,7 +42,7 @@ describe('Testing  errors for /message/send/v1', () => {
     const check = messageSend(token2, channelId.channelId, 'leijou');
     expect(check).toStrictEqual({ error: 'error' });
   });
-  
+
   test('Testing invalid token', () => {
     clear();
     const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
@@ -53,7 +52,7 @@ describe('Testing  errors for /message/send/v1', () => {
     const check = messageSend(token, channelId.channelId, 'wow');
     expect(check).toStrictEqual({ error: 'error' });
   });
-  
+
   test('Testing user is not a member of the valid channel - success statment', () => {
     clear();
     const auth1 = authRegister('Henryyeung@gmail.com', 'TurtleCute1', 'Henry', 'Yeung');
@@ -62,8 +61,8 @@ describe('Testing  errors for /message/send/v1', () => {
     const check = messageSend(token1, channelId.channelId, 'leijou');
     expect(check).toStrictEqual({ messageId: expect.any(Number) });
   });
-}); 
-*/
+});
+
 // Testing for message/edit/v1
 describe('/message/edit/v1', () => {
   test('Testing length of message - length > 1000', () => {
@@ -116,7 +115,7 @@ describe('/message/edit/v1', () => {
     expect(check).toStrictEqual({ error: 'error' });
   });
 });
-/*
+
 // Testing for message/remove/v1
 describe('Testing for /message/remove/v1', () => {
   test('Testing messageId does not refer to valid message within channel/dm that authorised user join', () => {
@@ -169,7 +168,7 @@ describe('Testing for /message/remove/v1', () => {
     expect(check).toStrictEqual({ error: 'error' });
   });
 });
-/*
+
 describe('Testing success for removing', () => {
   test('removing test1', () => {
     clear();
@@ -177,7 +176,6 @@ describe('Testing success for removing', () => {
     const token = auth.token;
     const channelId = channelsCreate(token, 'icl channel', true);
     const message = messageSend(token, channelId.channelId, 'nice');
-    messageRemove(token, message.messageId);
     const check = messageRemove(token, message.messageId);
     expect(check).toStrictEqual({});
   });
@@ -190,7 +188,6 @@ describe('Testing success for removing', () => {
     const token2 = auth2.token;
     const dm = dmCreate(token1, [auth2.authUserId]);
     const message = messageSendDm(token2, dm.dmId, 'nice');
-    messageRemove(token1, message.messageId);
     const check = messageRemove(token1, message.messageId);
     expect(check).toStrictEqual({});
   });
@@ -275,4 +272,3 @@ describe('Testing message/senddm/v1', () => {
     expect(message2).toStrictEqual({ messageId: 1 });
   });
 });
-*/
