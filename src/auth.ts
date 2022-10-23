@@ -87,7 +87,7 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
 */
 
 function authLogoutV1(token: string) {
-  let data = getData();
+  const data = getData();
 
   if (!validToken(token)) {
     return { error: 'error' };
