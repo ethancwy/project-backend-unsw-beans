@@ -1,5 +1,5 @@
 import {
-  authRegister, channelsCreate, channelDetails,
+  authRegister, authLogout, channelsCreate, channelDetails,
   channelJoin, channelInvite, clear,
   channelMessages, channelLeave, channelAddOwner,
   channelRemoveOwner
@@ -90,6 +90,16 @@ describe('Testing channelDetailsV2 edge cases', () => {
     }
 
     expect(channelDetails(fakeToken, channelIdPriv.channelId)).toEqual({ error: 'error' });
+  });
+
+  test('Testing logged out token', () => {
+    clear();
+    const channelOwnerPrivId = authRegister('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
+    const channelIdPriv = channelsCreate(channelOwnerPrivId.token, 'Priv', false);
+
+    authLogout(channelOwnerPrivId.token);
+
+    expect(channelDetails(channelOwnerPrivId.token, channelIdPriv.channelId)).toEqual({ error: 'error' });
   });
 
   test('Testing when Id is valid but user is not a member of the channel', () => {
@@ -209,6 +219,24 @@ describe('Error checking channelJoinV2', () => {
 
     const memberId = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
     expect(channelJoin(memberId.token, channelId.channelId)).toStrictEqual({ error: 'error' }); // can't join private channel
+  });
+
+  test('Testing cannot join if already in channel', () => {
+    clear();
+    const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const channelId = channelsCreate(channelOwnerId.token, 'BoostPrivate', false); // private channel
+
+    expect(channelJoin(channelOwnerId.token, channelId.channelId)).toStrictEqual({ error: 'error' }); // can't join channel
+  });
+
+  test('Testing user logged out cannot join channel', () => {
+    clear();
+    const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const channelId = channelsCreate(channelOwnerId.token, 'BoostPrivate', true); // public channel
+
+    const memberId = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+    authLogout(memberId.token);
+    expect(channelJoin(memberId.token, channelId.channelId)).toStrictEqual({ error: 'error' }); // can't join channel
   });
 });
 
@@ -381,7 +409,7 @@ describe('Testing channelLeaveV1 success', () => {
 });
 
 describe('Error checking channelLeaveV1', () => {
-  test('Invalid channelId & token', () => {
+  test('Invalid channelId & token(non-existent)', () => {
     clear();
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
@@ -396,6 +424,18 @@ describe('Error checking channelLeaveV1', () => {
     expect(channelLeave(channelOwnerId.token, invalidChannelId)).toStrictEqual({ error: 'error' }); // invalid channel
     expect(channelLeave(invalidToken, channelId.channelId)).toStrictEqual({ error: 'error' }); // invalid token
     expect(channelLeave(nonMember.token, channelId.channelId)).toStrictEqual({ error: 'error' }); // nonMember
+  });
+
+  test('Invalid token(logged out)', () => {
+    clear();
+    const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
+
+    const member = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
+    channelJoin(member.token, channelId.channelId);
+    authLogout(member.token);
+
+    expect(channelLeave(member.token, channelId.channelId)).toStrictEqual({ error: 'error' }); // invalid token
   });
 });
 
@@ -549,6 +589,20 @@ describe('Error checking channelAddOwnerV1', () => {
 
     expect(channelAddOwner(user.token, channel.channelId, anotherUser.authUserId)).toStrictEqual({ error: 'error' });
   });
+
+  test('globalowner while not a member of channel cannot add owner of member in public nor private channel', () => {
+    clear();
+    const globalOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+
+    const user = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
+    const user2 = authRegister('john1@bar.com', 'decentp2assword', 'John2', 'Wick2');
+    const channel = channelsCreate(user.token, 'Boost', true);
+    const channel2 = channelsCreate(user.token, 'Boost/priv', false);
+    // not a member of channel
+    expect(channelAddOwner(globalOwner.token, channel.channelId, user2.authUserId)).toStrictEqual({ error: 'error' });
+    // already an owner
+    expect(channelAddOwner(globalOwner.token, channel2.channelId, user2.authUserId)).toStrictEqual({ error: 'error' });
+  });
 });
 
 // channelRemoveOwnerV1
@@ -690,5 +744,28 @@ describe('Error checking channelRemoveOwnerV1', () => {
     const anotherMember = authRegister('joanna@bar.com', 'johnwickssister', 'Joanna', 'Wick');
     channelAddOwner(channelOwner.token, channel.channelId, member.authUserId);
     expect(channelRemoveOwner(anotherMember.token, channel.channelId, member.authUserId)).toStrictEqual({ error: 'error' });
+  });
+
+  test('globalowner not in channel', () => {
+    clear();
+    const globalOwner = authRegister('ahahahahahahaha@bar.com', 'g00dsdadpassword', 'itsme', 'mario');
+    const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const member = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+
+    const channel = channelsCreate(channelOwner.token, 'Boost', true);
+    channelJoin(member.token, channel.channelId);
+
+    expect(channelRemoveOwner(globalOwner.token, channel.channelId, channelOwner.authUserId)).toStrictEqual({ error: 'error' });
+  });
+
+  test('globalowner cannot remove final owner', () => {
+    clear();
+    const globalOwner = authRegister('ahahahahahahaha@bar.com', 'g00dsdadpassword', 'itsme', 'mario');
+    const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+
+    const channel = channelsCreate(channelOwner.token, 'Boost', true);
+    channelJoin(globalOwner.token, channel.channelId);
+
+    expect(channelRemoveOwner(globalOwner.token, channel.channelId, channelOwner.authUserId)).toStrictEqual({ error: 'error' });
   });
 });
