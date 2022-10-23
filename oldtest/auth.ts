@@ -20,6 +20,7 @@ function authLoginV2(email: string, password: string) {
       if (data.users[i].password === password) {
         const token = generateToken();
         data.users[i].tokens.push(token);
+        data.sessionIds.push(token);
         return { authUserId: data.users[i].uId, token: token };
       } else {
         return { error: 'error' };
@@ -54,6 +55,7 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
   const handleStr = validHandle(handle);
 
   const token = generateToken();
+  data.sessionIds.push(token);
 
   data.users.push({
     uId: data.users.length,
@@ -85,7 +87,7 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
 */
 
 function authLogoutV1(token: string) {
-  const data = getData();
+  let data = getData();
 
   if (!validToken(token)) {
     return { error: 'error' };
@@ -99,6 +101,8 @@ function authLogoutV1(token: string) {
       }
     }
   }
+
+  data.sessionIds.splice(data.sessionIds.indexOf(token), 1);
   setData(data);
   return {};
 }
@@ -116,11 +120,7 @@ function validToken(token: string) {
 
 function generateToken() {
   const data = getData();
-  let newToken = 1;
-  for (const user of data.users) {
-    newToken += user.tokens.length;
-  }
-  return String(newToken);
+  return String(sessionIds.length);
 }
 
 // Helper function to generate a valid handle string

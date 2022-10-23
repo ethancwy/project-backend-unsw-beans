@@ -29,6 +29,7 @@ type channel = {
 type datatype = {
   users: Array<user>;
   channels: Array<channel>;
+  dms: Array<channelmessages>;
 }
 
 let data: datatype = {
@@ -60,7 +61,9 @@ let data: datatype = {
     //     }
     //   ]
     // },
-  ]
+  ],
+
+  dms: [];
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1

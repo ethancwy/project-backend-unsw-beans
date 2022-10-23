@@ -7,8 +7,35 @@ import { authLogin, authRegister, authLogout, clear } from './global';
 // ==================================================  //
 
 describe('Testing for authRegisterV2: ', () => {
+  clear();
   // Valid register
   test('Testing for valid register', () => {
+    expect(authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File'))
+      .toStrictEqual(
+        {
+          token: expect.any(String),
+          authUserId: expect.any(Number)
+        });
+  });
+
+  // Valid register, 2 person different token
+  test('Testing for valid register', () => {
+    clear();
+    const person1 = authRegister('p.file111@gmail.com', 'Bob1002', 'Peter23', 'File23');
+    const person2 = authRegister('p12.file@gmail.com', 'Bob1001', 'Peter12', 'File12');
+    expect(person1 === person2).toBe(false);
+    expect(person1)
+      .toStrictEqual(
+        {
+          token: expect.any(String),
+          authUserId: expect.any(Number)
+        });
+  });
+
+  // Valid register, same name after clear
+  test('Testing for valid register', () => {
+    authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    clear();
     expect(authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File'))
       .toStrictEqual(
         {
@@ -81,6 +108,15 @@ describe('Testing for authLoginV2: ', () => {
         token: expect.any(String),
         authUserId: expect.any(Number)
       });
+  });
+
+  // Valid login same user 2nd session
+  test('Testing for Valid login: ', () => {
+    clear();
+    const session1 = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    const session2 = authLogin('p.file@gmail.com', 'Bob100');
+    expect(session1.token === session2.token).toBe(false);
+    expect(session1.authuserId === session2.authuserId).toBe(true);
   });
 
   // Invalid email
