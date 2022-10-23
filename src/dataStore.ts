@@ -40,6 +40,7 @@ type datatype = {
   users: Array<user>;
   channels: Array<channel>;
   dms: Array<dm>;
+  sessionIds: Array<string>;
 }
 
 let data: datatype = {
@@ -52,6 +53,7 @@ let data: datatype = {
     //   password: '',
     //   handleStr: '',
     //   isGlobalOwner: false,
+    //   tokens: [],
     // },
   ],
 
@@ -73,7 +75,17 @@ let data: datatype = {
     // },
   ],
 
-  dms: []
+  dms: [
+    // {
+    //   dmId: number;
+    //   name: string;
+    //   owner: number;
+    //   members: [];
+    //   messages: [];
+    // }
+  ],
+
+  sessionIds: []
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
