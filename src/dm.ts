@@ -17,7 +17,7 @@ import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember } from './g
  * @returns {error} - return error object in invalid cases
 */
 
-function dmCreatev1(token: string, uId: number[]) {
+function dmCreateV1(token: string, uId: number[]) {
   const data = getData();
 
   // Is the token valid
@@ -99,7 +99,7 @@ function dmCreatev1(token: string, uId: number[]) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmListv1(token: string) {
+function dmListV1(token: string) {
   const data = getData();
 
   // Checking if token is valid
@@ -136,7 +136,7 @@ function dmListv1(token: string) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmRemovev1(token: string, dmId: number) {
+function dmRemoveV1(token: string, dmId: number) {
   const data = getData();
 
   // Checking if token is valid
@@ -169,7 +169,10 @@ function dmRemovev1(token: string, dmId: number) {
       data.dms[i] = data.dms[i + 1];
     }
   }
-  data.dms[dmId].members.pop();
+  // remove members
+  for (const i in data.dms[dmId].members) {
+    data.dms[dmId].members.splice(parseInt(i), 1);
+  }
 
   setData(data);
   return {};
@@ -189,7 +192,7 @@ function dmRemovev1(token: string, dmId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmDetailsv1(token: string, dmId: number) {
+function dmDetailsV1(token: string, dmId: number) {
   const data = getData();
 
   // Checking if token is valid
@@ -239,7 +242,7 @@ function dmDetailsv1(token: string, dmId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmLeavev1(token: string, dmId: number) {
+function dmLeaveV1(token: string, dmId: number) {
   const data = getData();
 
   // Checking if token is valid
@@ -293,7 +296,7 @@ function dmLeavev1(token: string, dmId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmMessagesv1(token: string, dmId: number, start: number) {
+function dmMessagesV1(token: string, dmId: number, start: number) {
   const data = getData();
 
   // Checking if token is valid
@@ -335,10 +338,10 @@ function dmMessagesv1(token: string, dmId: number, start: number) {
 }
 
 export {
-  dmCreatev1,
-  dmListv1,
-  dmRemovev1,
-  dmDetailsv1,
-  dmLeavev1,
-  dmMessagesv1
+  dmCreateV1,
+  dmListV1,
+  dmRemoveV1,
+  dmDetailsV1,
+  dmLeaveV1,
+  dmMessagesV1
 };
