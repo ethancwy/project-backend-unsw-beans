@@ -120,7 +120,7 @@ function validToken(token: string) {
 
 function generateToken() {
   const data = getData();
-  return String(sessionIds.length);
+  return String(data.sessionIds.length);
 }
 
 // Helper function to generate a valid handle string

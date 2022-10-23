@@ -1,26 +1,6 @@
 {
-  "users": [
-    {
-      "uId": 0,
-      "nameFirst": "Peter",
-      "nameLast": "File",
-      "email": "p.file@gmail.com",
-      "password": "Bob100",
-      "handleStr": "peterfile",
-      "isGlobalOwner": true,
-      "tokens": []
-    },
-    {
-      "uId": 1,
-      "nameFirst": "Mike",
-      "nameLast": "Hunt",
-      "email": "m.hunt@gmail.com",
-      "password": "Bob100",
-      "handleStr": "mikehunt",
-      "isGlobalOwner": false,
-      "tokens": []
-    }
-  ],
+  "users": [],
   "channels": [],
-  "dms": []
+  "dms": [],
+  "sessionIds": []
 }
