@@ -1,8 +1,17 @@
-import { authRegister } from './global';
+import { authRegister, authLogout } from './global';
 import { channelsCreate, channelsList, channelsListAll } from './global';
 import { clear } from './global';
 
 describe('channelsCreateV2 tests:', () => {
+  test('Testing for logged out user', () => {
+    clear();
+
+    const person = authRegister('hao@mail.com', '12345', 'hao', 'yang');
+    authLogout(person.token);
+
+    expect(channelsCreate(person.token, 'asdsadadsdsadsa', true)).toStrictEqual({ error: 'error' });
+  });
+
   test('Testing for invalid name(smaller than 1)', () => {
     clear();
 
