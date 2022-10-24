@@ -160,15 +160,17 @@ function dmRemoveV1(token: string, dmId: number) {
     return { error: 'error' };
   }
 
-  let found = false;
-  for (let i = 0; i < data.dms.length - 1; i++) {
-    if (data.dms[i].dmId === dmId) {
-      found = true;
-    }
-    if (found === true) {
-      data.dms[i] = data.dms[i + 1];
-    }
-  }
+  // let found = false;
+  // for (let i = 0; i < data.dms.length - 1; i++) {
+  //   if (data.dms[i].dmId === dmId) {
+  //     found = true;
+  //   }
+  //   if (found === true) {
+  //     data.dms[i] = data.dms[i + 1];
+  //   }
+  // }
+  // data.dms[dmId].members.pop();
+
   // remove members
   for (const i in data.dms[dmId].members) {
     data.dms[dmId].members.splice(parseInt(i), 1);
@@ -261,16 +263,24 @@ function dmLeaveV1(token: string, dmId: number) {
     return { error: 'error' };
   }
 
-  let found = false;
-  for (let i = 0; i < data.dms[dmId].members.length - 1; i++) {
-    if (data.dms[dmId].members[i] === userId) {
-      found = true;
-    }
-    if (found === true) {
-      data.dms[dmId].members[i] = data.dms[dmId].members[i + 1];
+  // let found = false;
+  // for (let i = 0; i < data.dms[dmId].members.length - 1; i++) {
+  //   if (data.dms[dmId].members[i] === userId) {
+  //     found = true;
+  //   }
+  //   if (found === true) {
+  //     data.dms[dmId].members[i] = data.dms[dmId].members[i + 1];
+  //   }
+  // }
+  // data.dms[dmId].members.pop();
+
+  // Remove member from DM
+  for (const i in data.dms[dmId].members) {
+    if (userId === data.dms[dmId].members[i]) {
+      data.dms[dmId].members.splice(parseInt(i), 1);
+      break;
     }
   }
-  data.dms[dmId].members.pop();
 
   setData(data);
   return {};
