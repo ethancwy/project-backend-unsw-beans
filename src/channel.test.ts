@@ -5,6 +5,8 @@ import {
   channelRemoveOwner
 } from './global';
 
+clear();
+
 describe('Testing that channelDetailsV2 works standard', () => {
   test('when given id, returns relevant info of channels if the user is apart of it', () => {
     clear();
@@ -769,3 +771,4 @@ describe('Error checking channelRemoveOwnerV1', () => {
     expect(channelRemoveOwner(globalOwner.token, channel.channelId, channelOwner.authUserId)).toStrictEqual({ error: 'error' });
   });
 });
+clear();

@@ -3,6 +3,7 @@ import {
   dmDetails, dmLeave, dmMessages,
 } from './global';
 
+clear();
 // Tests for dm/create/v1
 describe('Testing dm/create/v1 standard', () => {
   test('Testing function success', () => {
@@ -436,3 +437,4 @@ describe('Testing dm/messages/v1 errors', () => {
     expect(dmMessages(recipient.token, dm.dmId, 40)).toStrictEqual({ error: expect.any(String) });
   });
 });
+clear();

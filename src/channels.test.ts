@@ -2,6 +2,8 @@ import { authRegister, authLogout } from './global';
 import { channelsCreate, channelsList, channelsListAll } from './global';
 import { clear } from './global';
 
+clear();
+
 describe('channelsCreateV2 tests:', () => {
   test('Testing for logged out user', () => {
     clear();
@@ -166,3 +168,4 @@ describe('Testing the edge cases', () => {
     });
   });
 });
+clear();
