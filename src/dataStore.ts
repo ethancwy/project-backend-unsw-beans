@@ -12,7 +12,7 @@ type user = {
   tokens: Array<string>;
 }
 
-type channelmessages = {
+type message = {
   messageId: number;
   uId: number;
   message: string;
@@ -25,7 +25,7 @@ type channel = {
   isPublic: boolean;
   ownerIds: Array<number>;
   memberIds: Array<number>;
-  channelmessages: Array<channelmessages>;
+  channelmessages: Array<message>;
 }
 
 type dm = {
@@ -33,14 +33,22 @@ type dm = {
   name: string;
   owner: number;
   members: Array<number>;
-  messages: Array<channelmessages>;
+  messages: Array<message>;
 }
 
-type datatype = {
+export type details = {
+  uId: number;
+  messageId: number;
+  isDm: boolean;
+  listId: number;
+}
+
+export type datatype = {
   users: Array<user>;
   channels: Array<channel>;
   dms: Array<dm>;
   sessionIds: Array<string>;
+  messageDetails: Array<details>;
 }
 
 let data: datatype = {
@@ -85,7 +93,8 @@ let data: datatype = {
     // }
   ],
 
-  sessionIds: []
+  sessionIds: [],
+  messageDetails: [],
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1

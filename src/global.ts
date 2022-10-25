@@ -1,4 +1,4 @@
-import { getData } from './dataStore';
+import { getData, details } from './dataStore';
 import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
@@ -86,6 +86,63 @@ export function getDmIndex(dmId: number) {
     }
   }
 }
+
+// Fetch message index from channel/dm
+export function getMessageDetails(messageId: number) {
+  const data = getData();
+  // const msg = data.messageDetails.find(msg => msg.messageId === messageId);
+  let msg: details = null;
+  for (const message of data.messageDetails) {
+    if (message.messageId === messageId) {
+      msg = message;
+      break;
+    }
+  }
+
+  if (msg === null) return null;
+
+  let messageIndex = 0;
+  let listIndex = 0;
+
+  if (!msg.isDm) {
+    // listIndex = data.channels.findIndex(channel => channel.channelId === msg.listId);
+    // messageIndex = data.channels[listIndex].channelmessages.findIndex(msg => msg.messageId === messageId);
+    for (const i in data.channels) {
+      if (data.channels[i].channelId === msg.listId) {
+        listIndex = parseInt(i);
+        for (const j in data.channels[listIndex].channelmessages) {
+          if (data.channels[i].channelmessages[j].messageId === messageId) {
+            messageIndex = parseInt(j);
+            break;
+          }
+        }
+        break;
+      }
+    }
+  } else {
+    // listIndex = data.dms.findIndex(dm => dm.dmId === msg.listId);
+    // messageIndex = data.dms[listIndex].messages.findIndex(msg => msg.messageId === messageId);
+    for (const i in data.dms) {
+      if (data.dms[i].dmId === msg.listId) {
+        listIndex = parseInt(i);
+        for (const j in data.dms[i].messages) {
+          if (data.dms[listIndex].messages[j].messageId === messageId) {
+            messageIndex = parseInt(j);
+            break;
+          }
+        }
+        break;
+      }
+    }
+  }
+  return {
+    uId: msg.uId,
+    isDm: msg.isDm,
+    listIndex: listIndex,
+    messageIndex: messageIndex,
+  };
+}
+
 // Checks if channel is valid
 export function isValidChannel(channelId: number) {
   const data = getData();

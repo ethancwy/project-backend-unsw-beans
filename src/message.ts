@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { isValidToken, isValidChannel, isInChannel, getUserId, isDmMember, isDmValid, getChannelIndex, getDmIndex } from './global';
+import { isValidToken, isValidChannel, isInChannel, getUserId, isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails, isGlobalOwner } from './global';
 const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 
 /**
@@ -34,7 +34,7 @@ function messageSendV1(token: string, channelId: number, message: string) {
   }
 
   const cIndex = getChannelIndex(channelId);
-  const messageId = data.channels[cIndex].channelmessages.length;
+  const messageId = data.messageDetails.length;
   const newMessage = {
     messageId: messageId,
     uId: uId,
@@ -42,6 +42,12 @@ function messageSendV1(token: string, channelId: number, message: string) {
     timeSent: requestTimesent(),
   };
   data.channels[cIndex].channelmessages.push(newMessage);
+  data.messageDetails.push({
+    uId: uId,
+    messageId: messageId,
+    isDm: false,
+    listId: channelId,
+  });
   setData(data);
   return { messageId: messageId };
 }
@@ -65,66 +71,44 @@ function messageEditV1(token: string, messageId: number, message: string) {
     return { error: 'error' };
   }
 
-  if (!isValidToken) {
+  if (!isValidToken(token)) {
     return { error: 'error' };
   }
   const authUserId = getUserId(token);
 
-  let isFound = false;
-  let isDm = false;
-  let channelIndex = 0;
-  let dmIndex = 0;
-  let messageIndex = 0;
-
-  for (const cIndex in data.channels) {
-    if (data.channels[cIndex].memberIds.includes(authUserId)) {
-      for (const mIndex in data.channels[cIndex].channelmessages) {
-        if (data.channels[cIndex].channelmessages[mIndex].messageId === messageId) {
-          isFound = true;
-          isDm = false;
-          channelIndex = parseInt(cIndex);
-          messageIndex = parseInt(mIndex);
-          break;
-        }
-      }
-    }
+  if (message === '') {
+    return messageRemoveV1(token, messageId);
   }
 
-  if (!isFound) {
-    for (const dIndex in data.dms) {
-      if (data.dms[dIndex].members.includes(authUserId)) {
-        for (const mIndex in data.dms[dIndex].messages) {
-          if (data.dms[dIndex].messages[mIndex].messageId === messageId) {
-            isFound = true;
-            isDm = true;
-            dmIndex = parseInt(dIndex);
-            messageIndex = parseInt(mIndex);
-            break;
-          }
-        }
-      }
-    }
-  }
+  const msg = getMessageDetails(messageId);
 
-  if (!isFound) {
+  if (msg === null) {
     return { error: 'error' };
   }
 
-  if (!isDm) {
-    if (data.channels[channelIndex].channelmessages[messageIndex].uId !== authUserId && !data.channels[channelIndex].ownerIds.includes(authUserId)) {
+  if (!msg.isDm) {
+    // check if user is in channel
+    if (!data.channels[msg.listIndex].memberIds.includes(authUserId)) {
       return { error: 'error' };
-    } else {
-      data.channels[channelIndex].channelmessages[messageIndex].message = message;
-      return {};
     }
+    // check if user has perms
+    if (!data.channels[msg.listIndex].ownerIds.includes(authUserId) && msg.uId !== authUserId && !isGlobalOwner(authUserId)) {
+      return { error: 'error' };
+    }
+    data.channels[msg.listIndex].channelmessages[msg.messageIndex].message = message;
   } else {
-    if (data.dms[dmIndex].messages[messageIndex].uId !== authUserId && data.dms[dmIndex].owner !== authUserId) {
+    // check is user is in dm and has perms
+    if (!data.dms[msg.listIndex].members.includes(authUserId)) {
       return { error: 'error' };
-    } else {
-      data.dms[dmIndex].messages[messageIndex].message = message;
-      return {};
     }
+    if (data.dms[msg.listIndex].owner !== authUserId && msg.uId !== authUserId) {
+      return { error: 'error' };
+    }
+    data.dms[msg.listIndex].messages[msg.messageIndex].message = message;
   }
+
+  setData(data);
+  return {};
 }
 
 /**
@@ -146,61 +130,42 @@ function messageRemoveV1(token: string, messageId: number) {
   }
   const authUserId = getUserId(token);
 
-  let isFound = false;
-  let isDm = false;
-  let channelIndex = 0;
-  let dmIndex = 0;
-  let messageIndex = 0;
+  const msg = getMessageDetails(messageId);
 
-  for (const cIndex in data.channels) {
-    if (data.channels[cIndex].memberIds.includes(authUserId)) {
-      for (const mIndex in data.channels[cIndex].channelmessages) {
-        if (data.channels[cIndex].channelmessages[mIndex].messageId === messageId) {
-          isFound = true;
-          isDm = false;
-          channelIndex = parseInt(cIndex);
-          messageIndex = parseInt(mIndex);
-          break;
-        }
-      }
-    }
-  }
-
-  if (!isFound) {
-    for (const dIndex in data.dms) {
-      if (data.dms[dIndex].members.includes(authUserId)) {
-        for (const mIndex in data.dms[dmIndex].messages) {
-          if (data.dms[dIndex].messages[mIndex].messageId === messageId) {
-            isFound = true;
-            isDm = true;
-            dmIndex = parseInt(dIndex);
-            messageIndex = parseInt(mIndex);
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  if (!isFound) {
+  if (msg === null) {
     return { error: 'error' };
   }
 
-  if (!isDm) {
-    if (data.channels[channelIndex].channelmessages[messageIndex].uId !== authUserId && !data.channels[channelIndex].ownerIds.includes(authUserId)) {
+  if (!msg.isDm) {
+    // check if user is in channel and has perms
+    if (!data.channels[msg.listIndex].memberIds.includes(authUserId)) {
       return { error: 'error' };
-    } else {
-      data.channels[channelIndex].channelmessages.splice(messageIndex, 1);
-      return {};
     }
-  } else {
-    if (data.dms[dmIndex].messages[messageIndex].uId !== authUserId && data.dms[dmIndex].owner !== authUserId) {
+    if (!data.channels[msg.listIndex].ownerIds.includes(authUserId) && msg.uId !== authUserId && !isGlobalOwner(authUserId)) {
       return { error: 'error' };
-    } else {
-      data.dms[dmIndex].messages.splice(messageIndex, 1);
-      return {};
+    }
+    data.channels[msg.listIndex].channelmessages.splice(msg.messageIndex, 1);
+  } else {
+    // check is user is in dm and has perms
+    if (!data.dms[msg.listIndex].members.includes(authUserId)) {
+      return { error: 'error' };
+    }
+    if (data.dms[msg.listIndex].owner !== authUserId && msg.uId !== authUserId) {
+      return { error: 'error' };
+    }
+    data.dms[msg.listIndex].messages.splice(msg.messageIndex, 1);
+  }
+
+  let index = 0;
+  for (const i in data.messageDetails) {
+    if (data.messageDetails[i].messageId === messageId) {
+      index = parseInt(i);
     }
   }
+  data.messageDetails.splice(index, 1);
+
+  setData(data);
+  return {};
 }
 
 /**
@@ -238,7 +203,7 @@ function messageSenddmV1 (token: string, dmId: number, message: string) {
   }
 
   const dmIndex = getDmIndex(dmId);
-  const messageId = data.dms[dmIndex].messages.length;
+  const messageId = data.messageDetails.length;
   const newMessage = {
     messageId: messageId,
     uId: uId,
@@ -246,6 +211,12 @@ function messageSenddmV1 (token: string, dmId: number, message: string) {
     timeSent: requestTimesent(),
   };
   data.dms[dmIndex].messages.push(newMessage);
+  data.messageDetails.push({
+    messageId: messageId,
+    isDm: true,
+    listId: dmId,
+    uId: uId,
+  });
   setData(data);
   return { messageId: messageId };
 }

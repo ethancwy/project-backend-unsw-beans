@@ -7,6 +7,7 @@ function clearV1() {
     channels: [],
     dms: [],
     sessionIds: [],
+    messageDetails: [],
   };
   setData(data);
   return {};

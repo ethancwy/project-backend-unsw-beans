@@ -1,27 +1,57 @@
-import { messageSend, messageEdit, messageRemove, clear, dmCreate, channelJoin } from './global';
+import {
+  messageSend, messageEdit, messageRemove, clear, dmCreate, dmMessages, channelMessages
+} from './global';
 import { authRegister, authLogout } from './global';
 import { channelsCreate } from './global';
 import { messageSendDm } from './global';
 
 clear();
 // Testing for message/send/v1
-describe('Testing  errors for /message/send/v1', () => {
-  test('Testing channel id does not refer to valid id', () => {
+describe('/message/send/v1 success', () => {
+  test('Successful message send to channel', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    const messageId1 = messageSend(auth.token, channelId.channelId, 'helloo');
+    const messageId2 = messageSend(auth.token, channelId.channelId, 'there');
+    expect(channelMessages(auth.token, channelId.channelId, 0)).toStrictEqual({
+      messages: [
+        {
+          messageId: messageId1.messageId,
+          uId: auth.authUserId,
+          message: 'helloo',
+          timeSent: expect.any(Number),
+        },
+        {
+          messageId: messageId2.messageId,
+          uId: auth.authUserId,
+          message: 'there',
+          timeSent: expect.any(Number),
+        }
+      ],
+      start: 0,
+      end: -1,
+    });
+  });
+});
+
+describe('Testing errors for /message/send/v1', () => {
+  test('Invalid channel', () => {
     clear();
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const token = auth.token;
-    channelsCreate(token, 'Dog Channel', true);
-    const check = messageSend(token, -10, 'helloo');
+    const channelId = channelsCreate(token, 'Dog Channel', true);
+    const invalidChannelId = channelId + 1;
+    const check = messageSend(token, invalidChannelId, 'helloo');
     expect(check).toStrictEqual({ error: 'error' });
   });
 
   test('Testing length of message - length = 0', () => {
     clear();
     const auth = authRegister('wateryeung0805@gmail.com', 'waterYYds1', 'Water', 'Yeung');
-    const token = auth.token;
-    const channelId = channelsCreate(token, 'Water is smart', true);
-    const check = messageSend(token, channelId.channelId, '');
-    expect(check).toStrictEqual({ error: 'error' });
+    const channelId = channelsCreate(auth.token, 'Water is smart', true);
+
+    expect(messageSend(auth.token, channelId.channelId, '')).toStrictEqual({ error: 'error' });
   });
 
   test('Testing length of message - length > 1000', () => {
@@ -29,7 +59,8 @@ describe('Testing  errors for /message/send/v1', () => {
     const auth = authRegister('wateryeung0805@gmail.com', 'waterYYds1', 'Water', 'Yeung');
     const token = auth.token;
     const channelId = channelsCreate(token, 'Water is smart', true);
-    const check = messageSend(token, channelId.channelId, 'aaaaaaaaaaaakkkkkkkkkkkkkkkdddddddddddddddllllllwkmkmkmskmlkmlkmlkmlkmlkmlkmcyguygjhjhhjhbjhbjhbjhbdmneiejidjicjdjiejdiejdjeijijjfcnjnjnjnxkjnkjnkjsnwdjjjjjjjjjjjjjjjjj22222222222222222222000000000000000000000000000sssssssssssssssssssssssssssssss999999999999999999922222222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggggggggggaaaaaaaaaaaakkkkkkkkkkkkkkkdddddddddddddddllllllwkmkmkmskmlkmlkmlkmlkmlkmlkmcyguygjhjhhjhbjhbjhbjhbdmneiejidjicjdjiejdiejdjeijijjfcnjnjnjnxkjnkjnkjsnwdjjjjjjjjjjjjjjjjj22222222222222222222000000000000000000000000000sssssssssssssssssssssssssssssss999999999999999999922222222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddgggggggggggggggggggggg');
+
+    const check = messageSend(token, channelId.channelId, '22222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggggggggggaaaaaaaaaaaakkkkkkkkkkkkkkkdddddddddddddddllllllwkmkmkmskmlkmlkmlkmlkmlkmlkmcyguygjhjhhjhbjhbjhbjhbdmneiejidjicjdjiejdiejdjeijijjfcnjnjnjnxkjnkjnkjsnwdjjjjjjjjjjjjjjjjj22222222222222222222000000000000000000000000000sssssssssssssssssssssssssssssss999999999999999999922222222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggg');
     expect(check).toStrictEqual({ error: 'error' });
   });
 
@@ -37,11 +68,9 @@ describe('Testing  errors for /message/send/v1', () => {
     clear();
     const auth1 = authRegister('Henryyeung@gmail.com', 'TurtleCute1', 'Henry', 'Yeung');
     const auth2 = authRegister('Niki@gmail.com', 'breadYum2', 'Niki', 'Huang');
-    const token1 = auth1.token;
-    const token2 = auth2.token;
-    const channelId = channelsCreate(token1, 'turtle live show', true);
-    const check = messageSend(token2, channelId.channelId, 'leijou');
-    expect(check).toStrictEqual({ error: 'error' });
+
+    const channelId = channelsCreate(auth1.token, 'turtle live show', true);
+    expect(messageSend(auth2.token, channelId.channelId, 'leijou')).toStrictEqual({ error: 'error' });
   });
 
   test('Testing invalid token', () => {
@@ -49,228 +78,274 @@ describe('Testing  errors for /message/send/v1', () => {
     const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
     const token = auth.token;
     const channelId = channelsCreate(token, 'hk channel', true);
+
     authLogout(token);
-    const check = messageSend(token, channelId.channelId, 'wow');
+    expect(messageSend(token, channelId.channelId, 'wow')).toStrictEqual({ error: 'error' });
+  });
+});
+
+// Testing for message/senddm/v1
+describe('message/senddm/v1 success', () => {
+  test('success statement', () => {
+    clear();
+    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
+
+    const dmId = dmCreate(auth1.token, [auth2.authUserId]);
+    const message1 = messageSendDm(auth1.token, dmId.dmId, 'meow1');
+    const message2 = messageSendDm(auth2.token, dmId.dmId, 'meow2');
+    expect(message1).toStrictEqual({ messageId: expect.any(Number) });
+    expect(message2).toStrictEqual({ messageId: expect.any(Number) });
+    expect(dmMessages(auth1.token, dmId.dmId, 0)).toStrictEqual({
+      messages: [
+        {
+          messageId: message1.messageId,
+          uId: auth1.authUserId,
+          message: 'meow1',
+          timeSent: expect.any(Number),
+        },
+        {
+          messageId: message2.messageId,
+          uId: auth2.authUserId,
+          message: 'meow2',
+          timeSent: expect.any(Number),
+        }
+      ],
+      start: 0,
+      end: -1,
+    });
+  });
+});
+
+describe('Error checking message/senddm/v1', () => {
+  test('Testing dmId does not refer to a valid DM', () => {
+    clear();
+    const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const dm = dmCreate(auth.token, []);
+    const invalidDmId = dm.dmId + 1;
+    expect(messageSendDm(auth.token, invalidDmId, 'meow')).toStrictEqual({ error: 'error' });
+  });
+
+  test('Testing length of message is over 1000 char', () => {
+    clear();
+    const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const dm = dmCreate(auth.token, []);
+    const check = messageSendDm(auth.token, dm.dmId, '22222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggggggggggaaaaaaaaaaaakkkkkkkkkkkkkkkdddddddddddddddllllllwkmkmkmskmlkmlkmlkmlkmlkmlkmcyguygjhjhhjhbjhbjhbjhbdmneiejidjicjdjiejdiejdjeijijjfcnjnjnjnxkjnkjnkjsnwdjjjjjjjjjjjjjjjjj22222222222222222222000000000000000000000000000sssssssssssssssssssssssssssssss999999999999999999922222222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggg');
     expect(check).toStrictEqual({ error: 'error' });
   });
 
-  test('Testing user is not a member of the valid channel - success statment', () => {
+  test('Testing length of message is less than 1 char', () => {
     clear();
-    const auth1 = authRegister('Henryyeung@gmail.com', 'TurtleCute1', 'Henry', 'Yeung');
-    const token1 = auth1.token;
-    const channelId = channelsCreate(token1, 'turtle', true);
-    const check = messageSend(token1, channelId.channelId, 'leijou');
-    expect(check).toStrictEqual({ messageId: expect.any(Number) });
+    const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const dm = dmCreate(auth.token, []);
+    expect(messageSendDm(auth.token, dm.dmId, '')).toStrictEqual({ error: 'error' });
+  });
+
+  test('Testing dmld is valid and non member tries to post', () => {
+    clear();
+    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
+    const auth3 = authRegister('Roywu@gmail.com', 'Sanfransisco3', 'Roy', 'Wu');
+    const auth4 = authRegister('ray@icloud.com', 'gainWeight4', 'Ray', 'Chiu');
+
+    const dm = dmCreate(auth1.token, [auth3.authUserId, auth4.authUserId]);
+    expect(messageSendDm(auth2.token, dm.dmId, 'meow')).toStrictEqual({ error: 'error' });
+  });
+
+  test('Testing invalid token', () => {
+    clear();
+    const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const dm = dmCreate(auth.token, []);
+    const invalidToken = auth.token + 'wassup';
+    expect(messageSendDm(invalidToken, dm.dmId, 'meow')).toStrictEqual({ error: 'error' });
   });
 });
 
 // Testing for message/edit/v1
-describe('/message/edit/v1', () => {
+describe('/message/edit/v1 success', () => {
+  test('Successful message edit in CHANNEL', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    const newMsg = messageEdit(auth.token, messageId.messageId, 'edited!');
+    expect(newMsg).toStrictEqual({});
+    expect(channelMessages(auth.token, channelId.channelId, 0)).toStrictEqual({
+      messages: [
+        {
+          messageId: messageId.messageId,
+          uId: auth.authUserId,
+          message: 'edited!',
+          timeSent: expect.any(Number),
+        }
+      ],
+      start: 0,
+      end: -1,
+    });
+  });
+
+  test('Successful message edit in DM', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const dm = dmCreate(auth.token, []);
+    const messageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messageEdit(auth.token, messageId.messageId, 'edited!')).toStrictEqual({});
+    expect(dmMessages(auth.token, dm.dmId, 0)).toStrictEqual({
+      messages: [
+        {
+          messageId: messageId.messageId,
+          uId: auth.authUserId,
+          message: 'edited!',
+          timeSent: expect.any(Number),
+        }
+      ],
+      start: 0,
+      end: -1,
+    });
+  });
+});
+
+describe('Testing errors for /message/edit/v1', () => {
   test('Testing length of message - length > 1000', () => {
     clear();
     const auth = authRegister('wateryeung0805@gmail.com', 'waterYYds1', 'Water', 'Yeung');
     const token = auth.token;
     const channelId = channelsCreate(token, 'Waterrr', true);
     const messageId = messageSend(token, channelId.channelId, 'happy');
-    const check = messageEdit(token, messageId.messageId, 'aaafffaaeeakkkkeeekkkkeekkkkkkkdddddddddddddddllllllwkmkmkmskmlkmlkmlkmlkmlkmlkmcyguygjhjhhjhbjhbjhbjhbdmneiejidjicjdjiejdiejdjeijijjfcnjnjnjnxkjnkjnkjsnwdjjjjjjjjjjjjjjjjj22222222222222222222000000000000000000000000000sssssssssssssssssssssssssssssss999999999999999999922222222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggggggggggaaaaaaaaaaaakkkkkkkkkkkkkkkdddddddddddddddllllllwkmkmkmskmlkmlkmlkmlkmlkmlkmcyguygjhjhhjhbjhbjhbjhbdmneiejidjicjdjiejdiejdjeijijjfcnjnjnjnxkjnkjnkjsnwdjjjjjjjjjjjjjjjjj22222222222222222222000000000000000000000000000sssssssssssssssssssssssssssssss999999999999999999922222222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddgggggggggggggggggggggg');
+    const check = messageEdit(token, messageId.messageId, '22222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggggggggggaaaaaaaaaaaakkkkkkkkkkkkkkkdddddddddddddddllllllwkmkmkmskmlkmlkmlkmlkmlkmlkmcyguygjhjhhjhbjhbjhbjhbdmneiejidjicjdjiejdiejdjeijijjfcnjnjnjnxkjnkjnkjsnwdjjjjjjjjjjjjjjjjj22222222222222222222000000000000000000000000000sssssssssssssssssssssssssssssss999999999999999999922222222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggg');
     expect(check).toStrictEqual({ error: 'error' });
   });
 
-  test('Testing messageId does not sent by the authorised user making the request', () => {
+  test('Global owner cannot edit member message in DM', () => {
     clear();
-    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
-    const auth2 = authRegister('Peter@gmail.com', 'drink1234', 'Peter', 'He');
-    const token1 = auth1.token;
-    const token2 = auth2.token;
-    const channelId = channelsCreate(token1, 'hk channel', true);
-    const messageId = messageSend(token1, channelId.channelId, 'great');
-    const check = messageEdit(token2, messageId.messageId + 1, '');
-    expect(check).toStrictEqual({ error: 'error' });
+    const globalOwner = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const dmOwner = authRegister('Jackychan@gmail.com', 'passwordhehe', 'Jacky', 'Chan');
+    const member = authRegister('Peter@gmail.com', 'drink1234', 'Peter', 'He');
+
+    const dm = dmCreate(dmOwner.token, [globalOwner.authUserId, member.authUserId]);
+    const messageId = messageSendDm(member.token, dm.dmId, 'great');
+    expect(messageEdit(globalOwner.token, messageId.messageId, 'edited!')).toStrictEqual({ error: 'error' });
   });
 
-  test('Testing the authorised user does not have owner permission in the channel', () => {
+  test('Empty string edit deletes message, cannot edit deleted message', () => {
     clear();
-    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', ' Yeung');
-    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
-    const token1 = auth1.token;
-    const token2 = auth2.token;
-    const dm = dmCreate(token1, [auth2.Id]);
-    // get access in to dm id
-    const dmMessage = messageSendDm(token1, dm.dmId, 'hehehe');
-    const check1 = messageEdit(token2, dmMessage.messageId, '');
-    expect(check1).toStrictEqual({ error: 'error' });
-    const channelId = channelsCreate(token1, 'cat channel', true);
-    const messageId = messageSend(token1, channelId.channelId, 'Hi');
-    const check2 = messageEdit(token2, messageId.messageId, '');
-    expect(check2).toStrictEqual({ error: 'error' });
+    const globalOwner = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+
+    const channelId = channelsCreate(globalOwner.token, 'hk channel', true);
+    const messageId = messageSend(globalOwner.token, channelId.channelId, 'great');
+    // edit empty string (removes message)
+    expect(messageEdit(globalOwner.token, messageId.messageId, '')).toStrictEqual({});
+    // cannot edit deleted message
+    expect(messageEdit(globalOwner.token, messageId.messageId, 'test')).toStrictEqual({ error: 'error' });
+  });
+
+  test('Member cannot edit globalOwner message', () => {
+    clear();
+    const globalOwner = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const dmOwner = authRegister('Jackychan@gmail.com', 'passwordhehe', 'Jacky', 'Chan');
+    const member = authRegister('Peter@gmail.com', 'drink1234', 'Peter', 'He');
+
+    const dm = dmCreate(dmOwner.token, [globalOwner.authUserId, member.authUserId]);
+    const messageId = messageSendDm(globalOwner.token, dm.dmId, 'great');
+    expect(messageEdit(member.token, messageId.messageId, 'edited!')).toStrictEqual({ error: 'error' });
   });
 
   test('Testing invalid token', () => {
     clear();
     const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', ' Tony', 'Yeung');
-    const token = auth.token;
-    const channelId = channelsCreate(token, 'hk channel', true);
-    const messageId = messageSend(token, channelId.channelId, 'Meow');
-    authLogout(token);
-    const check = messageEdit(token, messageId.messageId, 'Hi');
-    expect(check).toStrictEqual({ error: 'error' });
+    const channelId = channelsCreate(auth.token, 'hk channel', true);
+    const messageId = messageSend(auth.token, channelId.channelId, 'Meow');
+
+    authLogout(auth.token);
+    expect(messageEdit(auth.token, messageId.messageId, 'Hi')).toStrictEqual({ error: 'error' });
   });
 });
 
 // Testing for message/remove/v1
-describe('Testing for /message/remove/v1', () => {
+describe('message/remove/v1 SUCCESS', () => {
+  test('poster removing message from CHANNEL', () => {
+    clear();
+    const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const channelId = channelsCreate(auth.token, 'icl channel', true);
+    const message = messageSend(auth.token, channelId.channelId, 'nice');
+    expect(messageRemove(auth.token, message.messageId)).toStrictEqual({});
+    expect(channelMessages(auth.token, channelId.channelId, 0)).toStrictEqual({
+      messages: [],
+      start: 0,
+      end: -1,
+    });
+  });
+
+  test('owner removing member message from DM', () => {
+    clear();
+    const dmOwner = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const member = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
+
+    const dm = dmCreate(dmOwner.token, [member.authUserId]);
+    const message = messageSendDm(member.token, dm.dmId, 'remove my message pls');
+
+    expect(messageRemove(dmOwner.token, message.messageId)).toStrictEqual({});
+    expect(dmMessages(dmOwner.token, dm.dmId, 0)).toStrictEqual({
+      messages: [],
+      start: 0,
+      end: -1,
+    });
+  });
+});
+
+describe('Error checking /message/remove/v1', () => {
   test('Testing messageId does not refer to valid message within channel/dm that authorised user join', () => {
     clear();
     const auth = authRegister('lala0110@gmail.com', 'lala0110', 'Lala', 'Yeh');
-    const token = auth.token;
-    const channelId = channelsCreate(token, 'eat channel', true);
-    const message = messageSend(token, channelId.channelId, 'bark');
-    const check = messageRemove(token, message.messageId + 1);
-    expect(check).toStrictEqual({ error: 'error' });
+    const channelId = channelsCreate(auth.token, 'eat channel', true);
+    const message = messageSend(auth.token, channelId.channelId, 'bark');
+
+    const invalidMessageId = message.messageId + 1;
+    expect(messageRemove(auth.token, invalidMessageId)).toStrictEqual({ error: 'error' });
   });
 
   test('Testing message was not send by authorised user making the request', () => {
     clear();
     const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
     const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
-    const token1 = auth1.token;
-    const token2 = auth2.token;
-    const channelId = channelsCreate(token1, 'channel', true);
-    const message = messageSend(token1, channelId.channelId, 'ntu band');
-    const check = messageRemove(token2, message.messageId);
-    expect(check).toStrictEqual({ error: 'error' });
+
+    const channelId = channelsCreate(auth1.token, 'channel', true);
+    const message = messageSend(auth1.token, channelId.channelId, 'ntu band');
+    expect(messageRemove(auth2.token, message.messageId)).toStrictEqual({ error: 'error' });
   });
 
-  test('Testing the authorised user does not have owner permission', () => {
+  test('Global owner (non-owner) cannot remove member message in DM', () => {
     clear();
-    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
-    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
-    const token1 = auth1.token;
-    const token2 = auth2.token;
-    const dm = dmCreate(token1, [auth2.authUserId]);
-    const dmMessage = messageSendDm(token1, dm.dmId, 'lol');
-    const check1 = messageRemove(token2, dmMessage.messageId);
-    expect(check1).toStrictEqual({ error: 'error' });
-    const channelId = channelsCreate(token1, 'couple channel', true);
-    channelJoin(token2, channelId.channelId);
-    const channelMessage = messageSend(token1, channelId.channelId, 'hahaha');
-    const check2 = messageRemove(token2, channelMessage.messageId);
-    expect(check2).toStrictEqual({ error: 'error' });
+    const globalOwner = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const dmOwner = authRegister('Jackychan@gmail.com', 'passwordhehe', 'Jacky', 'Chan');
+    const member = authRegister('Peter@gmail.com', 'drink1234', 'Peter', 'He');
+
+    const dm = dmCreate(dmOwner.token, [globalOwner.authUserId, member.authUserId]);
+    const messageId = messageSendDm(member.token, dm.dmId, 'try to remove me');
+    expect(messageRemove(globalOwner.token, messageId.messageId)).toStrictEqual({ error: 'error' });
   });
 
-  test(' Testing invalid token', () => {
+  test('Cannot remove deleted message (via edit to empty string)', () => {
     clear();
-    const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
-    const token = auth.token;
-    const channelId = channelsCreate(token, 'icl channel', true);
-    const message = messageSend(token, channelId.channelId, 'nice');
-    authLogout(token);
-    const check = messageRemove(token, message.messageId);
-    expect(check).toStrictEqual({ error: 'error' });
-  });
-});
+    const globalOwner = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
 
-describe('Testing success for removing', () => {
-  test('removing test1', () => {
-    clear();
-    const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
-    const token = auth.token;
-    const channelId = channelsCreate(token, 'icl channel', true);
-    const message = messageSend(token, channelId.channelId, 'nice');
-    const check = messageRemove(token, message.messageId);
-    expect(check).toStrictEqual({});
-  });
-
-  test('removing test2', () => {
-    clear();
-    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
-    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
-    const token1 = auth1.token;
-    const token2 = auth2.token;
-    const dm = dmCreate(token1, [auth2.authUserId]);
-    const message = messageSendDm(token2, dm.dmId, 'nice');
-    const check = messageRemove(token1, message.messageId);
-    expect(check).toStrictEqual({});
-  });
-});
-
-// Testing for message/senddm/v1
-describe('Testing message/senddm/v1', () => {
-  test('Testing dmld does not refer to a valid DM', () => {
-    clear();
-    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
-    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
-    const auth3 = authRegister('Roywu@gmail.com', 'Sanfransisco3', 'Roy', 'Wu');
-    const auth4 = authRegister('ray@icloud.com', 'gainWeight4', 'Ray', 'Chiu');
-    const token = auth1.token;
-    const dm = dmCreate(token, [auth2.authUserId, auth3.authUserId, auth4.authUserId]);
-    const check = messageSendDm(token, dm.dmId + 1, 'meow');
-    expect(check).toStrictEqual({ error: 'error' });
-  });
-
-  test('Testing length of message is less than 1', () => {
-    clear();
-    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
-    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
-    const auth3 = authRegister('Roywu@gmail.com', 'Sanfransisco3', 'Roy', 'Wu');
-    const auth4 = authRegister('ray@icloud.com', 'gainWeight4', 'Ray', 'Chiu');
-    const token = auth1.token;
-    const dm = dmCreate(token, [auth2.authUserId, auth3.authUserId, auth4.authUserId]);
-    const check = messageSendDm(token, dm.dmId, '');
-    expect(check).toStrictEqual({ error: 'error' });
-  });
-
-  test('Testing length of message is over 1000', () => {
-    clear();
-    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
-    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
-    const auth3 = authRegister('Roywu@gmail.com', 'Sanfransisco3', 'Roy', 'Wu');
-    const auth4 = authRegister('ray@icloud.com', 'gainWeight4', 'Ray', 'Chiu');
-    const token = auth1.token;
-    const dm = dmCreate(token, [auth2.authUserId, auth3.authUserId, auth4.authUserId]);
-    const check = messageSendDm(token, dm.dmId, 'aaafffaaeeakkkkeeekkkkeekkkkkkkdddddddddddddddllllllwkmkmkmskmlkmlkmlkmlkmlkmlkmcyguygjhjhhjhbjhbjhbjhbdmneiejidjicjdjiejdiejdjeijijjfcnjnjnjnxkjnkjnkjsnwdjjjjjjjjjjjjjjjjj22222222222222222222000000000000000000000000000sssssssssssssssssssssssssssssss999999999999999999922222222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggggggggggaaaaaaaaaaaakkkkkkkkkkkkkkkdddddddddddddddllllllwkmkmkmskmlkmlkmlkmlkmlkmlkmcyguygjhjhhjhbjhbjhbjhbdmneiejidjicjdjiejdiejdjeijijjfcnjnjnjnxkjnkjnkjsnwdjjjjjjjjjjjjjjjjj22222222222222222222000000000000000000000000000sssssssssssssssssssssssssssssss999999999999999999922222222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggg');
-    expect(check).toStrictEqual({ error: 'error' });
-  });
-
-  test('Testing dmld is valid and the authorised user is not a member of dm', () => {
-    clear();
-    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
-    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
-    const auth3 = authRegister('Roywu@gmail.com', 'Sanfransisco3', 'Roy', 'Wu');
-    const auth4 = authRegister('ray@icloud.com', 'gainWeight4', 'Ray', 'Chiu');
-    const token1 = auth1.token;
-    const token2 = auth2.token;
-    const dm = dmCreate(token1, [auth3.authUserId, auth4.authUserId]);
-    const check = messageSendDm(token2, dm.dmId, 'meow');
-    expect(check).toStrictEqual({ error: 'error' });
+    const channelId = channelsCreate(globalOwner.token, 'hk channel', true);
+    const messageId = messageSend(globalOwner.token, channelId.channelId, 'great');
+    // edit empty string (removes message)
+    expect(messageEdit(globalOwner.token, messageId.messageId, '')).toStrictEqual({});
+    // cannot remove deleted message
+    expect(messageRemove(globalOwner.token, messageId.messageId)).toStrictEqual({ error: 'error' });
   });
 
   test('Testing invalid token', () => {
     clear();
-    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
-    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
-    const auth3 = authRegister('Roywu@gmail.com', 'Sanfransisco3', 'Roy', 'Wu');
-    const auth4 = authRegister('ray@icloud.com', 'gainWeight4', 'Ray', 'Chiu');
-    const token = auth1.token;
-    const dmId = dmCreate(token, [auth2.authUserId, auth3.authUserId, auth4.authUserId]);
-    authLogout(token);
-    const check = messageSendDm(token, dmId.dmId, 'meow');
-    expect(check).toStrictEqual({ error: 'error' });
-  });
+    const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const channelId = channelsCreate(auth.token, 'icl channel', true);
+    const message = messageSend(auth.token, channelId.channelId, 'nice');
 
-  test('success statement', () => {
-    clear();
-    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
-    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
-    const auth3 = authRegister('Roywu@gmail.com', 'Sanfransisco3', 'Roy', 'Wu');
-    const auth4 = authRegister('ray@icloud.com', 'gainWeight4', 'Ray', 'Chiu');
-    const token = auth1.token;
-    const token2 = auth2.token;
-    const dmId = dmCreate(token, [auth2.authUserId, auth3.authUserId, auth4.authUserId]);
-    const message1 = messageSendDm(token, dmId.dmId, 'meow');
-    const message2 = messageSendDm(token2, dmId.dmId, 'meow');
-    expect(message1).toStrictEqual({ messageId: 0 });
-    expect(message2).toStrictEqual({ messageId: 1 });
+    const invalidToken = auth.token + 'yoo';
+    expect(messageRemove(invalidToken, message.messageId)).toStrictEqual({ error: 'error' });
   });
 });
+
 clear();
