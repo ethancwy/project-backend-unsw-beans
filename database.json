@@ -1,6 +1,22 @@
 {
-  "users": [],
+  "users": [
+    {
+      "uId": 0,
+      "nameFirst": "Gus",
+      "nameLast": "Fring",
+      "email": "pollos@hhm.com",
+      "password": "password",
+      "handleStr": "gusfring",
+      "isGlobalOwner": true,
+      "tokens": [
+        "0"
+      ]
+    }
+  ],
   "channels": [],
   "dms": [],
-  "sessionIds": []
+  "sessionIds": [
+    "0"
+  ],
+  "messageDetails": []
 }

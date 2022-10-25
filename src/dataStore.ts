@@ -36,11 +36,19 @@ type dm = {
   messages: Array<channelmessages>;
 }
 
-type datatype = {
+export type details = {
+  uId: number;
+  messageId: number;
+  isDm: boolean;
+  listId: number;
+}
+
+export type datatype = {
   users: Array<user>;
   channels: Array<channel>;
   dms: Array<dm>;
   sessionIds: Array<string>;
+  messageDetails: Array<details>;
 }
 
 let data: datatype = {
@@ -85,7 +93,8 @@ let data: datatype = {
     // }
   ],
 
-  sessionIds: []
+  sessionIds: [],
+  messageDetails: [],
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
