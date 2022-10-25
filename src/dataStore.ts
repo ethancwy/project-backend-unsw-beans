@@ -12,7 +12,7 @@ type user = {
   tokens: Array<string>;
 }
 
-type channelmessages = {
+type message = {
   messageId: number;
   uId: number;
   message: string;
@@ -25,7 +25,7 @@ type channel = {
   isPublic: boolean;
   ownerIds: Array<number>;
   memberIds: Array<number>;
-  channelmessages: Array<channelmessages>;
+  channelmessages: Array<message>;
 }
 
 type dm = {
@@ -33,7 +33,7 @@ type dm = {
   name: string;
   owner: number;
   members: Array<number>;
-  messages: Array<channelmessages>;
+  messages: Array<message>;
 }
 
 export type details = {
