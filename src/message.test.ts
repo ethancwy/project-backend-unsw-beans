@@ -168,7 +168,8 @@ describe('/message/edit/v1 success', () => {
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
-    expect(messageEdit(auth.token, messageId.messageId, 'edited!')).toStrictEqual({});
+    const newMsg = messageEdit(auth.token, messageId.messageId, 'edited!');
+    expect(newMsg).toStrictEqual({});
     expect(channelMessages(auth.token, channelId.channelId, 0)).toStrictEqual({
       messages: [
         {
@@ -281,9 +282,9 @@ describe('message/remove/v1 SUCCESS', () => {
     const member = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
 
     const dm = dmCreate(dmOwner.token, [member.authUserId]);
-    const message = messageSendDm(member, dm.dmId, 'remove my message pls');
+    const message = messageSendDm(member.token, dm.dmId, 'remove my message pls');
 
-    expect(messageRemove(dmOwner, message.messageId)).toStrictEqual({});
+    expect(messageRemove(dmOwner.token, message.messageId)).toStrictEqual({});
     expect(dmMessages(dmOwner.token, dm.dmId, 0)).toStrictEqual({
       messages: [],
       start: 0,

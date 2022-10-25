@@ -110,8 +110,8 @@ export function getMessageDetails(messageId: number) {
     for (const i in data.channels) {
       if (data.channels[i].channelId === msg.listId) {
         listIndex = parseInt(i);
-        for (const j in data.channels[i].channelmessages) {
-          if (data.channels[i].channelMessages[j].messageId === messageId) {
+        for (const j in data.channels[listIndex].channelmessages) {
+          if (data.channels[i].channelmessages[j].messageId === messageId) {
             messageIndex = parseInt(j);
             break;
           }
@@ -126,7 +126,7 @@ export function getMessageDetails(messageId: number) {
       if (data.dms[i].dmId === msg.listId) {
         listIndex = parseInt(i);
         for (const j in data.dms[i].messages) {
-          if (data.dms[i].messages[j].messageId === messageId) {
+          if (data.dms[listIndex].messages[j].messageId === messageId) {
             messageIndex = parseInt(j);
             break;
           }

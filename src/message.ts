@@ -71,10 +71,14 @@ function messageEditV1(token: string, messageId: number, message: string) {
     return { error: 'error' };
   }
 
-  if (!isValidToken) {
+  if (!isValidToken(token)) {
     return { error: 'error' };
   }
   const authUserId = getUserId(token);
+
+  if (message === '') {
+    return messageRemoveV1(token, messageId);
+  }
 
   const msg = getMessageDetails(messageId);
 
@@ -83,14 +87,15 @@ function messageEditV1(token: string, messageId: number, message: string) {
   }
 
   if (!msg.isDm) {
-    // check if user is in channel and has perms
+    // check if user is in channel
     if (!data.channels[msg.listIndex].memberIds.includes(authUserId)) {
       return { error: 'error' };
     }
+    // check if user has perms
     if (!data.channels[msg.listIndex].ownerIds.includes(authUserId) && msg.uId !== authUserId && !isGlobalOwner(authUserId)) {
       return { error: 'error' };
     }
-    data.channels[msg.listIndex].channelmessages.splice(msg.messageIndex, 1, message);
+    data.channels[msg.listIndex].channelmessages[msg.messageIndex].message = message;
   } else {
     // check is user is in dm and has perms
     if (!data.dms[msg.listIndex].members.includes(authUserId)) {
@@ -99,9 +104,10 @@ function messageEditV1(token: string, messageId: number, message: string) {
     if (data.dms[msg.listIndex].owner !== authUserId && msg.uId !== authUserId) {
       return { error: 'error' };
     }
-    data.dms[msg.listIndex].messages.splice(msg.messageIndex, 1, message);
+    data.dms[msg.listIndex].messages[msg.messageIndex].message = message;
   }
 
+  setData(data);
   return {};
 }
 
@@ -150,6 +156,15 @@ function messageRemoveV1(token: string, messageId: number) {
     data.dms[msg.listIndex].messages.splice(msg.messageIndex, 1);
   }
 
+  let index = 0;
+  for (const i in data.messageDetails) {
+    if (data.messageDetails[i].messageId === messageId) {
+      index = parseInt(i);
+    }
+  }
+  data.messageDetails.splice(index, 1);
+
+  setData(data);
   return {};
 }
 
