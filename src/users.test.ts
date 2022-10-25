@@ -3,6 +3,7 @@ import {
   usersAll, userSetName, userSetEmail, userSetHandle
 } from './global';
 
+clear();
 describe('Testing userProfileV2', () => {
   test('Testing for valid user', () => {
     clear();
@@ -312,3 +313,4 @@ describe('Error checking userSetHandleV1', () => {
     expect(userSetHandle(member2.token, member1Details.user.handleStr)).toStrictEqual({ error: 'error' });
   });
 });
+clear();

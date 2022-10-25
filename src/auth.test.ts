@@ -5,6 +5,7 @@ import { authLogin, authRegister, authLogout, clear } from './global';
 //              AUTH FUNCTION TESTS                    //
 //                                                     //
 // ==================================================  //
+clear();
 
 describe('Testing for authRegisterV2: ', () => {
   clear();
@@ -189,3 +190,4 @@ describe('Testing for auth/logout/v1', () => {
     expect(authLogout(user1.token)).toStrictEqual({ error: 'error' });
   });
 });
+clear();

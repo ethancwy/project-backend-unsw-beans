@@ -3,6 +3,7 @@ import { authRegister, authLogout } from './global';
 import { channelsCreate } from './global';
 import { messageSendDm } from './global';
 
+clear();
 // Testing for message/send/v1
 describe('Testing  errors for /message/send/v1', () => {
   test('Testing channel id does not refer to valid id', () => {
@@ -272,3 +273,4 @@ describe('Testing message/senddm/v1', () => {
     expect(message2).toStrictEqual({ messageId: 1 });
   });
 });
+clear();
