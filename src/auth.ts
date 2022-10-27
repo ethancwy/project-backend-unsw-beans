@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { validEmail, validName } from './global';
+import { validEmail, validName, isValidToken } from './global';
 
 /**
 * Allows user to login with email and password that they have registered
@@ -15,18 +15,31 @@ import { validEmail, validName } from './global';
 function authLoginV2(email: string, password: string) {
   const data = getData();
 
-  for (let i = 0; i < data.users.length; i++) {
-    if (data.users[i].email === email) {
-      if (data.users[i].password === password) {
+  for ( const user of data.users ) {
+    if ( user.email === email) {
+      if ( user.password === password ) {
         const token = generateToken();
-        data.users[i].tokens.push(token);
+        user.tokens.push(token);
         data.sessionIds.push(token);
-        return { authUserId: data.users[i].uId, token: token };
-      } else {
-        return { error: 'error' };
+        setData(data);
+        return { token: token, authUserId: user.uId };
       }
+      return { error: 'error' };
     }
   }
+
+  // for (let i = 0; i < data.users.length; i++) {
+  //   if (data.users[i].email === email) {
+  //     if (data.users[i].password === password) {
+  //       const token = generateToken();
+  //       data.users[i].tokens.push(token);
+  //       data.sessionIds.push(token);
+  //       return { authUserId: data.users[i].uId, token: token };
+  //     } else {
+  //       return { error: 'error' };
+  //     }
+  //   }
+  // }
   return { error: 'error' };
 }
 
@@ -89,7 +102,7 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
 function authLogoutV1(token: string) {
   const data = getData();
 
-  if (!validToken(token)) {
+  if (!isValidToken(token)) {
     return { error: 'error' };
   }
 
@@ -105,17 +118,6 @@ function authLogoutV1(token: string) {
   data.sessionIds.splice(data.sessionIds.indexOf(token), 1);
   setData(data);
   return {};
-}
-
-function validToken(token: string) {
-  if (token === '') return false;
-  const data = getData();
-  for (const user of data.users) {
-    if (user.tokens.includes(token)) {
-      return true;
-    }
-  }
-  return false;
 }
 
 function generateToken() {
