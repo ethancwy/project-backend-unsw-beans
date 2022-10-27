@@ -1,5 +1,5 @@
 import { authRegister, authLogout } from './global';
-import { channelsCreate, channelsList, channelsListAll } from './global';
+import { channelsCreate, channelsList, channelsListAll, channelLeave } from './global';
 import { clear } from './global';
 
 clear();
@@ -7,7 +7,6 @@ clear();
 describe('channelsCreateV2 tests:', () => {
   test('Testing for logged out user', () => {
     clear();
-
     const person = authRegister('hao@mail.com', '12345', 'hao', 'yang');
     authLogout(person.token);
 
@@ -16,35 +15,38 @@ describe('channelsCreateV2 tests:', () => {
 
   test('Testing for invalid name(smaller than 1)', () => {
     clear();
-
     const person = authRegister('hao@mail.com', '12345', 'hao', 'yang');
 
     expect(channelsCreate(person.token, '', true)).toStrictEqual({ error: 'error' });
+    expect(channelsCreate(person.token, '', false)).toStrictEqual({ error: 'error' });
   });
 
   test('Testing for invalid name(greater than 20)', () => {
     clear();
-
     const person = authRegister('hao@mail.com', '1234512345', 'hao', 'yang');
 
-    expect(channelsCreate(person.token, '1234567890qwertyuiopasdfghjkl', true)).toStrictEqual({ error: 'error' });
+    expect(channelsCreate(person.token, '1234567890qwertyuiopa', true)).toStrictEqual({ error: 'error' });
+    expect(channelsCreate(person.token, '1234567890qwertyuiopa', false)).toStrictEqual({ error: 'error' });
   });
 
   test('Testing for invalid authUserId', () => {
     clear();
-
     const person = authRegister('hao@mail.com', '1234512345', 'hao', 'yang');
     clear();
 
     expect(channelsCreate(person.token, 'hao/channel', true)).toStrictEqual({ error: 'error' });
   });
 
-  test('Testing for successful creation', () => {
+  test('Testing for successful channel creation public & private', () => {
     clear();
-
     const person = authRegister('hao@mail.com', '1234512345', 'hao', 'yang');
 
     expect(channelsCreate(person.token, 'hao/channel', true)).toStrictEqual(
+      {
+        channelId: expect.any(Number),
+      }
+    );
+    expect(channelsCreate(person.token, 'hao/channel/private', false)).toStrictEqual(
       {
         channelId: expect.any(Number),
       }
@@ -104,6 +106,15 @@ describe('channelsListV2 tests:', () => {
         ]
       }
     );
+  });
+
+  test('Test after leaving channel', () => {
+    clear();
+
+    const person = authRegister('hao@mail.com', '1234512345', 'hao', 'yang');
+    const channel = channelsCreate(person.token, 'hao/channel1', true);
+    channelLeave(person.token, channel.channelId);
+    expect(channelsList(person.token)).toStrictEqual({ channels: [] });
   });
 });
 

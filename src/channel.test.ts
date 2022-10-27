@@ -195,7 +195,7 @@ describe('Testing channelJoinV2', () => {
 });
 
 describe('Error checking channelJoinV2', () => {
-  test('Testing invalid authUserId, channelId, and already a member', () => {
+  test('Testing invalid token & channelId', () => {
     clear();
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
@@ -208,10 +208,6 @@ describe('Error checking channelJoinV2', () => {
     const invalidChannelId = channelId.channelId + 1;
     expect(channelJoin(invalidMemberToken, channelId.channelId)).toStrictEqual({ error: 'error' }); // invalid memberId
     expect(channelJoin(memberId.token, invalidChannelId)).toStrictEqual({ error: 'error' }); // invalid channelId
-
-    // Testing already a member
-    expect(channelJoin(memberId.token, channelId.channelId)).toStrictEqual({});
-    expect(channelJoin(memberId.token, channelId.channelId)).toStrictEqual({ error: 'error' });
   });
 
   test('Testing normal user cannot join private channel', () => {
@@ -283,7 +279,7 @@ describe('Testing channelInviteV2', () => {
 });
 
 describe('Error checking channelInviteV2', () => {
-  test('Testing invalid token, channelId, and uId, and already a member', () => {
+  test('Testing invalid token, channelId, and uId, and duplicate invite', () => {
     clear();
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
@@ -407,11 +403,26 @@ describe('Testing channelLeaveV1 success', () => {
 
     // expect error since channelOwner no longer in channel
     expect(channelDetails(channelOwnerId.token, channelId.channelId)).toStrictEqual({ error: 'error' });
+    // member calls channelDetails
+    expect(channelDetails(memberId.token, channelId.channelId)).toStrictEqual({
+      name: 'Boost',
+      isPublic: true,
+      ownerMembers: [],
+      allMembers: [
+        {
+          uId: memberId.authUserId,
+          email: 'chicken@bar.com',
+          nameFirst: 'Ronald',
+          nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        }
+      ],
+    });
   });
 });
 
 describe('Error checking channelLeaveV1', () => {
-  test('Invalid channelId & token(non-existent)', () => {
+  test('Invalid channelId, token(non-existent), and not a member', () => {
     clear();
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
@@ -600,10 +611,19 @@ describe('Error checking channelAddOwnerV1', () => {
     const user2 = authRegister('john1@bar.com', 'decentp2assword', 'John2', 'Wick2');
     const channel = channelsCreate(user.token, 'Boost', true);
     const channel2 = channelsCreate(user.token, 'Boost/priv', false);
-    // not a member of channel
+    // global owner non member can't add to public channel
     expect(channelAddOwner(globalOwner.token, channel.channelId, user2.authUserId)).toStrictEqual({ error: 'error' });
-    // already an owner
+    // global owner non member can't add to priv channel
     expect(channelAddOwner(globalOwner.token, channel2.channelId, user2.authUserId)).toStrictEqual({ error: 'error' });
+  });
+
+  test('member tries to add channelOwner', () => {
+    clear();
+    const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const channel = channelsCreate(channelOwner.token, 'Boost', true);
+
+    const member = authRegister('john1@bar.com', 'decentp2assword', 'John2', 'Wick2');
+    expect(channelAddOwner(member.token, channel.channelId, channelOwner.authUserId)).toStrictEqual({ error: 'error' });
   });
 });
 

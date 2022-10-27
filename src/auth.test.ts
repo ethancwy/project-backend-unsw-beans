@@ -1,4 +1,4 @@
-import { authLogin, authRegister, authLogout, clear } from './global';
+import { authLogin, authRegister, authLogout, clear, channelsCreate } from './global';
 
 // =================================================== //
 //                                                     //
@@ -20,17 +20,11 @@ describe('Testing for authRegisterV2: ', () => {
   });
 
   // Valid register, 2 person different token
-  test('Testing for valid register', () => {
+  test('Testing for 2 users different tokens', () => {
     clear();
     const person1 = authRegister('p.file111@gmail.com', 'Bob1002', 'Peter23', 'File23');
     const person2 = authRegister('p12.file@gmail.com', 'Bob1001', 'Peter12', 'File12');
-    expect(person1 === person2).toBe(false);
-    expect(person1)
-      .toStrictEqual(
-        {
-          token: expect.any(String),
-          authUserId: expect.any(Number)
-        });
+    expect(person1.token === person2.token).toBe(false);
   });
 
   // Valid register, same name after clear
@@ -44,62 +38,68 @@ describe('Testing for authRegisterV2: ', () => {
           authUserId: expect.any(Number)
         });
   });
+});
 
-  // Invalid email
-  test('Testing for invalid register: Invalid email', () => {
-    expect(authRegister('Invalid email', 'Bob100', 'Peter', 'File'))
-      .toStrictEqual({ error: 'error' });
-  });
-
-  test('Testing for invalid register: Invalid email', () => {
-    expect(authRegister('', 'Bob100', 'Peter', 'File'))
-      .toStrictEqual({ error: 'error' });
+describe('Error checking authRegisterV2 ', () => {
+  clear();
+  // Invalid emails
+  test.each([
+    { email: 'peter@file@hehe.com', password: 'password', nameFirst: 'Peter', nameLast: 'File' },
+    { email: 'peter', password: 'password', nameFirst: 'Peter', nameLast: 'File' },
+    { email: '@hotmail.com', password: 'password', nameFirst: 'Peter', nameLast: 'File' },
+    { email: '', password: 'password', nameFirst: 'Peter', nameLast: 'File' },
+  ])('Testing invalid emails', ({ email, password, nameFirst, nameLast }) => {
+    expect(authRegister(email, password, nameFirst, nameLast)).toStrictEqual({ error: 'error' });
   });
 
   // Email already used
-  test('Testing for already used email in first test', () => {
+  test('Testing for duplicate email', () => {
+    clear();
+    authRegister('p.file@gmail.com', 'Bob1002', 'Peter23', 'File23');
     expect(authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File'))
       .toStrictEqual({ error: 'error' });
   });
 
   // Invalid password
-  test('Testing for invalid password: Invalid password', () => {
-    expect(authRegister('p.file@gmail.com', '123', 'Peter', 'File'))
-      .toStrictEqual({ error: 'error' });
-  });
-
-  test('Testing for invalid password: Invalid password', () => {
-    expect(authRegister('p.file@gmail.com', '', 'Peter', 'File'))
-      .toStrictEqual({ error: 'error' });
+  clear();
+  test.each([
+    { email: 'p.file@gmail.com', password: '12345', nameFirst: 'Peter', nameLast: 'File' },
+    { email: 'p.file@gmail.com', password: '', nameFirst: 'Peter', nameLast: 'File' },
+  ])('Testing invalid passwords', ({ email, password, nameFirst, nameLast }) => {
+    expect(authRegister(email, password, nameFirst, nameLast)).toStrictEqual({ error: 'error' });
   });
 
   // Invalid first name
-  test('Testing for invalid name: Invalid first name', () => {
-    expect(authRegister('p.file@gmail.com', 'Bob100',
-      'Thisnameis50characterstoolongandwillprobablyfail123', 'File'))
-      .toStrictEqual({ error: 'error' });
-  });
-
-  test('Testing for invalid name: Invalid first name', () => {
-    expect(authRegister('p.file@gmail.com', 'Bob100', '', 'File'))
-      .toStrictEqual({ error: 'error' });
+  clear();
+  test.each([
+    {
+      email: 'p.file@gmail.com',
+      password: '123456',
+      nameFirst: 'Thisnameis50characterstoolongandwillprobablyfail123',
+      nameLast: 'File'
+    },
+    { email: 'p.file@gmail.com', password: '123456', nameFirst: '', nameLast: 'File' },
+  ])('Testing invalid nameFirst', ({ email, password, nameFirst, nameLast }) => {
+    expect(authRegister(email, password, nameFirst, nameLast)).toStrictEqual({ error: 'error' });
   });
 
   // Invalid last name
-  test('Testing for invalid name: Invalid last name', () => {
-    expect(authRegister('p.file@gmail.com', 'Bob100', 'Peter',
-      'Thisnameis50characterstoolongandwillprobablyfail123'))
-      .toStrictEqual({ error: 'error' });
-  });
-
-  test('Testing for invalid name: Invalid last name', () => {
-    expect(authRegister('p.file@gmail.com', 'Bob100', 'Peter', ''))
-      .toStrictEqual({ error: 'error' });
+  clear();
+  test.each([
+    {
+      email: 'p.file@gmail.com',
+      password: '123456',
+      nameFirst: 'Peter',
+      nameLast: 'Thisnameis50characterstoolongandwillprobablyfail123'
+    },
+    { email: 'p.file@gmail.com', password: '123456', nameFirst: 'Peter', nameLast: '' },
+  ])('Testing invalid nameLast', ({ email, password, nameFirst, nameLast }) => {
+    expect(authRegister(email, password, nameFirst, nameLast)).toStrictEqual({ error: 'error' });
   });
 });
 
+// Valid login
 describe('Testing for authLoginV2: ', () => {
-  // Valid login
   test('Testing for Valid login: ', () => {
     clear();
     authRegister('p.file@gmail.com', 'Bob100',
@@ -120,6 +120,23 @@ describe('Testing for authLoginV2: ', () => {
     expect(session1.authuserId === session2.authuserId).toBe(true);
   });
 
+  test('Testing for 2 sessions', () => {
+    clear();
+    authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    const session2 = authLogin('p.file@gmail.com', 'Bob100');
+
+    expect(channelsCreate(session2.token, 'hii', true)).toStrictEqual({ channelId: expect.any(Number) });
+  });
+});
+
+describe('Error checking authLoginV2: ', () => {
+  // unregistered user
+  test('Testing for unregistered user', () => {
+    clear();
+    expect(authLogin('p.file@gmail.com', 'Bob100'))
+      .toStrictEqual({ error: 'error' });
+  });
+
   // Invalid email
   test('Testing for invalid login email: Invalid email', () => {
     clear();
@@ -134,6 +151,15 @@ describe('Testing for authLoginV2: ', () => {
     authRegister('p.file@gmail.com', 'Bob100',
       'Peter', 'File');
     expect(authLogin('', 'Bob100')).toStrictEqual({ error: 'error' });
+  });
+
+  test('Testing for invalid login email: Does not belong to user', () => {
+    clear();
+    authRegister('p.file@gmail.com', 'Bob100',
+      'Peter', 'File');
+    authRegister('terry@gmail.com', 'Password',
+      'Terry', 'File');
+    expect(authLogin('p.file@gmail.com', 'Password')).toStrictEqual({ error: 'error' });
   });
 
   //  Invalid password
@@ -158,8 +184,17 @@ describe('Testing for auth/logout/v1', () => {
   test('Testing for valid logout', () => {
     clear();
     const user = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
-    // const user = authLogin('p.file@gmail.com', 'Bob100');
+
     expect(authLogout(user.token)).toStrictEqual({});
+  });
+
+  test('Testing for 2 sessions after logout of one', () => {
+    clear();
+    const session1 = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    const session2 = authLogin('p.file@gmail.com', 'Bob100');
+
+    authLogout(session1.token);
+    expect(channelsCreate(session2.token, 'hii', true)).toStrictEqual({ channelId: expect.any(Number) });
   });
 
   // Invalid token
@@ -173,7 +208,7 @@ describe('Testing for auth/logout/v1', () => {
   test('Testing for invalid logout', () => {
     clear();
     const user = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
-    // const user = authLogin('p.file@gmail.com', 'Bob100');
+
     expect(authLogout(user.token)).toStrictEqual({});
     expect(authLogout(user.token)).toStrictEqual({ error: 'error' });
   });
@@ -182,8 +217,7 @@ describe('Testing for auth/logout/v1', () => {
     clear();
     const user = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
     const user1 = authRegister('m.hunt@gmail.com', 'Bob100', 'Mike', 'Hunt');
-    // const user = authLogin('p.file@gmail.com', 'Bob100');
-    // const user1 = authLogin('m.hunt@gmail.com', 'Bob100');
+
     expect(authLogout(user.token)).toStrictEqual({});
     expect(authLogout(user.token)).toStrictEqual({ error: 'error' });
     expect(authLogout(user1.token)).toStrictEqual({});
