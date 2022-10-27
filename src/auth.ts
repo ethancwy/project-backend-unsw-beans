@@ -28,18 +28,6 @@ function authLoginV2(email: string, password: string) {
     }
   }
 
-  // for (let i = 0; i < data.users.length; i++) {
-  //   if (data.users[i].email === email) {
-  //     if (data.users[i].password === password) {
-  //       const token = generateToken();
-  //       data.users[i].tokens.push(token);
-  //       data.sessionIds.push(token);
-  //       return { authUserId: data.users[i].uId, token: token };
-  //     } else {
-  //       return { error: 'error' };
-  //     }
-  //   }
-  // }
   return { error: 'error' };
 }
 
