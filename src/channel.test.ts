@@ -769,6 +769,6 @@ describe('Error checking channelRemoveOwnerV1', () => {
     channelJoin(globalOwner.token, channel.channelId);
 
     expect(channelRemoveOwner(globalOwner.token, channel.channelId, channelOwner.authUserId)).toStrictEqual({ error: 'error' });
+    clear();
   });
 });
-clear();

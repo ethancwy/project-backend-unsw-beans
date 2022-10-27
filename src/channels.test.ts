@@ -166,6 +166,6 @@ describe('Testing the edge cases', () => {
     expect(channelsListAll(user.token)).toEqual({
       channels: []
     });
+    clear();
   });
 });
-clear();

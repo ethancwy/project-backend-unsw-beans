@@ -311,6 +311,6 @@ describe('Error checking userSetHandleV1', () => {
     const member1Details = userProfile(member2.token, member1.authUserId);
 
     expect(userSetHandle(member2.token, member1Details.user.handleStr)).toStrictEqual({ error: 'error' });
+    clear();
   });
 });
-clear();

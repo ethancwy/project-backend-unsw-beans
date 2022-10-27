@@ -435,6 +435,6 @@ describe('Testing dm/messages/v1 errors', () => {
     const dm = dmCreate(sender.token, [recipient.authUserId]);
 
     expect(dmMessages(recipient.token, dm.dmId, 40)).toStrictEqual({ error: expect.any(String) });
+    clear();
   });
 });
-clear();
