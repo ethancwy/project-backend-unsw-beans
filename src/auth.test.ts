@@ -188,6 +188,6 @@ describe('Testing for auth/logout/v1', () => {
     expect(authLogout(user.token)).toStrictEqual({ error: 'error' });
     expect(authLogout(user1.token)).toStrictEqual({});
     expect(authLogout(user1.token)).toStrictEqual({ error: 'error' });
+    clear();
   });
 });
-clear();

@@ -1,5 +1,5 @@
 import {
-  messageSend, messageEdit, messageRemove, clear, dmCreate, dmMessages, channelMessages
+  messageSend, messageEdit, messageRemove, clear, dmCreate, dmMessages, channelMessages, channelJoin
 } from './global';
 import { authRegister, authLogout } from './global';
 import { channelsCreate } from './global';
@@ -60,7 +60,11 @@ describe('Testing errors for /message/send/v1', () => {
     const token = auth.token;
     const channelId = channelsCreate(token, 'Water is smart', true);
 
-    const check = messageSend(token, channelId.channelId, '22222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggggggggggaaaaaaaaaaaakkkkkkkkkkkkkkkdddddddddddddddllllllwkmkmkmskmlkmlkmlkmlkmlkmlkmcyguygjhjhhjhbjhbjhbjhbdmneiejidjicjdjiejdiejdjeijijjfcnjnjnjnxkjnkjnkjsnwdjjjjjjjjjjjjjjjjj22222222222222222222000000000000000000000000000sssssssssssssssssssssssssssssss999999999999999999922222222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggg');
+    const invalidMessage = [];
+    for (let i = 0; i < 1005; i++) {
+      invalidMessage.push('1');
+    }
+    const check = messageSend(token, channelId.channelId, invalidMessage.toString());
     expect(check).toStrictEqual({ error: 'error' });
   });
 
@@ -130,7 +134,12 @@ describe('Error checking message/senddm/v1', () => {
     clear();
     const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
     const dm = dmCreate(auth.token, []);
-    const check = messageSendDm(auth.token, dm.dmId, '22222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggggggggggaaaaaaaaaaaakkkkkkkkkkkkkkkdddddddddddddddllllllwkmkmkmskmlkmlkmlkmlkmlkmlkmcyguygjhjhhjhbjhbjhbjhbdmneiejidjicjdjiejdiejdjeijijjfcnjnjnjnxkjnkjnkjsnwdjjjjjjjjjjjjjjjjj22222222222222222222000000000000000000000000000sssssssssssssssssssssssssssssss999999999999999999922222222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggg');
+
+    const invalidMessage = [];
+    for (let i = 0; i < 1005; i++) {
+      invalidMessage.push('1');
+    }
+    const check = messageSendDm(auth.token, dm.dmId, invalidMessage.toString());
     expect(check).toStrictEqual({ error: 'error' });
   });
 
@@ -212,7 +221,11 @@ describe('Testing errors for /message/edit/v1', () => {
     const token = auth.token;
     const channelId = channelsCreate(token, 'Waterrr', true);
     const messageId = messageSend(token, channelId.channelId, 'happy');
-    const check = messageEdit(token, messageId.messageId, '22222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggggggggggaaaaaaaaaaaakkkkkkkkkkkkkkkdddddddddddddddllllllwkmkmkmskmlkmlkmlkmlkmlkmlkmcyguygjhjhhjhbjhbjhbjhbdmneiejidjicjdjiejdiejdjeijijjfcnjnjnjnxkjnkjnkjsnwdjjjjjjjjjjjjjjjjj22222222222222222222000000000000000000000000000sssssssssssssssssssssssssssssss999999999999999999922222222222222222222lllllllllllllllllllllllllsssssssssssssssssjkjkjkjeeelldoodjjcncnncncncncnnjjdjdjdkjkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk00000000000000000000000000000000000000000000ddddddddddddddddddddddddddd44444444444444444444444444433333333333333333333333333333333333333333333333333333ddddddddddddddddddddddddddddddddddddddddddddggggggggggggggggggggggg');
+    const invalidMessage = [];
+    for (let i = 0; i < 1005; i++) {
+      invalidMessage.push('1');
+    }
+    const check = messageEdit(token, messageId.messageId, invalidMessage.toString());
     expect(check).toStrictEqual({ error: 'error' });
   });
 
@@ -235,19 +248,29 @@ describe('Testing errors for /message/edit/v1', () => {
     const messageId = messageSend(globalOwner.token, channelId.channelId, 'great');
     // edit empty string (removes message)
     expect(messageEdit(globalOwner.token, messageId.messageId, '')).toStrictEqual({});
+    expect(channelMessages(globalOwner.token, channelId.channelId, 0)).toStrictEqual({
+      messages: [],
+      start: 0,
+      end: -1,
+    });
     // cannot edit deleted message
     expect(messageEdit(globalOwner.token, messageId.messageId, 'test')).toStrictEqual({ error: 'error' });
   });
 
-  test('Member cannot edit globalOwner message', () => {
+  test('Member cannot edit globalOwner message in both channel and dm', () => {
     clear();
     const globalOwner = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const channelId = channelsCreate(globalOwner.token, 'hk channel', true);
     const dmOwner = authRegister('Jackychan@gmail.com', 'passwordhehe', 'Jacky', 'Chan');
     const member = authRegister('Peter@gmail.com', 'drink1234', 'Peter', 'He');
 
     const dm = dmCreate(dmOwner.token, [globalOwner.authUserId, member.authUserId]);
     const messageId = messageSendDm(globalOwner.token, dm.dmId, 'great');
+    const channelmessageId = messageSend(globalOwner.token, channelId.channelId, 'great');
     expect(messageEdit(member.token, messageId.messageId, 'edited!')).toStrictEqual({ error: 'error' });
+    expect(messageEdit(member.token, channelmessageId.messageId, 'edited!')).toStrictEqual({ error: 'error' });
+    channelJoin(member.token, channelId.channelId);
+    expect(messageEdit(member.token, channelmessageId.messageId, 'edited!')).toStrictEqual({ error: 'error' });
   });
 
   test('Testing invalid token', () => {
@@ -345,7 +368,6 @@ describe('Error checking /message/remove/v1', () => {
 
     const invalidToken = auth.token + 'yoo';
     expect(messageRemove(invalidToken, message.messageId)).toStrictEqual({ error: 'error' });
+    clear();
   });
 });
-
-clear();
