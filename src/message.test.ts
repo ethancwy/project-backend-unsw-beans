@@ -61,7 +61,7 @@ describe('Testing errors for /message/send/v1', () => {
     const channelId = channelsCreate(token, 'Water is smart', true);
 
     const invalidMessage = [];
-    for ( let i = 0 ; i < 1005 ; i++ ) {
+    for (let i = 0; i < 1005; i++) {
       invalidMessage.push('1');
     }
     const check = messageSend(token, channelId.channelId, invalidMessage.toString());
@@ -136,7 +136,7 @@ describe('Error checking message/senddm/v1', () => {
     const dm = dmCreate(auth.token, []);
 
     const invalidMessage = [];
-    for ( let i = 0 ; i < 1005 ; i++ ) {
+    for (let i = 0; i < 1005; i++) {
       invalidMessage.push('1');
     }
     const check = messageSendDm(auth.token, dm.dmId, invalidMessage.toString());
@@ -222,7 +222,7 @@ describe('Testing errors for /message/edit/v1', () => {
     const channelId = channelsCreate(token, 'Waterrr', true);
     const messageId = messageSend(token, channelId.channelId, 'happy');
     const invalidMessage = [];
-    for ( let i = 0 ; i < 1005 ; i++ ) {
+    for (let i = 0; i < 1005; i++) {
       invalidMessage.push('1');
     }
     const check = messageEdit(token, messageId.messageId, invalidMessage.toString());
@@ -370,6 +370,4 @@ describe('Error checking /message/remove/v1', () => {
     expect(messageRemove(invalidToken, message.messageId)).toStrictEqual({ error: 'error' });
     clear();
   });
-  
 });
-
