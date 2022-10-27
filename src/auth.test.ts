@@ -54,7 +54,7 @@ describe('Error checking authRegisterV2 ', () => {
     { email: 'peter', password: 'password', nameFirst: 'Peter', nameLast: 'File' },
     { email: '@hotmail.com', password: 'password', nameFirst: 'Peter', nameLast: 'File' },
     { email: '', password: 'password', nameFirst: 'Peter', nameLast: 'File' },
-  ])("Testing invalid emails", ({ email, password, nameFirst, nameLast }) => {
+  ])('Testing invalid emails', ({ email, password, nameFirst, nameLast }) => {
     expect(authRegister(email, password, nameFirst, nameLast)).toStrictEqual({ error: 'error' });
   });
 
@@ -71,7 +71,7 @@ describe('Error checking authRegisterV2 ', () => {
   test.each([
     { email: 'p.file@gmail.com', password: '12345', nameFirst: 'Peter', nameLast: 'File' },
     { email: 'p.file@gmail.com', password: '', nameFirst: 'Peter', nameLast: 'File' },
-  ])("Testing invalid passwords", ({ email, password, nameFirst, nameLast }) => {
+  ])('Testing invalid passwords', ({ email, password, nameFirst, nameLast }) => {
     expect(authRegister(email, password, nameFirst, nameLast)).toStrictEqual({ error: 'error' });
   });
 
@@ -79,11 +79,13 @@ describe('Error checking authRegisterV2 ', () => {
   clear();
   test.each([
     {
-      email: 'p.file@gmail.com', password: '123456',
-      nameFirst: 'Thisnameis50characterstoolongandwillprobablyfail123', nameLast: 'File'
+      email: 'p.file@gmail.com',
+      password: '123456',
+      nameFirst: 'Thisnameis50characterstoolongandwillprobablyfail123',
+      nameLast: 'File'
     },
     { email: 'p.file@gmail.com', password: '123456', nameFirst: '', nameLast: 'File' },
-  ])("Testing invalid nameFirst", ({ email, password, nameFirst, nameLast }) => {
+  ])('Testing invalid nameFirst', ({ email, password, nameFirst, nameLast }) => {
     expect(authRegister(email, password, nameFirst, nameLast)).toStrictEqual({ error: 'error' });
   });
 
@@ -91,11 +93,13 @@ describe('Error checking authRegisterV2 ', () => {
   clear();
   test.each([
     {
-      email: 'p.file@gmail.com', password: '123456',
-      nameFirst: 'Peter', nameLast: 'Thisnameis50characterstoolongandwillprobablyfail123'
+      email: 'p.file@gmail.com',
+      password: '123456',
+      nameFirst: 'Peter',
+      nameLast: 'Thisnameis50characterstoolongandwillprobablyfail123'
     },
     { email: 'p.file@gmail.com', password: '123456', nameFirst: 'Peter', nameLast: '' },
-  ])("Testing invalid nameLast", ({ email, password, nameFirst, nameLast }) => {
+  ])('Testing invalid nameLast', ({ email, password, nameFirst, nameLast }) => {
     expect(authRegister(email, password, nameFirst, nameLast)).toStrictEqual({ error: 'error' });
   });
 });
