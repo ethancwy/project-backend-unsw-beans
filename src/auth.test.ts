@@ -20,17 +20,11 @@ describe('Testing for authRegisterV2: ', () => {
   });
 
   // Valid register, 2 person different token
-  test('Testing for valid register', () => {
+  test('Testing for 2 users different tokens', () => {
     clear();
     const person1 = authRegister('p.file111@gmail.com', 'Bob1002', 'Peter23', 'File23');
     const person2 = authRegister('p12.file@gmail.com', 'Bob1001', 'Peter12', 'File12');
     expect(person1.token === person2.token).toBe(false);
-    expect(person1)
-      .toStrictEqual(
-        {
-          token: expect.any(String),
-          authUserId: expect.any(Number)
-        });
   });
 
   // Valid register, same name after clear
@@ -125,6 +119,14 @@ describe('Testing for authLoginV2: ', () => {
     expect(session1.token === session2.token).toBe(false);
     expect(session1.authuserId === session2.authuserId).toBe(true);
   });
+
+  test('Testing for 2 sessions', () => {
+    clear();
+    authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    const session2 = authLogin('p.file@gmail.com', 'Bob100');
+
+    expect(channelsCreate(session2.token, 'hii', true)).toStrictEqual({ channelId: expect.any(Number) });
+  });
 });
 
 describe('Error checking authLoginV2: ', () => {
@@ -186,14 +188,12 @@ describe('Testing for auth/logout/v1', () => {
     expect(authLogout(user.token)).toStrictEqual({});
   });
 
-  test('Testing for 2 sessions', () => {
+  test('Testing for 2 sessions after logout of one', () => {
     clear();
     const session1 = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
-
     const session2 = authLogin('p.file@gmail.com', 'Bob100');
-    expect(session1.token !== session2.token).toBe(true);
-    // authLogout(session2.token);
-    // expect(channelsCreate(session1.token, 'hiii', true)).toStrictEqual({ channelId: expect.any(Number) });
+
+    authLogout(session1.token);
     expect(channelsCreate(session2.token, 'hii', true)).toStrictEqual({ channelId: expect.any(Number) });
   });
 
