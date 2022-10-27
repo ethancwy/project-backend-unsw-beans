@@ -172,7 +172,7 @@ export function isGlobalOwner(authUserId: number) {
 export function isValidToken(token: string) {
   const data = getData();
 
-  if ( data.sessionIds.includes(token) ) return true;
+  if (data.sessionIds.includes(token)) return true;
   return false;
 }
 

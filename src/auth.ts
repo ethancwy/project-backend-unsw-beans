@@ -15,9 +15,9 @@ import { validEmail, validName, isValidToken } from './global';
 function authLoginV2(email: string, password: string) {
   const data = getData();
 
-  for ( const user of data.users ) {
-    if ( user.email === email) {
-      if ( user.password === password ) {
+  for (const user of data.users) {
+    if (user.email === email) {
+      if (user.password === password) {
         const token = generateToken();
         user.tokens.push(token);
         data.sessionIds.push(token);
