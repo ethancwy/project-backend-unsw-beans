@@ -15,7 +15,7 @@ import {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelJoinV2(token: string, channelId: number) {
+function channelJoinV3(token: string, channelId: number) {
   const data = getData();
 
   if (!isValidToken(token)) {
@@ -57,7 +57,7 @@ function channelJoinV2(token: string, channelId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelInviteV2(token: string, channelId: number, uId: number) {
+function channelInviteV3(token: string, channelId: number, uId: number) {
   const data = getData();
 
   if (!isValidToken(token) || !isValidUser(uId) || !isValidChannel(channelId)) {
@@ -110,7 +110,7 @@ function channelInviteV2(token: string, channelId: number, uId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelMessagesV2(token: string, channelId: number, start: number) {
+function channelMessagesV3(token: string, channelId: number, start: number) {
   const data = getData();
 
   if (!isValidToken(token)) {
@@ -198,7 +198,7 @@ function channelMessagesV2(token: string, channelId: number, start: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelDetailsV2(token: string, channelId: number) {
+function channelDetailsV3(token: string, channelId: number) {
   const data = getData();
   const uId = getUserId(token);
 
@@ -270,7 +270,7 @@ function channelDetailsV2(token: string, channelId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelLeaveV1(token: string, channelId: number) {
+function channelLeaveV2(token: string, channelId: number) {
   const data = getData();
   const uId = getUserId(token);
 
@@ -311,7 +311,7 @@ function channelLeaveV1(token: string, channelId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelAddOwnerV1(token: string, channelId: number, uId: number) {
+function channelAddOwnerV2(token: string, channelId: number, uId: number) {
   const data = getData();
   if (!isValidToken(token) || !isValidChannel(channelId) || !isValidUser(uId)) {
     // Invalid token, channelId, or uId
@@ -347,7 +347,7 @@ function channelAddOwnerV1(token: string, channelId: number, uId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelRemoveOwnerV1(token: string, channelId: number, uId: number) {
+function channelRemoveOwnerV2(token: string, channelId: number, uId: number) {
   const data = getData();
   // Invalid token, channelId, uId, and not a channelOwner
   if (!isValidToken(token) || !isValidChannel(channelId) || !isValidUser(uId) ||
@@ -382,11 +382,11 @@ function channelRemoveOwnerV1(token: string, channelId: number, uId: number) {
 }
 
 export {
-  channelJoinV2,
-  channelInviteV2,
-  channelMessagesV2,
-  channelDetailsV2,
-  channelLeaveV1,
-  channelAddOwnerV1,
-  channelRemoveOwnerV1
+  channelJoinV3,
+  channelInviteV3,
+  channelMessagesV3,
+  channelDetailsV3,
+  channelLeaveV2,
+  channelAddOwnerV2,
+  channelRemoveOwnerV2
 };

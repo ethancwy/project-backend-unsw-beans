@@ -15,7 +15,7 @@ const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
   * @returns {error: error} - return error object in invalid cases
 */
 
-function messageSendV1(token: string, channelId: number, message: string) {
+function messageSendV2(token: string, channelId: number, message: string) {
   const data = getData();
   const uId = getUserId(token);
   if (!isValidToken) {
@@ -64,7 +64,7 @@ function messageSendV1(token: string, channelId: number, message: string) {
   * @returns {error: error} - return error object in invalid cases
 */
 
-function messageEditV1(token: string, messageId: number, message: string) {
+function messageEditV2(token: string, messageId: number, message: string) {
   const data = getData();
 
   if (message.length > 1000) {
@@ -77,7 +77,7 @@ function messageEditV1(token: string, messageId: number, message: string) {
   const authUserId = getUserId(token);
 
   if (message === '') {
-    return messageRemoveV1(token, messageId);
+    return messageRemoveV2(token, messageId);
   }
 
   const msg = getMessageDetails(messageId);
@@ -122,7 +122,7 @@ function messageEditV1(token: string, messageId: number, message: string) {
   * @returns {error: error} - return error object in invalid cases
 */
 
-function messageRemoveV1(token: string, messageId: number) {
+function messageRemoveV2(token: string, messageId: number) {
   const data = getData();
 
   if (!isValidToken) {
@@ -183,7 +183,7 @@ function messageRemoveV1(token: string, messageId: number) {
   * @returns {error: error} - return error object in invalid cases
 */
 
-function messageSenddmV1 (token: string, dmId: number, message: string) {
+function messageSenddmV2(token: string, dmId: number, message: string) {
   const data = getData();
   const uId = getUserId(token);
   if (!isValidToken) {
@@ -221,4 +221,4 @@ function messageSenddmV1 (token: string, dmId: number, message: string) {
   return { messageId: messageId };
 }
 
-export { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 };
+export { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2 };

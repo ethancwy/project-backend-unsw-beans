@@ -340,7 +340,7 @@ export function isDmMember(uid: number, dmId: number) {
 
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //
 
-export function requestHelper(method: HttpVerb, path: string, payload: object) {
+export function requestHelper(method: HttpVerb, path: string, payload: object, token?: string) {
   let qs = {};
   let json = {};
   if (['GET', 'DELETE'].includes(method)) {
@@ -350,44 +350,50 @@ export function requestHelper(method: HttpVerb, path: string, payload: object) {
     json = payload;
   }
 
-  const res = request(method, SERVER_URL + path, { qs, json });
-  expect(res.statusCode).toBe(OK);
+  const headers = { token: token };
+
+  const res = request(method, SERVER_URL + path, { qs, json, headers });
+  if (res.statusCode !== 200) {
+    // Return error code number instead of object in case of error.
+    return res.statusCode;
+  }
+  // expect(res.statusCode).toBe(OK);
   return JSON.parse(res.getBody() as string);
 }
 
 // ============================ Iteration 1 function wrappers ================================//
 export function authLogin(email: string, password: string) {
-  return requestHelper('POST', '/auth/login/v2', { email, password });
+  return requestHelper('POST', '/auth/login/v3', { email, password });
 }
 export function authRegister(email: string, password: string, nameFirst: string, nameLast: string) {
-  return requestHelper('POST', '/auth/register/v2', { email, password, nameFirst, nameLast });
+  return requestHelper('POST', '/auth/register/v3', { email, password, nameFirst, nameLast });
 }
 // ===========================================================================================//
 export function channelsCreate(token: string, name: string, isPublic: boolean) {
-  return requestHelper('POST', '/channels/create/v2', { token, name, isPublic });
+  return requestHelper('POST', '/channels/create/v3', { name, isPublic }, token);
 }
 export function channelsList(token: string) {
-  return requestHelper('GET', '/channels/list/v2', { token });
+  return requestHelper('GET', '/channels/list/v3', {}, token);
 }
 export function channelsListAll(token: string) {
-  return requestHelper('GET', '/channels/listall/v2', { token });
+  return requestHelper('GET', '/channels/listall/v3', {}, token);
 }
 // ===========================================================================================//
 export function channelDetails(token: string, channelId: number) {
-  return requestHelper('GET', '/channel/details/v2', { token, channelId });
+  return requestHelper('GET', '/channel/details/v3', { channelId }, token);
 }
 export function channelJoin(token: string, channelId: number) {
-  return requestHelper('POST', '/channel/join/v2', { token, channelId });
+  return requestHelper('POST', '/channel/join/v3', { channelId }, token);
 }
 export function channelInvite(token: string, channelId: number, uId: number) {
-  return requestHelper('POST', '/channel/invite/v2', { token, channelId, uId });
+  return requestHelper('POST', '/channel/invite/v3', { channelId, uId }, token);
 }
 export function channelMessages(token: string, channelId: number, start: number) {
-  return requestHelper('GET', '/channel/messages/v2', { token, channelId, start });
+  return requestHelper('GET', '/channel/messages/v3', { channelId, start }, token);
 }
 // ===========================================================================================//
 export function userProfile(token: string, uId: number) {
-  return requestHelper('GET', '/user/profile/v2', { token, uId });
+  return requestHelper('GET', '/user/profile/v3', { uId }, token);
 }
 // ===========================================================================================//
 export function clear() {
@@ -396,60 +402,60 @@ export function clear() {
 
 // ============================ New Iteration 2 function wrappers ================================//
 export function authLogout(token: string) {
-  return requestHelper('POST', '/auth/logout/v1', { token });
+  return requestHelper('POST', '/auth/logout/v2', {}, token);
 }
 // ===============================================================================================//
 export function channelLeave(token: string, channelId: number) {
-  return requestHelper('POST', '/channel/leave/v1', { token, channelId });
+  return requestHelper('POST', '/channel/leave/v2', { channelId }, token);
 }
 export function channelAddOwner(token: string, channelId: number, uId: number) {
-  return requestHelper('POST', '/channel/addowner/v1', { token, channelId, uId });
+  return requestHelper('POST', '/channel/addowner/v2', { channelId, uId }, token);
 }
 export function channelRemoveOwner(token: string, channelId: number, uId: number) {
-  return requestHelper('POST', '/channel/removeowner/v1', { token, channelId, uId });
+  return requestHelper('POST', '/channel/removeowner/v2', { channelId, uId }, token);
 }
 // ===============================================================================================//
 export function messageSend(token: string, channelId: number, message: string) {
-  return requestHelper('POST', '/message/send/v1', { token, channelId, message });
+  return requestHelper('POST', '/message/send/v2', { channelId, message }, token);
 }
 export function messageEdit(token: string, messageId: number, message: string) {
-  return requestHelper('PUT', '/message/edit/v1', { token, messageId, message });
+  return requestHelper('PUT', '/message/edit/v2', { messageId, message }, token);
 }
 export function messageRemove(token: string, messageId: number) {
-  return requestHelper('DELETE', '/message/remove/v1', { token, messageId });
+  return requestHelper('DELETE', '/message/remove/v2', { messageId }, token);
 }
 // ===============================================================================================//
 export function dmCreate(token: string, uIds: Array<number>) {
-  return requestHelper('POST', '/dm/create/v1', { token, uIds });
+  return requestHelper('POST', '/dm/create/v2', { uIds }, token);
 }
 export function dmList(token: string) {
-  return requestHelper('GET', '/dm/list/v1', { token });
+  return requestHelper('GET', '/dm/list/v2', {}, token);
 }
 export function dmRmove(token: string, dmId: number) {
-  return requestHelper('DELETE', '/dm/remove/v1', { token, dmId });
+  return requestHelper('DELETE', '/dm/remove/v2', { dmId }, token);
 }
 export function dmDetails(token: string, dmId: number) {
-  return requestHelper('GET', '/dm/details/v1', { token, dmId });
+  return requestHelper('GET', '/dm/details/v2', { dmId }, token);
 }
 export function dmLeave(token: string, dmId: number) {
-  return requestHelper('POST', '/dm/leave/v1', { token, dmId });
+  return requestHelper('POST', '/dm/leave/v2', { dmId }, token);
 }
 export function dmMessages(token: string, dmId: number, start: number) {
-  return requestHelper('GET', '/dm/messages/v1', { token, dmId, start });
+  return requestHelper('GET', '/dm/messages/v2', { dmId, start }, token);
 }
 export function messageSendDm(token: string, dmId: number, message: string) {
-  return requestHelper('POST', '/message/senddm/v1', { token, dmId, message });
+  return requestHelper('POST', '/message/senddm/v2', { dmId, message }, token);
 }
 // ===============================================================================================//
 export function usersAll(token: string) {
-  return requestHelper('GET', '/users/all/v1', { token });
+  return requestHelper('GET', '/users/all/v2', {}, token);
 }
 export function userSetName(token: string, nameFirst: string, nameLast: string) {
-  return requestHelper('PUT', '/user/profile/setname/v1', { token, nameFirst, nameLast });
+  return requestHelper('PUT', '/user/profile/setname/v2', { nameFirst, nameLast }, token);
 }
 export function userSetEmail(token: string, email: string) {
-  return requestHelper('PUT', '/user/profile/setemail/v1', { token, email });
+  return requestHelper('PUT', '/user/profile/setemail/v2', { email }, token);
 }
 export function userSetHandle(token: string, handleStr: string) {
-  return requestHelper('PUT', '/user/profile/sethandle/v1', { token, handleStr });
+  return requestHelper('PUT', '/user/profile/sethandle/v2', { handleStr }, token);
 }

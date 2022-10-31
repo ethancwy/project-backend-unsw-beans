@@ -18,7 +18,7 @@ import {
  * @returns {error} - return error object in invalid cases
 */
 
-function userProfileV2(token: string, uId: number) {
+function userProfileV3(token: string, uId: number) {
   const data = getData();
 
   if (!isValidToken(token)) {
@@ -52,7 +52,7 @@ function userProfileV2(token: string, uId: number) {
  * @returns {error} - return error object in invalid cases
 */
 
-function usersAllV1(token: string) {
+function usersAllV2(token: string) {
   const data = getData();
 
   if (!isValidToken(token)) {
@@ -85,7 +85,7 @@ function usersAllV1(token: string) {
  * @returns {error} - return error object in invalid cases
 */
 
-function userSetNameV1(token: string, nameFirst: string, nameLast: string) {
+function userSetNameV2(token: string, nameFirst: string, nameLast: string) {
   const data = getData();
 
   // Invalid cases: nameFirst & nameLast > 50 || < 1, invalid token
@@ -117,7 +117,7 @@ function userSetNameV1(token: string, nameFirst: string, nameLast: string) {
  * @returns {error} - return error object in invalid cases
 */
 
-function userSetEmailV1(token: string, email: string) {
+function userSetEmailV2(token: string, email: string) {
   const data = getData();
   if (!isValidToken(token) || !validEmail(email) || anotherUserEmail(token, email)) {
     return { error: 'error' };
@@ -146,7 +146,7 @@ function userSetEmailV1(token: string, email: string) {
  * @returns {error} - return error object in invalid cases
 */
 
-function userSetHandleV1(token: string, handleStr: string) {
+function userSetHandleV2(token: string, handleStr: string) {
   const data = getData();
   // invalid token, length of handleStr, non-alphanumeric, handle already in use
   if (!isValidToken(token) || !alphanumeric(handleStr) ||
@@ -166,4 +166,4 @@ function userSetHandleV1(token: string, handleStr: string) {
   return {};
 }
 
-export { userProfileV2, usersAllV1, userSetNameV1, userSetEmailV1, userSetHandleV1 };
+export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2 };

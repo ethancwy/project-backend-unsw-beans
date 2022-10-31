@@ -12,7 +12,7 @@ import { validEmail, validName, isValidToken } from './global';
 * @returns {{error: 'error'}} - on error
 */
 
-function authLoginV2(email: string, password: string) {
+function authLoginV3(email: string, password: string) {
   const data = getData();
 
   for (const user of data.users) {
@@ -44,7 +44,7 @@ function authLoginV2(email: string, password: string) {
   * @returns {{error: 'error'}} - on error
 */
 
-function authRegisterV2(email: string, password: string, nameFirst: string, nameLast: string) {
+function authRegisterV3(email: string, password: string, nameFirst: string, nameLast: string) {
   const data = getData();
 
   if (!validEmail(email) || !validPass(password) || !validName(nameFirst) ||
@@ -87,7 +87,7 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
   * @returns {{error: 'error'}} - on error
 */
 
-function authLogoutV1(token: string) {
+function authLogoutV2(token: string) {
   const data = getData();
 
   if (!isValidToken(token)) {
@@ -164,7 +164,7 @@ function sameEmail(email: string) {
 }
 
 export {
-  authLoginV2,
-  authRegisterV2,
-  authLogoutV1
+  authLoginV3,
+  authRegisterV3,
+  authLogoutV2
 };

@@ -14,7 +14,7 @@ import { isValidUser, getUserId, isValidToken } from './global';
   * @returns {integer} - channelId of the channel created
 */
 
-function channelsCreateV2(token: string, name: string, isPublic: boolean) {
+function channelsCreateV3(token: string, name: string, isPublic: boolean) {
   const data = getData();
 
   if (!isValidToken(token)) {
@@ -54,7 +54,7 @@ function channelsCreateV2(token: string, name: string, isPublic: boolean) {
   *
 */
 
-function channelsListV2(token: string) {
+function channelsListV3(token: string) {
   const data = getData();
 
   if (!isValidToken(token)) {
@@ -98,7 +98,7 @@ function channelsListV2(token: string) {
  *
 */
 
-function channelsListAllV2(token: string) {
+function channelsListAllV3(token: string) {
   const data = getData();
 
   if (!isValidToken(token)) {
@@ -126,7 +126,7 @@ function channelsListAllV2(token: string) {
 }
 
 export {
-  channelsCreateV2,
-  channelsListV2,
-  channelsListAllV2
+  channelsCreateV3,
+  channelsListV3,
+  channelsListAllV3
 };

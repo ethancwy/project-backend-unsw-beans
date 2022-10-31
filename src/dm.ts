@@ -17,7 +17,7 @@ import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember } from './g
  * @returns {error} - return error object in invalid cases
 */
 
-function dmCreateV1(token: string, uId: number[]) {
+function dmCreateV2(token: string, uId: number[]) {
   const data = getData();
 
   // Is the token valid
@@ -99,7 +99,7 @@ function dmCreateV1(token: string, uId: number[]) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmListV1(token: string) {
+function dmListV2(token: string) {
   const data = getData();
 
   // Checking if token is valid
@@ -136,7 +136,7 @@ function dmListV1(token: string) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmRemoveV1(token: string, dmId: number) {
+function dmRemoveV2(token: string, dmId: number) {
   const data = getData();
 
   // Checking if token is valid
@@ -194,7 +194,7 @@ function dmRemoveV1(token: string, dmId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmDetailsV1(token: string, dmId: number) {
+function dmDetailsV2(token: string, dmId: number) {
   const data = getData();
 
   // Checking if token is valid
@@ -244,7 +244,7 @@ function dmDetailsV1(token: string, dmId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmLeaveV1(token: string, dmId: number) {
+function dmLeaveV2(token: string, dmId: number) {
   const data = getData();
 
   // Checking if token is valid
@@ -306,7 +306,7 @@ function dmLeaveV1(token: string, dmId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmMessagesV1(token: string, dmId: number, start: number) {
+function dmMessagesV2(token: string, dmId: number, start: number) {
   const data = getData();
 
   // Checking if token is valid
@@ -348,10 +348,10 @@ function dmMessagesV1(token: string, dmId: number, start: number) {
 }
 
 export {
-  dmCreateV1,
-  dmListV1,
-  dmRemoveV1,
-  dmDetailsV1,
-  dmLeaveV1,
-  dmMessagesV1
+  dmCreateV2,
+  dmListV2,
+  dmRemoveV2,
+  dmDetailsV2,
+  dmLeaveV2,
+  dmMessagesV2
 };
