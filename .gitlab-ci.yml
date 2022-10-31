@@ -33,7 +33,7 @@ linting:
  script:
  - npm run lint
 
-# testing:
-#  stage: checks
-#  script:
-#  - npm run test
+ testing:
+  stage: checks
+  script:
+  - npm run test
