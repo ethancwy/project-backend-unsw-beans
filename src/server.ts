@@ -3,6 +3,8 @@ import { echo } from './echo';
 import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
+import errorHandler from 'middleware-http-errors';
+
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { channelsCreateV2, channelsListV2, channelsListAllV2 } from './channels';
 import { clearV1 } from './other';
@@ -16,6 +18,8 @@ import {
 } from './users';
 import { dmCreateV1, dmDetailsV1, dmLeaveV1, dmListV1, dmRemoveV1, dmMessagesV1 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './message';
+
+
 
 // Set up web app
 const app = express();
@@ -36,6 +40,7 @@ app.get('/echo', (req: Request, res: Response, next) => {
     next(err);
   }
 });
+
 
 app.post('/auth/register/v2', (req: Request, res: Response) => {
   const { email, password, nameFirst, nameLast } = req.body;
@@ -191,6 +196,10 @@ app.post('/message/senddm/v1', (req: Request, res: Response) => {
   const { token, dmId, message } = req.body;
   return res.json(messageSenddmV1(token, dmId, message));
 });
+
+// handles errors nicely
+app.use(errorHandler());
+
 
 // for logging errors (print to terminal)
 app.use(morgan('dev'));
