@@ -19,8 +19,6 @@ import {
 import { dmCreateV1, dmDetailsV1, dmLeaveV1, dmListV1, dmRemoveV1, dmMessagesV1 } from './dm';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './message';
 
-
-
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -40,7 +38,6 @@ app.get('/echo', (req: Request, res: Response, next) => {
     next(err);
   }
 });
-
 
 app.post('/auth/register/v2', (req: Request, res: Response) => {
   const { email, password, nameFirst, nameLast } = req.body;
@@ -199,7 +196,6 @@ app.post('/message/senddm/v1', (req: Request, res: Response) => {
 
 // handles errors nicely
 app.use(errorHandler());
-
 
 // for logging errors (print to terminal)
 app.use(morgan('dev'));
