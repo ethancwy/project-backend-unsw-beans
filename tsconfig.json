@@ -8,6 +8,6 @@
     "suppressImplicitAnyIndexErrors": true
   },
   "exclude": [
-    "**/**_broken.ts"
+    "**/**_broken.ts",
   ]
 }

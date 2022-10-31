@@ -1,8 +1,20 @@
 ```javascript
 let data = {
-    // TODO: insert your data structure that contains 
-    // users + channels here
-}
-```
+  users: [
+    {
+      uId: 1,
+      nameFirst: 'Peter',
+      nameLast: 'File',
+      email: 'p.file@email.com', 
+    },
+  ],
 
+  channels: [
+    {
+      channelId: 1,
+      name: "Peter's Channel",
+    },
+  ],
+};
+```
 [Optional] short description: 

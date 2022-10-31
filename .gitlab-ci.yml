@@ -22,3 +22,18 @@ tests with coverage:
       - coverage/
     expose_as: Coverage Report
     expire_in: 1 week
+
+typecheck:
+ stage: checks
+ script:
+ - npm run tsc
+
+linting:
+ stage: checks
+ script:
+ - npm run lint
+
+# testing:
+#  stage: checks
+#  script:
+#  - npm run test
