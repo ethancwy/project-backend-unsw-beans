@@ -2,21 +2,48 @@
   "users": [
     {
       "uId": 0,
-      "nameFirst": "Gus",
-      "nameLast": "Fring",
-      "email": "pollos@hhm.com",
-      "password": "password",
-      "handleStr": "gusfring",
+      "nameFirst": "Tony",
+      "nameLast": "Yeung",
+      "email": "Tonyyeung0905@gmail.com",
+      "password": "HKnumber1",
+      "handleStr": "tonyyeung",
       "isGlobalOwner": true,
       "tokens": [
         "0"
       ]
     }
   ],
-  "channels": [],
+  "channels": [
+    {
+      "channelId": 0,
+      "name": "icl channel",
+      "isPublic": true,
+      "ownerIds": [
+        0
+      ],
+      "memberIds": [
+        0
+      ],
+      "channelmessages": [
+        {
+          "messageId": 0,
+          "uId": 0,
+          "message": "nice",
+          "timeSent": 1667224099
+        }
+      ]
+    }
+  ],
   "dms": [],
   "sessionIds": [
     "0"
   ],
-  "messageDetails": []
+  "messageDetails": [
+    {
+      "uId": 0,
+      "messageId": 0,
+      "isDm": false,
+      "listId": 0
+    }
+  ]
 }
