@@ -431,7 +431,7 @@ export function dmCreate(token: string, uIds: Array<number>) {
 export function dmList(token: string) {
   return requestHelper('GET', '/dm/list/v2', {}, token);
 }
-export function dmRmove(token: string, dmId: number) {
+export function dmRemove(token: string, dmId: number) {
   return requestHelper('DELETE', '/dm/remove/v2', { dmId }, token);
 }
 export function dmDetails(token: string, dmId: number) {

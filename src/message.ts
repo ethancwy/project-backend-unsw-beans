@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { isValidToken, isValidChannel, isInChannel, getUserId, isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails, isGlobalOwner } from './global';
+import HTTPError from 'http-errors';
 const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 
 /**
