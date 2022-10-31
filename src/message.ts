@@ -1,5 +1,9 @@
 import { getData, setData } from './dataStore';
-import { isValidToken, isValidChannel, isInChannel, getUserId, isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails, isGlobalOwner } from './global';
+import {
+  isValidToken, isValidChannel, isInChannel, getUserId,
+  isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails, isGlobalOwner
+} from './global';
+
 const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 
 /**

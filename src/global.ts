@@ -4,7 +4,7 @@ import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 
-const OK = 200;
+// const OK = 200;
 
 // =================================================== //
 //                                                     //

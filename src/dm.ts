@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember } from './global';
+import HTTPError from 'http-errors';
 
 /**
   * uIds contains the user(s) that this DM is directed to, and will not include
@@ -28,7 +29,7 @@ function dmCreateV2(token: string, uId: number[]) {
   // Are all the uids valid
   for (const uids of uId) {
     if (isValidUser(uids) === false) {
-      return { error: 'error' };
+      throw HTTPError(400, 'Incorrect password');
     }
   }
 

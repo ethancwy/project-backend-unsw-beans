@@ -4,6 +4,7 @@ import {
   validName, validEmail, anotherUserEmail, alphanumeric,
   isValidHandleLength, anotherUserHandle
 } from './global';
+import HTTPError from 'http-errors';
 
 /**
   * For a valid user, returns information about their user ID, email,
@@ -22,7 +23,7 @@ function userProfileV3(token: string, uId: number) {
   const data = getData();
 
   if (!isValidToken(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'Invalid token');
   }
 
   for (const user of data.users) {
@@ -38,7 +39,7 @@ function userProfileV3(token: string, uId: number) {
       };
     }
   }
-  return { error: 'error' };
+  throw HTTPError(400, 'Invalid uId');
 }
 
 /**
@@ -56,7 +57,7 @@ function usersAllV2(token: string) {
   const data = getData();
 
   if (!isValidToken(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'Invalid token');
   }
 
   const userArr = [];
@@ -87,10 +88,13 @@ function usersAllV2(token: string) {
 
 function userSetNameV2(token: string, nameFirst: string, nameLast: string) {
   const data = getData();
-
-  // Invalid cases: nameFirst & nameLast > 50 || < 1, invalid token
-  if (!validName(nameFirst) || !validName(nameLast) || !isValidToken(token)) {
-    return { error: 'error' };
+  // invalid token
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  }
+  // Invalid cases: nameFirst & nameLast > 50 || < 1
+  if (!validName(nameFirst) || !validName(nameLast)) {
+    throw HTTPError(400, 'Invalid nameFirst/nameLast');
   }
 
   // change nameFirst and nameLast
@@ -119,8 +123,10 @@ function userSetNameV2(token: string, nameFirst: string, nameLast: string) {
 
 function userSetEmailV2(token: string, email: string) {
   const data = getData();
-  if (!isValidToken(token) || !validEmail(email) || anotherUserEmail(token, email)) {
-    return { error: 'error' };
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  } else if (!validEmail(email) || anotherUserEmail(token, email)) {
+    throw HTTPError(400, 'Invalid email');
   }
 
   // change email
@@ -149,9 +155,11 @@ function userSetEmailV2(token: string, email: string) {
 function userSetHandleV2(token: string, handleStr: string) {
   const data = getData();
   // invalid token, length of handleStr, non-alphanumeric, handle already in use
-  if (!isValidToken(token) || !alphanumeric(handleStr) ||
-    !isValidHandleLength(handleStr) || anotherUserHandle(token, handleStr)) {
-    return { error: 'error' };
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  } else if (!alphanumeric(handleStr) || !isValidHandleLength(handleStr) ||
+    anotherUserHandle(token, handleStr)) {
+    throw HTTPError(400, 'Invalid handleStr');
   }
 
   // change handle
