@@ -59,7 +59,7 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
   return res.json(channelsListV2(token));
 });
 
-app.get('/channels/listAll/v2', (req: Request, res: Response) => {
+app.get('/channels/listall/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
   return res.json(channelsListAllV2(token));
 });

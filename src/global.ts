@@ -370,7 +370,7 @@ export function channelsList(token: string) {
   return requestHelper('GET', '/channels/list/v2', { token });
 }
 export function channelsListAll(token: string) {
-  return requestHelper('GET', '/channels/listAll/v2', { token });
+  return requestHelper('GET', '/channels/listall/v2', { token });
 }
 // ===========================================================================================//
 export function channelDetails(token: string, channelId: number) {
