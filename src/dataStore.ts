@@ -9,7 +9,7 @@ type user = {
   handleStr: string;
   isGlobalOwner: boolean;
   tokens: Array<string>;
-  profileImgUrl: string;
+  profileImgUrl?: string;
 }
 
 export type Reacts = {
