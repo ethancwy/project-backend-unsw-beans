@@ -30,6 +30,7 @@ type message = {
   timeSent: number;
   reacts: Array<reactions>;
   isPinned: boolean;
+  tags: Array<number>;
 }
 
 type channel = {
