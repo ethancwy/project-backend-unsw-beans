@@ -18,12 +18,17 @@ export type Reacts = {
   isThisUserReacted: boolean;
 }
 
+type reactions = {
+  reactId: number;
+  uIds: Array<number>;
+}
+
 type message = {
   messageId: number;
   uId: number;
   message: string;
   timeSent: number;
-  reacts: Array<Reacts>;
+  reacts: Array<reactions>;
   isPinned: boolean;
 }
 
