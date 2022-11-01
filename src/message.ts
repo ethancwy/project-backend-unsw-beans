@@ -193,7 +193,7 @@ function messageRemoveV2(token: string, messageId: number) {
 function messageSenddmV2(token: string, dmId: number, message: string) {
   const data = getData();
   const uId = getUserId(token);
-  if (!isValidToken) {
+  if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
   }
 
@@ -228,4 +228,50 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   return { messageId: messageId };
 }
 
-export { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2 };
+function messageShareV1(token: string, ogMessageId: number, message: string, channelId: number, dmId: number) {
+  const data = getData();
+  const uId = getUserId(token);
+  if (!isValidToken) {
+    throw HTTPError(403, 'invalid auth user id');
+  }
+
+  if (message.length > 1000) {
+    throw HTTPError(400, 'invalid message length');
+  }
+
+  const msg = getMessageDetails(ogMessageId);
+
+  if (msg === null) {
+    throw HTTPError(400, 'invalid message id');
+  }
+
+  let newMessage = '';
+  if (!msg.isDm) {
+    if (!data.channels[msg.listIndex].memberIds.includes(uId)) {
+      throw HTTPError(400, 'auth user not in og message channel');
+    }
+    newMessage += data.channels[msg.listIndex].channelmessages[msg.messageIndex].message;
+  } else {
+    if (!data.dms[msg.listIndex].members.includes(uId)) {
+      throw HTTPError(400, 'auth user not in og message dm');
+    }
+    newMessage += data.dms[msg.listIndex].messages[msg.messageIndex].message;
+  }
+
+  newMessage += '```';
+  newMessage += message;
+  newMessage += '```';
+  let sharedMessageId = 0;
+
+  if (dmId === -1) {
+    sharedMessageId = messageSendV2(token, channelId, newMessage).messageId;
+  } else if (channelId === -1) {
+    sharedMessageId = messageSenddmV2(token, dmId, newMessage).messageId;
+  } else {
+    throw HTTPError(400, 'channel/dm not specified');
+  }
+
+  return { sharedMessageId: sharedMessageId };
+}
+
+export { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2, messageShareV1 };

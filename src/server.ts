@@ -17,7 +17,7 @@ import {
   userSetHandleV2
 } from './users';
 import { dmCreateV2, dmDetailsV2, dmLeaveV2, dmListV2, dmRemoveV2, dmMessagesV2 } from './dm';
-import { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2 } from './message';
+import { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2, messageShareV1 } from './message';
 
 // Set up web app
 const app = express();
@@ -204,6 +204,12 @@ app.post('/message/senddm/v2', (req: Request, res: Response) => {
   const token = req.header('token');
   const { dmId, message } = req.body;
   return res.json(messageSenddmV2(token, dmId, message));
+});
+
+app.post('/message/share/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { ogMessageId, message, channelId, dmId } = req.body;
+  return res.json(messageShareV1(token, ogMessageId, message, channelId, dmId));
 });
 
 // handles errors nicely
