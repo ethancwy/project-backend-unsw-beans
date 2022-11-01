@@ -24,7 +24,14 @@
       "memberIds": [
         0
       ],
-      "channelmessages": []
+      "channelmessages": [
+        {
+          "messageId": 3,
+          "uId": 0,
+          "message": "helloo```substring message3```",
+          "timeSent": 1667292637
+        }
+      ]
     }
   ],
   "dms": [
@@ -40,7 +47,13 @@
           "messageId": 0,
           "uId": 0,
           "message": "helloo",
-          "timeSent": 1667290473
+          "timeSent": 1667292636
+        },
+        {
+          "messageId": 1,
+          "uId": 0,
+          "message": "helloo```substring message```",
+          "timeSent": 1667292637
         }
       ]
     },
@@ -51,7 +64,14 @@
       "members": [
         0
       ],
-      "messages": []
+      "messages": [
+        {
+          "messageId": 2,
+          "uId": 0,
+          "message": "helloo```substring message2```",
+          "timeSent": 1667292637
+        }
+      ]
     }
   ],
   "sessionIds": [
@@ -63,6 +83,24 @@
       "isDm": true,
       "listId": 0,
       "uId": 0
+    },
+    {
+      "messageId": 1,
+      "isDm": true,
+      "listId": 0,
+      "uId": 0
+    },
+    {
+      "messageId": 2,
+      "isDm": true,
+      "listId": 1,
+      "uId": 0
+    },
+    {
+      "uId": 0,
+      "messageId": 3,
+      "isDm": false,
+      "listId": 0
     }
   ]
 }
