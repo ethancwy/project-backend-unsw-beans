@@ -10,13 +10,6 @@ type user = {
   handleStr: string;
   isGlobalOwner: boolean;
   tokens: Array<string>;
-  profileImgUrl: string;
-}
-
-export type Reacts = {
-  reactId: number;
-  uIds: Array<number>;
-  isThisUserReacted: boolean;
 }
 
 type message = {
@@ -24,8 +17,6 @@ type message = {
   uId: number;
   message: string;
   timeSent: number;
-  reacts: Array<Reacts>;
-  isPinned: boolean;
 }
 
 type channel = {
@@ -50,64 +41,6 @@ export type details = {
   messageId: number;
   isDm: boolean;
   listId: number;
-}
-//= =========ITERATION 3==========//
-export type ChannelsJoined = {
-  numChannelsJoined: number;
-  timeStamp: number;
-}
-export type DmsJoined = {
-  numDmsJoined: number;
-  timeStamp: number;
-}
-export type MessagesSent = {
-  numMessagesSent: number;
-  timeStamp: number;
-}
-
-export type userStats = {
-  channelsJoined: ChannelsJoined;
-  dmsJoined: DmsJoined;
-  messagesSent: MessagesSent;
-  involvementRate: number;
-  // ^ sum(numChannelsJoined, numDmsJoined, numMsgsSent) /
-  // sum(numChannels, numDms, numMsgs)
-}
-
-export type ChannelsExist = {
-  numChannelsExist: number;
-  timeStamp: number;
-}
-
-export type DmsExist = {
-  numDmsExist: number;
-  timeStamp: number;
-}
-
-export type MessagesExist = {
-  numMessagesExist: number;
-  timeStamp: number;
-}
-
-export type workspaceStats = {
-  channelsExist: ChannelsExist;
-  dmsExist: DmsExist;
-  messagesExist: MessagesExist;
-  utilizationRate: number;
-  // ^ numUsersWhoHaveJoinedAtLeastOneChannelOrDm / numUsers
-}
-
-export type Notifications = {
-  channelId: number;
-  dmId: number;
-  notificationMessage: string;
-  /*
-  notificationMessage is a string of the following format for each trigger action:
-
-  tagged: "{User’s handle} tagged you in {channel/DM name}: {first 20 characters of the message}"
-  reacted message: "{User’s handle} reacted to your message in {channel/DM name}"
-  added to a channel/DM: "{User’s handle} added you to {channel/DM name}"
-  */
 }
 
 export type datatype = {
