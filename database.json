@@ -11,71 +11,43 @@
       "tokens": [
         "0"
       ]
-    }
-  ],
-  "channels": [
+    },
     {
-      "channelId": 0,
-      "name": "Dog Channel",
-      "isPublic": true,
-      "ownerIds": [
-        0
-      ],
-      "memberIds": [
-        0
-      ],
-      "channelmessages": [
-        {
-          "messageId": 3,
-          "uId": 0,
-          "message": "helloo```substring message3```",
-          "timeSent": 1667292637
-        }
+      "uId": 1,
+      "nameFirst": "Nin11a",
+      "nameLast": "Y11eh",
+      "email": "Nina080113@icloud.com",
+      "password": "Nina110803",
+      "handleStr": "ninayeh0",
+      "isGlobalOwner": false,
+      "tokens": [
+        "1"
       ]
     }
   ],
+  "channels": [],
   "dms": [
     {
       "dmId": 0,
-      "name": "ninayeh",
+      "name": "ninayeh, ninayeh0",
       "owner": 0,
       "members": [
-        0
+        0,
+        1
       ],
       "messages": [
         {
           "messageId": 0,
           "uId": 0,
           "message": "helloo",
-          "timeSent": 1667292636
-        },
-        {
-          "messageId": 1,
-          "uId": 0,
-          "message": "helloo```substring message```",
-          "timeSent": 1667292637
-        }
-      ]
-    },
-    {
-      "dmId": 1,
-      "name": "ninayeh",
-      "owner": 0,
-      "members": [
-        0
-      ],
-      "messages": [
-        {
-          "messageId": 2,
-          "uId": 0,
-          "message": "helloo```substring message2```",
-          "timeSent": 1667292637
+          "timeSent": 1667305114
         }
       ]
     }
   ],
   "sessionIds": [
-    "0"
+    "0",
+    "1"
   ],
   "messageDetails": [
     {
@@ -83,24 +55,6 @@
       "isDm": true,
       "listId": 0,
       "uId": 0
-    },
-    {
-      "messageId": 1,
-      "isDm": true,
-      "listId": 0,
-      "uId": 0
-    },
-    {
-      "messageId": 2,
-      "isDm": true,
-      "listId": 1,
-      "uId": 0
-    },
-    {
-      "uId": 0,
-      "messageId": 3,
-      "isDm": false,
-      "listId": 0
     }
   ]
 }

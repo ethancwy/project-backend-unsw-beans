@@ -17,8 +17,10 @@ import {
   userSetHandleV2
 } from './users';
 import { dmCreateV2, dmDetailsV2, dmLeaveV2, dmListV2, dmRemoveV2, dmMessagesV2 } from './dm';
-import { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2, messageShareV1,
-          messageReactV1, messageunreactV1 } from './message';
+import {
+  messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2, messageShareV1,
+  messageReactV1, messageUnreactV1
+} from './message';
 
 // Set up web app
 const app = express();
@@ -222,7 +224,7 @@ app.post('/message/react/v1', (req: Request, res: Response) => {
 app.post('/message/unreact/v1', (req: Request, res: Response) => {
   const token = req.header('token');
   const { messageId, reactId } = req.body;
-  return res.json(messageunreactV1(token, messageId, reactId));
+  return res.json(messageUnreactV1(token, messageId, reactId));
 });
 
 // handles errors nicely
