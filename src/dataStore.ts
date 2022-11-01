@@ -1,6 +1,5 @@
 import fs from 'fs';
 
-// YOU SHOULD MODIFY THIS OBJECT BELOW
 type user = {
   uId: number;
   nameFirst: string;
