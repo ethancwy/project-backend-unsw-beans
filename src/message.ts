@@ -274,4 +274,13 @@ function messageShareV1(token: string, ogMessageId: number, message: string, cha
   return { sharedMessageId: sharedMessageId };
 }
 
-export { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2, messageShareV1 };
+function messageReactV1(token: string, messageId: number, reactId: number) {
+  return {};
+}
+
+function messageUnreactV1(token: string, messageId: number, reactId: number) {
+  return {};
+}
+
+export { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2,
+         messageShareV1, messageReactV1, messageUnreactV1 };
