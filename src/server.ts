@@ -148,8 +148,8 @@ app.put('/user/profile/sethandle/v2', (req: Request, res: Response) => {
 
 app.post('/dm/create/v2', (req: Request, res: Response) => {
   const token = req.header('token');
-  const { uids } = req.body;
-  return res.json(dmCreateV2(token, uids));
+  const uIds = req.body.uIds as number[];
+  return res.json(dmCreateV2(token, uIds));
 });
 
 app.get('/dm/list/v2', (req: Request, res: Response) => {

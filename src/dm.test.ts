@@ -331,7 +331,7 @@ describe('Testing dm/remove/v1 standard', () => {
     expect(dmRemove(sender.token, dm.dmId)).toStrictEqual({});
 
     expect(dmList(sender.token)).toStrictEqual({ dms: [] });
-    expect(dmDetails(sender.token, dm.dmId)).toStrictEqual(400);
+    expect(dmDetails(sender.token, dm.dmId)).toStrictEqual(403);
   });
 });
 
