@@ -1,7 +1,8 @@
 import { getData, setData, reactions } from './dataStore';
 import {
   isValidToken, isValidChannel, isInChannel, getUserId,
-  isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails, isGlobalOwner
+  isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails,
+  isGlobalOwner, getTags
 } from './global';
 import HTTPError from 'http-errors';
 const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
@@ -40,6 +41,7 @@ function messageSendV2(token: string, channelId: number, message: string) {
   const cIndex = getChannelIndex(channelId);
   const messageId = data.messageDetails.length;
   const react: reactions[] = [];
+  const tags = getTags(message);
   const newMessage = {
     messageId: messageId,
     uId: uId,
@@ -47,6 +49,7 @@ function messageSendV2(token: string, channelId: number, message: string) {
     timeSent: requestTimesent(),
     reacts: react,
     isPinned: false,
+    tags: tags,
   };
   data.channels[cIndex].channelmessages.push(newMessage);
   data.messageDetails.push({
@@ -103,6 +106,12 @@ function messageEditV2(token: string, messageId: number, message: string) {
       throw HTTPError(400, 'invalid message length');
     }
     data.channels[msg.listIndex].channelmessages[msg.messageIndex].message = message;
+    const tags = getTags(message);
+    for (const id of tags) {
+      if (!data.channels[msg.listIndex].channelmessages[msg.messageIndex].tags.includes(id)) {
+        data.channels[msg.listIndex].channelmessages[msg.messageIndex].tags.push(id);
+      }
+    }
   } else {
     // check is user is in dm and has perms
     if (!data.dms[msg.listIndex].members.includes(authUserId)) {
@@ -115,6 +124,12 @@ function messageEditV2(token: string, messageId: number, message: string) {
       throw HTTPError(400, 'invalid message length');
     }
     data.dms[msg.listIndex].messages[msg.messageIndex].message = message;
+    const tags = getTags(message);
+    for (const id of tags) {
+      if (!data.dms[msg.listIndex].messages[msg.messageIndex].tags.includes(id)) {
+        data.dms[msg.listIndex].messages[msg.messageIndex].tags.push(id);
+      }
+    }
   }
 
   setData(data);
@@ -215,6 +230,7 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   const dmIndex = getDmIndex(dmId);
   const messageId = data.messageDetails.length;
   const react: reactions[] = [];
+  const tags = getTags(message);
   const newMessage = {
     messageId: messageId,
     uId: uId,
@@ -222,6 +238,7 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
     timeSent: requestTimesent(),
     reacts: react,
     isPinned: false,
+    tags: tags,
   };
   data.dms[dmIndex].messages.push(newMessage);
   data.messageDetails.push({
