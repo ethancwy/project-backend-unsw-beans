@@ -87,6 +87,20 @@ export function getDmIndex(dmId: number) {
   }
 }
 
+export function getTags(message: string) {
+  const data = getData();
+  const tagged = [];
+  if (message.includes('@')) {
+    for (const user of data.users) {
+      if (message.includes(`@${user.handleStr}`)) {
+        tagged.push(user.uId);
+      }
+    }
+  }
+
+  return tagged;
+}
+
 // Fetch message index from channel/dm
 export function getMessageDetails(messageId: number) {
   const data = getData();
