@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore';
+import { getData, setData, reactions } from './dataStore';
 import {
   isValidToken, isValidChannel, isInChannel, getUserId,
   isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails, isGlobalOwner
@@ -39,12 +39,13 @@ function messageSendV2(token: string, channelId: number, message: string) {
 
   const cIndex = getChannelIndex(channelId);
   const messageId = data.messageDetails.length;
+  const react: reactions[] = [];
   const newMessage = {
     messageId: messageId,
     uId: uId,
     message: message,
     timeSent: requestTimesent(),
-    reacts: [],
+    reacts: react,
     isPinned: false,
   };
   data.channels[cIndex].channelmessages.push(newMessage);
@@ -213,12 +214,13 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
 
   const dmIndex = getDmIndex(dmId);
   const messageId = data.messageDetails.length;
+  const react: reactions[] = [];
   const newMessage = {
     messageId: messageId,
     uId: uId,
     message: message,
     timeSent: requestTimesent(),
-    reacts: [],
+    reacts: react,
     isPinned: false,
   };
   data.dms[dmIndex].messages.push(newMessage);
@@ -300,7 +302,7 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
       throw HTTPError(400, 'auth user not in message channel');
     }
     for (const reaction of data.channels[msg.listIndex].channelmessages[msg.messageIndex].reacts) {
-      if (reaction.reactId === reactId ) {
+      if (reaction.reactId === reactId) {
         if (reaction.uIds.includes(uId)) {
           throw HTTPError(400, 'auth user already reacted');
         }
@@ -320,7 +322,7 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
       throw HTTPError(400, 'auth user not in message dm');
     }
     for (const reaction of data.dms[msg.listIndex].messages[msg.messageIndex].reacts) {
-      if (reaction.reactId === reactId ) {
+      if (reaction.reactId === reactId) {
         if (reaction.uIds.includes(uId)) {
           throw HTTPError(400, 'auth user already reacted');
         }
@@ -339,7 +341,7 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
 }
 
 function messageUnreactV1(token: string, messageId: number, reactId: number) {
-  let data = getData();
+  const data = getData();
   const uId = getUserId(token);
   if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
@@ -360,7 +362,7 @@ function messageUnreactV1(token: string, messageId: number, reactId: number) {
       throw HTTPError(400, 'auth user not in message channel');
     }
     for (const reaction of data.channels[msg.listIndex].channelmessages[msg.messageIndex].reacts) {
-      if (reaction.reactId === reactId ) {
+      if (reaction.reactId === reactId) {
         if (reaction.uIds.includes(uId)) {
           reaction.uIds.splice(reaction.uIds.indexOf(uId), 1);
           setData(data);
@@ -374,7 +376,7 @@ function messageUnreactV1(token: string, messageId: number, reactId: number) {
       throw HTTPError(400, 'auth user not in message dm');
     }
     for (const reaction of data.dms[msg.listIndex].messages[msg.messageIndex].reacts) {
-      if (reaction.reactId === reactId ) {
+      if (reaction.reactId === reactId) {
         if (reaction.uIds.includes(uId)) {
           reaction.uIds.splice(reaction.uIds.indexOf(uId), 1);
           setData(data);

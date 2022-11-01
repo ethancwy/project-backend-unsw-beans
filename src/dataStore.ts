@@ -18,7 +18,7 @@ export type Reacts = {
   isThisUserReacted: boolean;
 }
 
-type reactions = {
+export type reactions = {
   reactId: number;
   uIds: Array<number>;
 }

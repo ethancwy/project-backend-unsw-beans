@@ -483,5 +483,40 @@ describe('failed cases', () => {
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
     expect(messageReact(auth.token, messageId.messageId, 1)).toStrictEqual({});
+    expect(messageReact(auth.token, messageId.messageId, 1)).toStrictEqual(400);
+    const dm = dmCreate(auth.token, []);
+    const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messageReact(auth.token, dmMessageId.messageId, 1)).toStrictEqual({});
+    expect(messageReact(auth.token, dmMessageId.messageId, 1)).toStrictEqual(400);
+  });
+});
+
+// Testing for message/react/v1 and unreact non failure cases
+describe('success cases', () => {
+  test('auth user and member react and unreact to same message in channel', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nina080113@icloud.com', 'Nina110803', 'Nin11a', 'Y11eh');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    channelJoin(member.token, channelId.channelId);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    expect(messageReact(auth.token, messageId.messageId, 1)).toStrictEqual({});
+    expect(messageReact(member.token, messageId.messageId, 1)).toStrictEqual({});
+    expect(messageUnreact(auth.token, messageId.messageId, 1)).toStrictEqual({});
+    expect(messageUnreact(member.token, messageId.messageId, 1)).toStrictEqual({});
+    // add check to see if reaction exists
+  });
+
+  test('auth user and member react and unreact to same message in dm', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nina080113@icloud.com', 'Nina110803', 'Nin11a', 'Y11eh');
+    const dm = dmCreate(auth.token, [member.authUserId]);
+    const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messageReact(auth.token, dmMessageId.messageId, 1)).toStrictEqual({});
+    expect(messageUnreact(auth.token, dmMessageId.messageId, 1)).toStrictEqual({});
+    expect(messageReact(member.token, dmMessageId.messageId, 1)).toStrictEqual({});
+    expect(messageUnreact(member.token, dmMessageId.messageId, 1)).toStrictEqual({});
+    // add check to see if reaction exists
   });
 });
