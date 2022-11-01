@@ -3,6 +3,7 @@ import {
   isValidUser, isValidChannel, isGlobalOwner, isValidToken,
   getUserId, isInChannel, isChannelOwner, isOnlyOwner
 } from './global';
+import HTTPError from 'http-errors';
 
 /**
   * Given a channelId of a channel that the authorised user can join,
@@ -15,11 +16,11 @@ import {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelJoinV2(token: string, channelId: number) {
+function channelJoinV3(token: string, channelId: number) {
   const data = getData();
 
   if (!isValidToken(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'Invalid token');
   }
 
   const authUserId = getUserId(token);
@@ -28,12 +29,12 @@ function channelJoinV2(token: string, channelId: number) {
     if (channelId === channel.channelId) {
       if (channel.isPublic === false) { // private channel
         if (!isGlobalOwner(authUserId)) {
-          return { error: 'error' };
+          throw HTTPError(403, 'Not a global owner');
         }
       }
       for (const member of channel.memberIds) {
         if (authUserId === member) { // already a member
-          return { error: 'error' };
+          throw HTTPError(400, 'Already a member');
         }
       }
       channel.memberIds.push(authUserId); // add member
@@ -42,7 +43,7 @@ function channelJoinV2(token: string, channelId: number) {
     }
   }
 
-  return { error: 'error' };
+  throw HTTPError(400, 'Invalid channelId');
 }
 
 /**
@@ -57,11 +58,15 @@ function channelJoinV2(token: string, channelId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelInviteV2(token: string, channelId: number, uId: number) {
+function channelInviteV3(token: string, channelId: number, uId: number) {
   const data = getData();
 
-  if (!isValidToken(token) || !isValidUser(uId) || !isValidChannel(channelId)) {
-    return { error: 'error' };
+  if (!isValidUser(uId)) {
+    throw HTTPError(400, 'Invalid uId');
+  } else if (!isValidChannel(channelId)) {
+    throw HTTPError(400, 'Invalid channel ');
+  } else if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
   }
 
   const authUserId = getUserId(token);
@@ -71,14 +76,14 @@ function channelInviteV2(token: string, channelId: number, uId: number) {
     if (channelId === channel.channelId) {
       for (const member of channel.memberIds) {
         if (uId === member) { // already a member
-          return { error: 'error' };
+          throw HTTPError(400, 'Already a member');
         }
         if (authUserId === member && !authMember) { // inviter not a member check
           authMember = true;
         }
       }
       if (!authMember) { // the authUser who's inviting is not a member
-        return { error: 'error' };
+        throw HTTPError(403, 'Authorised user not a member of channel');
       }
 
       channel.memberIds.push(uId); // add member
@@ -110,23 +115,23 @@ function channelInviteV2(token: string, channelId: number, uId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelMessagesV2(token: string, channelId: number, start: number) {
+function channelMessagesV3(token: string, channelId: number, start: number) {
   const data = getData();
 
   if (!isValidToken(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'Invalid token');
   }
 
   const authUserId = getUserId(token);
 
   if (start < 0) {
-    return { error: 'error' };
+    throw HTTPError(400, 'Start cannot be negative');
   }
 
   // checking if userid valid
-  if (!isValidUser(authUserId)) {
-    return { error: 'error' };
-  }
+  // if (!isValidUser(authUserId)) {
+  //   return { error: 'error' };
+  // }
 
   let isValid = false;
   let index = 0;
@@ -139,12 +144,12 @@ function channelMessagesV2(token: string, channelId: number, start: number) {
   }
 
   if (!isValid) {
-    return { error: 'error' };
+    throw HTTPError(400, 'Invalid channelId');
   }
 
   // checking if user is part of channel
   if (!(authUserId in data.channels[index].memberIds)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'Authorised user not a member of channel');
   }
 
   // getting amount of msgs in channel
@@ -152,7 +157,7 @@ function channelMessagesV2(token: string, channelId: number, start: number) {
   let end = 0;
 
   if (start > amountOfMsgs) {
-    return { error: 'error' };
+    throw HTTPError(400, 'Start is greater than total messages in channel');
   }
 
   let count = 0;
@@ -198,7 +203,7 @@ function channelMessagesV2(token: string, channelId: number, start: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelDetailsV2(token: string, channelId: number) {
+function channelDetailsV3(token: string, channelId: number) {
   const data = getData();
   const uId = getUserId(token);
 
@@ -213,12 +218,11 @@ function channelDetailsV2(token: string, channelId: number) {
   }
 
   if (channelCheck === false) {
-    return { error: 'error' };
-  }
-
-  // checking if token is valid and if in channel
-  if (!isValidToken(token) || !isInChannel(uId, channelId)) {
-    return { error: 'error' };
+    throw HTTPError(400, 'Invalid channelId');
+  } else if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  } else if (!isInChannel(uId, channelId)) {
+    throw HTTPError(403, 'Invalid token / not in channel');
   }
 
   const arrayOwners = [];
@@ -270,12 +274,16 @@ function channelDetailsV2(token: string, channelId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelLeaveV1(token: string, channelId: number) {
+function channelLeaveV2(token: string, channelId: number) {
   const data = getData();
   const uId = getUserId(token);
 
-  if (!isValidToken(token) || !isValidChannel(channelId) || !isInChannel(uId, channelId)) {
-    return { error: 'error' };
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  } else if (!isValidChannel(channelId)) {
+    throw HTTPError(400, 'Invalid channel');
+  } else if (!isInChannel(uId, channelId)) {
+    throw HTTPError(403, 'Authorised user not member of channel');
   }
 
   // if owner, remove from ownerids and memberids
@@ -311,20 +319,25 @@ function channelLeaveV1(token: string, channelId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelAddOwnerV1(token: string, channelId: number, uId: number) {
+function channelAddOwnerV2(token: string, channelId: number, uId: number) {
   const data = getData();
-  if (!isValidToken(token) || !isValidChannel(channelId) || !isValidUser(uId)) {
-    // Invalid token, channelId, or uId
-    return { error: 'error' };
-  } else if (!isInChannel(uId, channelId) || isChannelOwner(uId, channelId)) {
-    // uId not a member of channel, uId already an owner
-    return { error: 'error' };
+
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  } else if (!isValidChannel(channelId)) {
+    throw HTTPError(400, 'Invalid channelId');
+  } else if (!isValidUser(uId)) {
+    throw HTTPError(400, 'Invalid uId');
+  } else if (!isInChannel(uId, channelId)) {
+    throw HTTPError(400, 'Authorised user not member of channel');
+  } else if (isChannelOwner(uId, channelId)) {
+    throw HTTPError(400, 'uId already a channel owner');
   }
 
   const authUserId = getUserId(token);
   // authUserId no owner perms
   if (!isGlobalOwner(authUserId) && !isChannelOwner(authUserId, channelId)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'No owner permissions');
   }
 
   for (const channel of data.channels) {
@@ -347,23 +360,28 @@ function channelAddOwnerV1(token: string, channelId: number, uId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function channelRemoveOwnerV1(token: string, channelId: number, uId: number) {
+function channelRemoveOwnerV2(token: string, channelId: number, uId: number) {
   const data = getData();
   // Invalid token, channelId, uId, and not a channelOwner
-  if (!isValidToken(token) || !isValidChannel(channelId) || !isValidUser(uId) ||
-    !isChannelOwner(uId, channelId)) {
-    return { error: 'error' };
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  } else if (!isValidChannel(channelId)) {
+    throw HTTPError(400, 'Invalid channelId');
+  } else if (!isValidUser(uId)) {
+    throw HTTPError(400, 'Invalid uId');
+  } else if (!isChannelOwner(uId, channelId)) {
+    throw HTTPError(400, 'uId not a channel owner');
   }
 
   // Only owner in channel
   if (isOnlyOwner(uId, channelId)) {
-    return { error: 'error' };
+    throw HTTPError(400, 'Cannot remove only owner in channel');
   }
 
   const authUserId = getUserId(token);
   // authUserId no owner perms
   if (!isGlobalOwner(authUserId) && !isChannelOwner(authUserId, channelId)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'No owner permissions');
   }
 
   for (const channel of data.channels) {
@@ -382,11 +400,11 @@ function channelRemoveOwnerV1(token: string, channelId: number, uId: number) {
 }
 
 export {
-  channelJoinV2,
-  channelInviteV2,
-  channelMessagesV2,
-  channelDetailsV2,
-  channelLeaveV1,
-  channelAddOwnerV1,
-  channelRemoveOwnerV1
+  channelJoinV3,
+  channelInviteV3,
+  channelMessagesV3,
+  channelDetailsV3,
+  channelLeaveV2,
+  channelAddOwnerV2,
+  channelRemoveOwnerV2
 };

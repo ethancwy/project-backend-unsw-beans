@@ -43,7 +43,7 @@ describe('Testing errors for /message/send/v1', () => {
     const channelId = channelsCreate(token, 'Dog Channel', true);
     const invalidChannelId = channelId + 1;
     const check = messageSend(token, invalidChannelId, 'helloo');
-    expect(check).toStrictEqual({ error: 'error' });
+    expect(check).toStrictEqual(400);
   });
 
   test('Testing length of message - length = 0', () => {
@@ -51,7 +51,7 @@ describe('Testing errors for /message/send/v1', () => {
     const auth = authRegister('wateryeung0805@gmail.com', 'waterYYds1', 'Water', 'Yeung');
     const channelId = channelsCreate(auth.token, 'Water is smart', true);
 
-    expect(messageSend(auth.token, channelId.channelId, '')).toStrictEqual({ error: 'error' });
+    expect(messageSend(auth.token, channelId.channelId, '')).toStrictEqual(400);
   });
 
   test('Testing length of message - length > 1000', () => {
@@ -65,7 +65,7 @@ describe('Testing errors for /message/send/v1', () => {
       invalidMessage.push('1');
     }
     const check = messageSend(token, channelId.channelId, invalidMessage.toString());
-    expect(check).toStrictEqual({ error: 'error' });
+    expect(check).toStrictEqual(400);
   });
 
   test('Testing user is not a member of the valid channel ', () => {
@@ -74,7 +74,7 @@ describe('Testing errors for /message/send/v1', () => {
     const auth2 = authRegister('Niki@gmail.com', 'breadYum2', 'Niki', 'Huang');
 
     const channelId = channelsCreate(auth1.token, 'turtle live show', true);
-    expect(messageSend(auth2.token, channelId.channelId, 'leijou')).toStrictEqual({ error: 'error' });
+    expect(messageSend(auth2.token, channelId.channelId, 'leijou')).toStrictEqual(403);
   });
 
   test('Testing invalid token', () => {
@@ -84,7 +84,7 @@ describe('Testing errors for /message/send/v1', () => {
     const channelId = channelsCreate(token, 'hk channel', true);
 
     authLogout(token);
-    expect(messageSend(token, channelId.channelId, 'wow')).toStrictEqual({ error: 'error' });
+    expect(messageSend(token, channelId.channelId, 'wow')).toStrictEqual(403);
   });
 });
 
@@ -127,7 +127,7 @@ describe('Error checking message/senddm/v1', () => {
     const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
     const dm = dmCreate(auth.token, []);
     const invalidDmId = dm.dmId + 1;
-    expect(messageSendDm(auth.token, invalidDmId, 'meow')).toStrictEqual({ error: 'error' });
+    expect(messageSendDm(auth.token, invalidDmId, 'meow')).toStrictEqual(400);
   });
 
   test('Testing length of message is over 1000 char', () => {
@@ -140,14 +140,14 @@ describe('Error checking message/senddm/v1', () => {
       invalidMessage.push('1');
     }
     const check = messageSendDm(auth.token, dm.dmId, invalidMessage.toString());
-    expect(check).toStrictEqual({ error: 'error' });
+    expect(check).toStrictEqual(400);
   });
 
   test('Testing length of message is less than 1 char', () => {
     clear();
     const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
     const dm = dmCreate(auth.token, []);
-    expect(messageSendDm(auth.token, dm.dmId, '')).toStrictEqual({ error: 'error' });
+    expect(messageSendDm(auth.token, dm.dmId, '')).toStrictEqual(400);
   });
 
   test('Testing dmld is valid and non member tries to post', () => {
@@ -158,7 +158,7 @@ describe('Error checking message/senddm/v1', () => {
     const auth4 = authRegister('ray@icloud.com', 'gainWeight4', 'Ray', 'Chiu');
 
     const dm = dmCreate(auth1.token, [auth3.authUserId, auth4.authUserId]);
-    expect(messageSendDm(auth2.token, dm.dmId, 'meow')).toStrictEqual({ error: 'error' });
+    expect(messageSendDm(auth2.token, dm.dmId, 'meow')).toStrictEqual(403);
   });
 
   test('Testing invalid token', () => {
@@ -166,7 +166,7 @@ describe('Error checking message/senddm/v1', () => {
     const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
     const dm = dmCreate(auth.token, []);
     const invalidToken = auth.token + 'wassup';
-    expect(messageSendDm(invalidToken, dm.dmId, 'meow')).toStrictEqual({ error: 'error' });
+    expect(messageSendDm(invalidToken, dm.dmId, 'meow')).toStrictEqual(403);
   });
 });
 
@@ -226,7 +226,7 @@ describe('Testing errors for /message/edit/v1', () => {
       invalidMessage.push('1');
     }
     const check = messageEdit(token, messageId.messageId, invalidMessage.toString());
-    expect(check).toStrictEqual({ error: 'error' });
+    expect(check).toStrictEqual(400);
   });
 
   test('Global owner cannot edit member message in DM', () => {
@@ -237,7 +237,7 @@ describe('Testing errors for /message/edit/v1', () => {
 
     const dm = dmCreate(dmOwner.token, [globalOwner.authUserId, member.authUserId]);
     const messageId = messageSendDm(member.token, dm.dmId, 'great');
-    expect(messageEdit(globalOwner.token, messageId.messageId, 'edited!')).toStrictEqual({ error: 'error' });
+    expect(messageEdit(globalOwner.token, messageId.messageId, 'edited!')).toStrictEqual(403);
   });
 
   test('Empty string edit deletes message, cannot edit deleted message', () => {
@@ -254,7 +254,7 @@ describe('Testing errors for /message/edit/v1', () => {
       end: -1,
     });
     // cannot edit deleted message
-    expect(messageEdit(globalOwner.token, messageId.messageId, 'test')).toStrictEqual({ error: 'error' });
+    expect(messageEdit(globalOwner.token, messageId.messageId, 'test')).toStrictEqual(400);
   });
 
   test('Member cannot edit globalOwner message in both channel and dm', () => {
@@ -267,10 +267,10 @@ describe('Testing errors for /message/edit/v1', () => {
     const dm = dmCreate(dmOwner.token, [globalOwner.authUserId, member.authUserId]);
     const messageId = messageSendDm(globalOwner.token, dm.dmId, 'great');
     const channelmessageId = messageSend(globalOwner.token, channelId.channelId, 'great');
-    expect(messageEdit(member.token, messageId.messageId, 'edited!')).toStrictEqual({ error: 'error' });
-    expect(messageEdit(member.token, channelmessageId.messageId, 'edited!')).toStrictEqual({ error: 'error' });
+    expect(messageEdit(member.token, messageId.messageId, 'edited!')).toStrictEqual(403);
+    expect(messageEdit(member.token, channelmessageId.messageId, 'edited!')).toStrictEqual(400);
     channelJoin(member.token, channelId.channelId);
-    expect(messageEdit(member.token, channelmessageId.messageId, 'edited!')).toStrictEqual({ error: 'error' });
+    expect(messageEdit(member.token, channelmessageId.messageId, 'edited!')).toStrictEqual(403);
   });
 
   test('Testing invalid token', () => {
@@ -280,7 +280,7 @@ describe('Testing errors for /message/edit/v1', () => {
     const messageId = messageSend(auth.token, channelId.channelId, 'Meow');
 
     authLogout(auth.token);
-    expect(messageEdit(auth.token, messageId.messageId, 'Hi')).toStrictEqual({ error: 'error' });
+    expect(messageEdit(auth.token, messageId.messageId, 'Hi')).toStrictEqual(403);
   });
 });
 
@@ -324,7 +324,7 @@ describe('Error checking /message/remove/v1', () => {
     const message = messageSend(auth.token, channelId.channelId, 'bark');
 
     const invalidMessageId = message.messageId + 1;
-    expect(messageRemove(auth.token, invalidMessageId)).toStrictEqual({ error: 'error' });
+    expect(messageRemove(auth.token, invalidMessageId)).toStrictEqual(400);
   });
 
   test('Testing message was not send by authorised user making the request', () => {
@@ -334,7 +334,7 @@ describe('Error checking /message/remove/v1', () => {
 
     const channelId = channelsCreate(auth1.token, 'channel', true);
     const message = messageSend(auth1.token, channelId.channelId, 'ntu band');
-    expect(messageRemove(auth2.token, message.messageId)).toStrictEqual({ error: 'error' });
+    expect(messageRemove(auth2.token, message.messageId)).toStrictEqual(400);
   });
 
   test('Global owner (non-owner) cannot remove member message in DM', () => {
@@ -345,7 +345,7 @@ describe('Error checking /message/remove/v1', () => {
 
     const dm = dmCreate(dmOwner.token, [globalOwner.authUserId, member.authUserId]);
     const messageId = messageSendDm(member.token, dm.dmId, 'try to remove me');
-    expect(messageRemove(globalOwner.token, messageId.messageId)).toStrictEqual({ error: 'error' });
+    expect(messageRemove(globalOwner.token, messageId.messageId)).toStrictEqual(403);
   });
 
   test('Cannot remove deleted message (via edit to empty string)', () => {
@@ -357,7 +357,7 @@ describe('Error checking /message/remove/v1', () => {
     // edit empty string (removes message)
     expect(messageEdit(globalOwner.token, messageId.messageId, '')).toStrictEqual({});
     // cannot remove deleted message
-    expect(messageRemove(globalOwner.token, messageId.messageId)).toStrictEqual({ error: 'error' });
+    expect(messageRemove(globalOwner.token, messageId.messageId)).toStrictEqual(400);
   });
 
   test('Testing invalid token', () => {
@@ -367,7 +367,7 @@ describe('Error checking /message/remove/v1', () => {
     const message = messageSend(auth.token, channelId.channelId, 'nice');
 
     const invalidToken = auth.token + 'yoo';
-    expect(messageRemove(invalidToken, message.messageId)).toStrictEqual({ error: 'error' });
+    expect(messageRemove(invalidToken, message.messageId)).toStrictEqual(403);
     clear();
   });
 });

@@ -1,5 +1,9 @@
 import { getData, setData } from './dataStore';
-import { isValidToken, isValidChannel, isInChannel, getUserId, isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails, isGlobalOwner } from './global';
+import {
+  isValidToken, isValidChannel, isInChannel, getUserId,
+  isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails, isGlobalOwner
+} from './global';
+import HTTPError from 'http-errors';
 const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 
 /**
@@ -15,22 +19,22 @@ const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
   * @returns {error: error} - return error object in invalid cases
 */
 
-function messageSendV1(token: string, channelId: number, message: string) {
+function messageSendV2(token: string, channelId: number, message: string) {
   const data = getData();
   const uId = getUserId(token);
   if (!isValidToken) {
-    return { error: 'error' };
+    throw HTTPError(403, 'invalid auth user id');
   }
   if (!isValidChannel(channelId)) {
-    return { error: 'error' };
+    throw HTTPError(400, 'invalid channel id');
   }
   // check the message exist but the length is wrong
   if (message.length < 1 || message.length > 1000) {
-    return { error: 'error' };
+    throw HTTPError(400, 'invalid message length');
   }
   // check the user is not in the channel
   if (!isInChannel(uId, channelId)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'auth user not in channel');
   }
 
   const cIndex = getChannelIndex(channelId);
@@ -64,45 +68,48 @@ function messageSendV1(token: string, channelId: number, message: string) {
   * @returns {error: error} - return error object in invalid cases
 */
 
-function messageEditV1(token: string, messageId: number, message: string) {
+function messageEditV2(token: string, messageId: number, message: string) {
   const data = getData();
 
-  if (message.length > 1000) {
-    return { error: 'error' };
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'invalid auth user id');
   }
 
-  if (!isValidToken(token)) {
-    return { error: 'error' };
-  }
   const authUserId = getUserId(token);
 
   if (message === '') {
-    return messageRemoveV1(token, messageId);
+    return messageRemoveV2(token, messageId);
   }
 
   const msg = getMessageDetails(messageId);
 
   if (msg === null) {
-    return { error: 'error' };
+    throw HTTPError(400, 'invalid message id');
   }
 
   if (!msg.isDm) {
     // check if user is in channel
     if (!data.channels[msg.listIndex].memberIds.includes(authUserId)) {
-      return { error: 'error' };
+      throw HTTPError(400, 'auth user not in channel');
     }
     // check if user has perms
     if (!data.channels[msg.listIndex].ownerIds.includes(authUserId) && msg.uId !== authUserId && !isGlobalOwner(authUserId)) {
-      return { error: 'error' };
+      throw HTTPError(403, 'auth user in channel but dosen');
+    }
+    if (message.length > 1000) {
+      throw HTTPError(400, 'invalid message length');
     }
     data.channels[msg.listIndex].channelmessages[msg.messageIndex].message = message;
   } else {
     // check is user is in dm and has perms
     if (!data.dms[msg.listIndex].members.includes(authUserId)) {
-      return { error: 'error' };
+      throw HTTPError(400, 'invalid auth user id');
     }
     if (data.dms[msg.listIndex].owner !== authUserId && msg.uId !== authUserId) {
-      return { error: 'error' };
+      throw HTTPError(403, 'auth user does not have permission');
+    }
+    if (message.length > 1000) {
+      throw HTTPError(400, 'invalid message length');
     }
     data.dms[msg.listIndex].messages[msg.messageIndex].message = message;
   }
@@ -122,36 +129,36 @@ function messageEditV1(token: string, messageId: number, message: string) {
   * @returns {error: error} - return error object in invalid cases
 */
 
-function messageRemoveV1(token: string, messageId: number) {
+function messageRemoveV2(token: string, messageId: number) {
   const data = getData();
 
-  if (!isValidToken) {
-    return { error: 'error' };
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'invalid auth user id');
   }
   const authUserId = getUserId(token);
 
   const msg = getMessageDetails(messageId);
 
   if (msg === null) {
-    return { error: 'error' };
+    throw HTTPError(400, 'invalid message id');
   }
 
   if (!msg.isDm) {
     // check if user is in channel and has perms
     if (!data.channels[msg.listIndex].memberIds.includes(authUserId)) {
-      return { error: 'error' };
+      throw HTTPError(400, 'user not in channel');
     }
     if (!data.channels[msg.listIndex].ownerIds.includes(authUserId) && msg.uId !== authUserId && !isGlobalOwner(authUserId)) {
-      return { error: 'error' };
+      throw HTTPError(403, 'user does not have permission to delete');
     }
     data.channels[msg.listIndex].channelmessages.splice(msg.messageIndex, 1);
   } else {
     // check is user is in dm and has perms
     if (!data.dms[msg.listIndex].members.includes(authUserId)) {
-      return { error: 'error' };
+      throw HTTPError(400, 'user not in channel');
     }
     if (data.dms[msg.listIndex].owner !== authUserId && msg.uId !== authUserId) {
-      return { error: 'error' };
+      throw HTTPError(403, 'user does not have permission to delete');
     }
     data.dms[msg.listIndex].messages.splice(msg.messageIndex, 1);
   }
@@ -183,23 +190,23 @@ function messageRemoveV1(token: string, messageId: number) {
   * @returns {error: error} - return error object in invalid cases
 */
 
-function messageSenddmV1 (token: string, dmId: number, message: string) {
+function messageSenddmV2(token: string, dmId: number, message: string) {
   const data = getData();
   const uId = getUserId(token);
   if (!isValidToken) {
-    return { error: 'error' };
+    throw HTTPError(403, 'invalid auth user id');
   }
 
   if (!isDmValid(dmId)) {
-    return { error: 'error' };
+    throw HTTPError(400, 'invalid dm id');
   }
   const checkdmId = isDmMember(uId, dmId);
 
-  if (message.length < 1 || message.length > 1000) {
-    return { error: 'error' };
-  }
   if (!checkdmId) {
-    return { error: 'error' };
+    throw HTTPError(403, 'user not in dm');
+  }
+  if (message.length < 1 || message.length > 1000) {
+    throw HTTPError(400, 'invalid message length');
   }
 
   const dmIndex = getDmIndex(dmId);
@@ -221,4 +228,4 @@ function messageSenddmV1 (token: string, dmId: number, message: string) {
   return { messageId: messageId };
 }
 
-export { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 };
+export { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2 };

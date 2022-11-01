@@ -4,37 +4,37 @@ import { clear } from './global';
 
 clear();
 
-describe('channelsCreateV2 tests:', () => {
+describe('channelsCreateV3 tests:', () => {
   test('Testing for logged out user', () => {
     clear();
-    const person = authRegister('hao@mail.com', '12345', 'hao', 'yang');
+    const person = authRegister('hao@mail.com', '123456', 'hao', 'yang');
     authLogout(person.token);
 
-    expect(channelsCreate(person.token, 'asdsadadsdsadsa', true)).toStrictEqual({ error: 'error' });
+    expect(channelsCreate(person.token, 'asdsadadsdsadsa', true)).toStrictEqual(403);
   });
 
   test('Testing for invalid name(smaller than 1)', () => {
     clear();
-    const person = authRegister('hao@mail.com', '12345', 'hao', 'yang');
+    const person = authRegister('hao@mail.com', '123456', 'hao', 'yang');
 
-    expect(channelsCreate(person.token, '', true)).toStrictEqual({ error: 'error' });
-    expect(channelsCreate(person.token, '', false)).toStrictEqual({ error: 'error' });
+    expect(channelsCreate(person.token, '', true)).toStrictEqual(400);
+    expect(channelsCreate(person.token, '', false)).toStrictEqual(400);
   });
 
   test('Testing for invalid name(greater than 20)', () => {
     clear();
     const person = authRegister('hao@mail.com', '1234512345', 'hao', 'yang');
 
-    expect(channelsCreate(person.token, '1234567890qwertyuiopa', true)).toStrictEqual({ error: 'error' });
-    expect(channelsCreate(person.token, '1234567890qwertyuiopa', false)).toStrictEqual({ error: 'error' });
+    expect(channelsCreate(person.token, '1234567890qwertyuiopa', true)).toStrictEqual(400);
+    expect(channelsCreate(person.token, '1234567890qwertyuiopa', false)).toStrictEqual(400);
   });
 
-  test('Testing for invalid authUserId', () => {
+  test('Testing for invalid user', () => {
     clear();
     const person = authRegister('hao@mail.com', '1234512345', 'hao', 'yang');
     clear();
 
-    expect(channelsCreate(person.token, 'hao/channel', true)).toStrictEqual({ error: 'error' });
+    expect(channelsCreate(person.token, 'hao/channel', true)).toStrictEqual(403);
   });
 
   test('Testing for successful channel creation public & private', () => {
@@ -54,14 +54,14 @@ describe('channelsCreateV2 tests:', () => {
   });
 });
 
-describe('channelsListV2 tests:', () => {
+describe('channelsListV3 tests:', () => {
   test('Testing for invalid authUserId', () => {
     clear();
 
     const person = authRegister('hao@mail.com', '1234512345', 'hao', 'yang');
     clear();
 
-    expect(channelsList(person.token)).toStrictEqual({ error: 'error' });
+    expect(channelsList(person.token)).toStrictEqual(403);
   });
 
   test('Testing for valid input(not in any channel)', () => {
@@ -127,7 +127,7 @@ describe('Testing channelsListAllV2 standard', () => {
     const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
     const channelIdPublic = channelsCreate(channelOwnerId.token, 'Boost', true);
 
-    expect(channelsListAll(channelOwnerId.token)).toEqual({
+    expect(channelsListAll(channelOwnerId.token)).toStrictEqual({
       channels: [
         {
           channelId: channelIdPublic.channelId,
@@ -145,7 +145,7 @@ describe('Testing channelsListAllV2 standard', () => {
     const channelIdPublic = channelsCreate(channelOwnerId.token, 'Boost', true);
     const channelIdPrivate = channelsCreate(channelOwnerId.token, 'priv_channel', false);
 
-    expect(channelsListAll(globalOwnerId.token)).toEqual({
+    expect(channelsListAll(globalOwnerId.token)).toStrictEqual({
       channels: [
         {
           channelId: channelIdPublic.channelId,
@@ -166,7 +166,7 @@ describe('Testing the edge cases', () => {
 
     const fakeUser = '-20';
 
-    expect(channelsListAll(fakeUser)).toEqual({ error: 'error' });
+    expect(channelsListAll(fakeUser)).toStrictEqual(403);
   });
 
   test('Test for when there are no channels in existence yet', () => {
@@ -174,7 +174,7 @@ describe('Testing the edge cases', () => {
 
     const user = authRegister('foo@bar.com', 'password', 'James', 'Charles');
 
-    expect(channelsListAll(user.token)).toEqual({
+    expect(channelsListAll(user.token)).toStrictEqual({
       channels: []
     });
     clear();

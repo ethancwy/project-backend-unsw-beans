@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { validEmail, validName, isValidToken } from './global';
+import HTTPError from 'http-errors';
 
 /**
 * Allows user to login with email and password that they have registered
@@ -12,7 +13,7 @@ import { validEmail, validName, isValidToken } from './global';
 * @returns {{error: 'error'}} - on error
 */
 
-function authLoginV2(email: string, password: string) {
+function authLoginV3(email: string, password: string) {
   const data = getData();
 
   for (const user of data.users) {
@@ -24,11 +25,11 @@ function authLoginV2(email: string, password: string) {
         setData(data);
         return { token: token, authUserId: user.uId };
       }
-      return { error: 'error' };
+      throw HTTPError(400, 'Incorrect password');
     }
   }
 
-  return { error: 'error' };
+  throw HTTPError(400, 'Email does not belong to user');
 }
 
 /**
@@ -44,12 +45,12 @@ function authLoginV2(email: string, password: string) {
   * @returns {{error: 'error'}} - on error
 */
 
-function authRegisterV2(email: string, password: string, nameFirst: string, nameLast: string) {
+function authRegisterV3(email: string, password: string, nameFirst: string, nameLast: string) {
   const data = getData();
 
   if (!validEmail(email) || !validPass(password) || !validName(nameFirst) ||
     !validName(nameLast) || sameEmail(email)) {
-    return { error: 'error' };
+    throw HTTPError(400, 'Something is invalid / same email as another user');
   }
 
   const handle = getHandleStr(nameFirst, nameLast);
@@ -87,11 +88,11 @@ function authRegisterV2(email: string, password: string, nameFirst: string, name
   * @returns {{error: 'error'}} - on error
 */
 
-function authLogoutV1(token: string) {
+function authLogoutV2(token: string) {
   const data = getData();
 
   if (!isValidToken(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'Invalid token');
   }
 
   for (const user of data.users) {
@@ -164,7 +165,7 @@ function sameEmail(email: string) {
 }
 
 export {
-  authLoginV2,
-  authRegisterV2,
-  authLogoutV1
+  authLoginV3,
+  authRegisterV3,
+  authLogoutV2
 };

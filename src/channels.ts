@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
-import { isValidUser, getUserId, isValidToken } from './global';
+import { getUserId, isValidToken } from './global';
+import HTTPError from 'http-errors';
 
 /**
   *
@@ -14,17 +15,19 @@ import { isValidUser, getUserId, isValidToken } from './global';
   * @returns {integer} - channelId of the channel created
 */
 
-function channelsCreateV2(token: string, name: string, isPublic: boolean) {
+function channelsCreateV3(token: string, name: string, isPublic: boolean) {
   const data = getData();
 
   if (!isValidToken(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'Invalid token');
+  }
+
+  // checking if name is valid
+  if (name.length > 20 || name.length < 1) {
+    throw HTTPError(400, 'Invalid name');
   }
 
   const authUserId = getUserId(token);
-
-  // checking if name is valid
-  if (name.length > 20 || name.length < 1) { return { error: 'error' }; }
 
   // setting channel values and pushing channel into dataStore
   data.channels.push({
@@ -54,18 +57,18 @@ function channelsCreateV2(token: string, name: string, isPublic: boolean) {
   *
 */
 
-function channelsListV2(token: string) {
+function channelsListV3(token: string) {
   const data = getData();
 
   if (!isValidToken(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'Invalid token');
   }
 
   const authUserId = getUserId(token);
 
-  if (!isValidUser(authUserId)) {
-    return { error: 'error' };
-  }
+  // if (!isValidUser(authUserId)) {
+  //   return { error: 'error' };
+  // }
 
   const channelList = [];
 
@@ -98,18 +101,18 @@ function channelsListV2(token: string) {
  *
 */
 
-function channelsListAllV2(token: string) {
+function channelsListAllV3(token: string) {
   const data = getData();
 
   if (!isValidToken(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'Invalid token');
   }
 
-  const authUserId = getUserId(token);
+  // const authUserId = getUserId(token);
 
-  if (!isValidUser(authUserId)) {
-    return { error: 'error' };
-  }
+  // if (!isValidUser(authUserId)) {
+  //   return { error: 'error' };
+  // }
 
   const array = [];
 
@@ -126,7 +129,7 @@ function channelsListAllV2(token: string) {
 }
 
 export {
-  channelsCreateV2,
-  channelsListV2,
-  channelsListAllV2
+  channelsCreateV3,
+  channelsListV3,
+  channelsListAllV3
 };

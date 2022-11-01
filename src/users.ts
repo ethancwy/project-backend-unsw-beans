@@ -4,6 +4,7 @@ import {
   validName, validEmail, anotherUserEmail, alphanumeric,
   isValidHandleLength, anotherUserHandle
 } from './global';
+import HTTPError from 'http-errors';
 
 /**
   * For a valid user, returns information about their user ID, email,
@@ -18,11 +19,11 @@ import {
  * @returns {error} - return error object in invalid cases
 */
 
-function userProfileV2(token: string, uId: number) {
+function userProfileV3(token: string, uId: number) {
   const data = getData();
 
   if (!isValidToken(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'Invalid token');
   }
 
   for (const user of data.users) {
@@ -38,7 +39,7 @@ function userProfileV2(token: string, uId: number) {
       };
     }
   }
-  return { error: 'error' };
+  throw HTTPError(400, 'Invalid uId');
 }
 
 /**
@@ -52,11 +53,11 @@ function userProfileV2(token: string, uId: number) {
  * @returns {error} - return error object in invalid cases
 */
 
-function usersAllV1(token: string) {
+function usersAllV2(token: string) {
   const data = getData();
 
   if (!isValidToken(token)) {
-    return { error: 'error' };
+    throw HTTPError(403, 'Invalid token');
   }
 
   const userArr = [];
@@ -85,12 +86,15 @@ function usersAllV1(token: string) {
  * @returns {error} - return error object in invalid cases
 */
 
-function userSetNameV1(token: string, nameFirst: string, nameLast: string) {
+function userSetNameV2(token: string, nameFirst: string, nameLast: string) {
   const data = getData();
-
-  // Invalid cases: nameFirst & nameLast > 50 || < 1, invalid token
-  if (!validName(nameFirst) || !validName(nameLast) || !isValidToken(token)) {
-    return { error: 'error' };
+  // invalid token
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  }
+  // Invalid cases: nameFirst & nameLast > 50 || < 1
+  if (!validName(nameFirst) || !validName(nameLast)) {
+    throw HTTPError(400, 'Invalid nameFirst/nameLast');
   }
 
   // change nameFirst and nameLast
@@ -117,10 +121,12 @@ function userSetNameV1(token: string, nameFirst: string, nameLast: string) {
  * @returns {error} - return error object in invalid cases
 */
 
-function userSetEmailV1(token: string, email: string) {
+function userSetEmailV2(token: string, email: string) {
   const data = getData();
-  if (!isValidToken(token) || !validEmail(email) || anotherUserEmail(token, email)) {
-    return { error: 'error' };
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  } else if (!validEmail(email) || anotherUserEmail(token, email)) {
+    throw HTTPError(400, 'Invalid email');
   }
 
   // change email
@@ -146,12 +152,14 @@ function userSetEmailV1(token: string, email: string) {
  * @returns {error} - return error object in invalid cases
 */
 
-function userSetHandleV1(token: string, handleStr: string) {
+function userSetHandleV2(token: string, handleStr: string) {
   const data = getData();
   // invalid token, length of handleStr, non-alphanumeric, handle already in use
-  if (!isValidToken(token) || !alphanumeric(handleStr) ||
-    !isValidHandleLength(handleStr) || anotherUserHandle(token, handleStr)) {
-    return { error: 'error' };
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  } else if (!alphanumeric(handleStr) || !isValidHandleLength(handleStr) ||
+    anotherUserHandle(token, handleStr)) {
+    throw HTTPError(400, 'Invalid handleStr');
   }
 
   // change handle
@@ -166,4 +174,4 @@ function userSetHandleV1(token: string, handleStr: string) {
   return {};
 }
 
-export { userProfileV2, usersAllV1, userSetNameV1, userSetEmailV1, userSetHandleV1 };
+export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2 };

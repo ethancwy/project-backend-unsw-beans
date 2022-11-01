@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember } from './global';
+import HTTPError from 'http-errors';
 
 /**
   * uIds contains the user(s) that this DM is directed to, and will not include
@@ -15,28 +16,28 @@ import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember } from './g
   * @returns { dmId:
   *             } - returns an object containing dmId
  * @returns {error} - return error object in invalid cases
-*/
+**/
 
-function dmCreateV1(token: string, uId: number[]) {
+function dmCreateV2(token: string, uIds: number[]) {
   const data = getData();
 
   // Is the token valid
   if (isValidToken(token) === false) {
-    return { error: 'error' };
+    throw HTTPError(403, 'invalid auth user id');
   }
 
   // Are all the uids valid
-  for (const uids of uId) {
-    if (isValidUser(uids) === false) {
-      return { error: 'error' };
+  for (const uid of uIds) {
+    if (!isValidUser(uid)) {
+      throw HTTPError(400, 'invalid user id');
     }
   }
 
   // Are there any duplicate uids
-  for (let i = 0; i < uId.length; i++) {
-    for (let j = 0; j < uId.length; j++) {
-      if (j !== i && uId[j] === uId[i]) {
-        return { error: 'error' };
+  for (let i = 0; i < uIds.length; i++) {
+    for (let j = 0; j < uIds.length; j++) {
+      if (j !== i && uIds[j] === uIds[i]) {
+        throw HTTPError(400, 'user id duplication');
       }
     }
   }
@@ -48,11 +49,10 @@ function dmCreateV1(token: string, uId: number[]) {
   const array = [];
   array.push(ownerName);
   // Pushing members names
-  for (const uids of uId) {
+  for (const uids of uIds) {
     array.push(data.users[uids].handleStr);
   }
 
-  // Sorting names in alphabteical order
   let temp;
   for (let i = 1; i < array.length; i++) {
     if (array[i].localeCompare(array[i - 1]) === -1) {
@@ -71,8 +71,8 @@ function dmCreateV1(token: string, uId: number[]) {
   // Creating members array
   const membersArray = [];
   membersArray[0] = ownerId;
-  for (let i = 0; i < uId.length; i++) {
-    membersArray[i + 1] = uId[i];
+  for (let i = 0; i < uIds.length; i++) {
+    membersArray[i + 1] = uIds[i];
   }
 
   // Creating dm
@@ -99,12 +99,12 @@ function dmCreateV1(token: string, uId: number[]) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmListV1(token: string) {
+function dmListV2(token: string) {
   const data = getData();
 
   // Checking if token is valid
   if (isValidToken(token) === false) {
-    return { error: 'error' };
+    throw HTTPError(403, 'invalid auth user id');
   }
 
   const id = getUserId(token);
@@ -136,28 +136,28 @@ function dmListV1(token: string) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmRemoveV1(token: string, dmId: number) {
+function dmRemoveV2(token: string, dmId: number) {
   const data = getData();
 
   // Checking if token is valid
   if (isValidToken(token) === false) {
-    return { error: 'error' };
+    throw HTTPError(403, 'invalid auth user id');
   }
 
   // Checking if dmId is valid
   if (isDmValid(dmId) === false) {
-    return { error: 'error' };
+    throw HTTPError(400, 'invalid dm id');
   }
 
   // Checking that token user is apart of dm
   const userId = getUserId(token);
   if (isDmMember(userId, dmId) === false) {
-    return { error: 'error' };
+    throw HTTPError(403, 'auth user not member');
   }
 
   // Checking that the token belongs to the owner
   if (data.dms[dmId].owner !== userId) {
-    return { error: 'error' };
+    throw HTTPError(403, 'auth user not owner');
   }
 
   // let found = false;
@@ -194,23 +194,23 @@ function dmRemoveV1(token: string, dmId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmDetailsV1(token: string, dmId: number) {
+function dmDetailsV2(token: string, dmId: number) {
   const data = getData();
 
   // Checking if token is valid
   if (isValidToken(token) === false) {
-    return { error: 'error' };
+    throw HTTPError(403, 'invalid auth user id');
   }
 
   // Checking if dmId is valid
   if (isDmValid(dmId) === false) {
-    return { error: 'error' };
+    throw HTTPError(400, 'invalid dm id');
   }
 
   // Checking that token user is apart of dm
   const userId = getUserId(token);
   if (isDmMember(userId, dmId) === false) {
-    return { error: 'error' };
+    throw HTTPError(403, 'auth user not member');
   }
 
   // Creating array of users
@@ -244,23 +244,23 @@ function dmDetailsV1(token: string, dmId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmLeaveV1(token: string, dmId: number) {
+function dmLeaveV2(token: string, dmId: number) {
   const data = getData();
 
   // Checking if token is valid
   if (isValidToken(token) === false) {
-    return { error: 'error' };
+    throw HTTPError(403, 'invalid auth user id');
   }
 
   // Checking if dmId is valid
   if (isDmValid(dmId) === false) {
-    return { error: 'error' };
+    throw HTTPError(400, 'invalid dm id');
   }
 
   // Checking that token user is apart of dm
   const userId = getUserId(token);
   if (isDmMember(userId, dmId) === false) {
-    return { error: 'error' };
+    throw HTTPError(403, 'auth user not member');
   }
 
   // let found = false;
@@ -306,28 +306,28 @@ function dmLeaveV1(token: string, dmId: number) {
   * @returns {error} - return error object in invalid cases
 */
 
-function dmMessagesV1(token: string, dmId: number, start: number) {
+function dmMessagesV2(token: string, dmId: number, start: number) {
   const data = getData();
 
   // Checking if token is valid
   if (isValidToken(token) === false) {
-    return { error: 'error' };
+    throw HTTPError(403, 'invalid auth user id');
   }
 
   // Checking if dmId is valid
   if (isDmValid(dmId) === false) {
-    return { error: 'error' };
+    throw HTTPError(400, 'invalid dm id');
   }
 
   // Checking that token user is apart of dm
   const userId = getUserId(token);
   if (isDmMember(userId, dmId) === false) {
-    return { error: 'error' };
+    throw HTTPError(403, 'auth user not member');
   }
 
   // Checking that start is less than the number of messages in dms
   if (start > data.dms[dmId].messages.length) {
-    return { error: 'error' };
+    throw HTTPError(400, 'start greater than total messages');
   }
 
   const messages = [];
@@ -348,10 +348,10 @@ function dmMessagesV1(token: string, dmId: number, start: number) {
 }
 
 export {
-  dmCreateV1,
-  dmListV1,
-  dmRemoveV1,
-  dmDetailsV1,
-  dmLeaveV1,
-  dmMessagesV1
+  dmCreateV2,
+  dmListV2,
+  dmRemoveV2,
+  dmDetailsV2,
+  dmLeaveV2,
+  dmMessagesV2
 };

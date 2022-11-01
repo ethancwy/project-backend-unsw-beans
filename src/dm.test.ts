@@ -1,5 +1,5 @@
 import {
-  authRegister, dmCreate, clear, dmList, dmRmove,
+  authRegister, dmCreate, clear, dmList, dmRemove,
   dmDetails, dmLeave, dmMessages,
 } from './global';
 
@@ -35,7 +35,7 @@ describe('Testing errors for dm/create/v1', () => {
       fakeuser++;
     }
 
-    expect(dmCreate(sender.token, [recipient.authUserId, fakeuser])).toStrictEqual({ error: expect.any(String) });
+    expect(dmCreate(sender.token, [recipient.authUserId, fakeuser])).toStrictEqual(400);
   });
   test('All uIds invalid', () => {
     clear();
@@ -49,7 +49,7 @@ describe('Testing errors for dm/create/v1', () => {
     if (fakeuser2 === sender.authUserId) {
       fakeuser2++;
     }
-    expect(dmCreate(sender.token, [fakeuser1, fakeuser2])).toStrictEqual({ error: expect.any(String) });
+    expect(dmCreate(sender.token, [fakeuser1, fakeuser2])).toStrictEqual(400);
   });
 
   test('Duplicate uId in uIds array', () => {
@@ -57,7 +57,7 @@ describe('Testing errors for dm/create/v1', () => {
     const sender = authRegister('pollos@hhm.com', 'password', 'Gus', 'Fring');
     const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill');
 
-    expect(dmCreate(sender.token, [recipient.authUserId, recipient.authUserId])).toStrictEqual({ error: expect.any(String) });
+    expect(dmCreate(sender.token, [recipient.authUserId, recipient.authUserId])).toStrictEqual(400);
   });
 
   test('Invalid token', () => {
@@ -65,7 +65,7 @@ describe('Testing errors for dm/create/v1', () => {
     const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill');
     const fakeToken = recipient.token + 'sdjf';
 
-    expect(dmCreate(fakeToken, [recipient.authUserId])).toStrictEqual({ error: expect.any(String) });
+    expect(dmCreate(fakeToken, [recipient.authUserId])).toStrictEqual(403);
   });
 });
 
@@ -120,7 +120,7 @@ describe('Testing dm/list/v1 errors', () => {
       fakeToken = fakeToken + 'sdfsd';
     }
 
-    expect(dmList(fakeToken)).toStrictEqual({ error: expect.any(String) });
+    expect(dmList(fakeToken)).toStrictEqual(403);
   });
   test('Test after leaving dm', () => {
     clear();
@@ -178,7 +178,7 @@ describe('Testing dm/details/v1 errors', () => {
     const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill');
     const dm = dmCreate(sender.token, [recipient.authUserId]);
 
-    expect(dmDetails(sender.token, dm.dmId + 1)).toStrictEqual({ error: expect.any(String) });
+    expect(dmDetails(sender.token, dm.dmId + 1)).toStrictEqual(400);
   });
 
   test('User is not a member of dm', () => {
@@ -188,7 +188,7 @@ describe('Testing dm/details/v1 errors', () => {
     const notMember = authRegister('heisenberg@hhm.com', 'bluecrystal', 'Walter', 'White');
     const dm = dmCreate(sender.token, [recipient.authUserId]);
 
-    expect(dmDetails(notMember.token, dm.dmId)).toStrictEqual({ error: expect.any(String) });
+    expect(dmDetails(notMember.token, dm.dmId)).toStrictEqual(403);
   });
 
   test('Invalid token', () => {
@@ -201,7 +201,7 @@ describe('Testing dm/details/v1 errors', () => {
       fakeToken = fakeToken + 'sdfsd';
     }
 
-    expect(dmDetails(fakeToken, dm.dmId)).toStrictEqual({ error: expect.any(String) });
+    expect(dmDetails(fakeToken, dm.dmId)).toStrictEqual(403);
   });
 });
 
@@ -273,7 +273,7 @@ describe('Testing dm/leave/v1 errors', () => {
     const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill');
     const dm = dmCreate(sender.token, [recipient.uId]);
 
-    expect(dmLeave(sender.token, dm.dmId + 1)).toStrictEqual({ error: expect.any(String) });
+    expect(dmLeave(sender.token, dm.dmId + 1)).toStrictEqual(400);
   });
 
   test('User is not a member of dm', () => {
@@ -283,7 +283,7 @@ describe('Testing dm/leave/v1 errors', () => {
     const notMember = authRegister('heisenberg@hhm.com', 'bluecrystal', 'Walter', 'White');
     const dm = dmCreate(sender.token, [recipient.authUserId]);
 
-    expect(dmLeave(notMember.token, dm.dmId)).toStrictEqual({ error: expect.any(String) });
+    expect(dmLeave(notMember.token, dm.dmId)).toStrictEqual(403);
   });
 
   test('Invalid token', () => {
@@ -296,7 +296,7 @@ describe('Testing dm/leave/v1 errors', () => {
       fakeToken = fakeToken + 'sdfsd';
     }
 
-    expect(dmLeave(fakeToken, dm.dmId)).toStrictEqual({ error: expect.any(String) });
+    expect(dmLeave(fakeToken, dm.dmId)).toStrictEqual(403);
   });
 });
 
@@ -328,10 +328,10 @@ describe('Testing dm/remove/v1 standard', () => {
       ]
     });
 
-    expect(dmRmove(sender.token, dm.dmId)).toStrictEqual({});
+    expect(dmRemove(sender.token, dm.dmId)).toStrictEqual({});
 
     expect(dmList(sender.token)).toStrictEqual({ dms: [] });
-    expect(dmDetails(sender.token, dm.dmId)).toStrictEqual({ error: 'error' });
+    expect(dmDetails(sender.token, dm.dmId)).toStrictEqual(403);
   });
 });
 
@@ -342,7 +342,7 @@ describe('Testing dm/remove/v1 errors', () => {
     const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill');
     const dm = dmCreate(sender.token, [recipient.authUserId]);
 
-    expect(dmRmove(sender.token, dm.dmId + 1)).toStrictEqual({ error: expect.any(String) });
+    expect(dmRemove(sender.token, dm.dmId + 1)).toStrictEqual(400);
   });
 
   test('Recipient removing dm', () => {
@@ -351,7 +351,7 @@ describe('Testing dm/remove/v1 errors', () => {
     const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill');
     const dm = dmCreate(sender.token, [recipient.authUserId]);
 
-    expect(dmRmove(recipient.token, dm.dmId)).toStrictEqual({ error: expect.any(String) });
+    expect(dmRemove(recipient.token, dm.dmId)).toStrictEqual(403);
   });
 
   test('Sender removes dm but isnt legible', () => {
@@ -362,7 +362,7 @@ describe('Testing dm/remove/v1 errors', () => {
     const dm = dmCreate(sender.token, [recipient.authUserId, recipient2.authUserId]);
     dmLeave(sender.token, dm.dmId);
 
-    expect(dmRmove(sender.token, dm.dmId)).toStrictEqual({ error: expect.any(String) });
+    expect(dmRemove(sender.token, dm.dmId)).toStrictEqual(403);
   });
 
   test('Invalid token', () => {
@@ -375,7 +375,7 @@ describe('Testing dm/remove/v1 errors', () => {
       fakeToken = fakeToken + 'sdfsd';
     }
 
-    expect(dmRmove(fakeToken, dm.dmId)).toStrictEqual({ error: expect.any(String) });
+    expect(dmRemove(fakeToken, dm.dmId)).toStrictEqual(403);
   });
 });
 
@@ -402,7 +402,7 @@ describe('Testing dm/messages/v1 errors', () => {
     const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill');
     const dm = dmCreate(sender.token, [recipient.authUserId]);
 
-    expect(dmMessages(sender.token, dm.dmId + 1, 0)).toStrictEqual({ error: expect.any(String) });
+    expect(dmMessages(sender.token, dm.dmId + 1, 0)).toStrictEqual(400);
   });
 
   test('User is not a member of dm', () => {
@@ -412,7 +412,7 @@ describe('Testing dm/messages/v1 errors', () => {
     const notMember = authRegister('heisenberg@hhm.com', 'bluecrystal', 'Walter', 'White');
     const dm = dmCreate(sender.token, [recipient.authUserId]);
 
-    expect(dmMessages(notMember.token, dm.dmId, 0)).toStrictEqual({ error: expect.any(String) });
+    expect(dmMessages(notMember.token, dm.dmId, 0)).toStrictEqual(403);
   });
 
   test('Invalid token', () => {
@@ -425,7 +425,7 @@ describe('Testing dm/messages/v1 errors', () => {
       fakeToken = fakeToken + 'sdfsd';
     }
 
-    expect(dmMessages(fakeToken, dm.dmId, 0)).toStrictEqual({ error: expect.any(String) });
+    expect(dmMessages(fakeToken, dm.dmId, 0)).toStrictEqual(403);
   });
 
   test('Start is greater than number of messages in dm', () => {
@@ -434,7 +434,7 @@ describe('Testing dm/messages/v1 errors', () => {
     const recipient = authRegister('goodman@hhm.com', 'secondpassword', 'Jimmy', 'McGill');
     const dm = dmCreate(sender.token, [recipient.authUserId]);
 
-    expect(dmMessages(recipient.token, dm.dmId, 40)).toStrictEqual({ error: expect.any(String) });
+    expect(dmMessages(recipient.token, dm.dmId, 40)).toStrictEqual(400);
     clear();
   });
 });
