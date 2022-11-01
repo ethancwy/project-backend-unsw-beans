@@ -18,6 +18,7 @@ import {
 } from './users';
 import { dmCreateV2, dmDetailsV2, dmLeaveV2, dmListV2, dmRemoveV2, dmMessagesV2 } from './dm';
 import { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2 } from './message';
+import { getNotificationsV1 } from './notifications';
 
 // Set up web app
 const app = express();
@@ -204,6 +205,11 @@ app.post('/message/senddm/v2', (req: Request, res: Response) => {
   const token = req.header('token');
   const { dmId, message } = req.body;
   return res.json(messageSenddmV2(token, dmId, message));
+});
+
+app.get('/notifications/get/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  return res.json(getNotificationsV1(token));
 });
 
 // handles errors nicely
