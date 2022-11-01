@@ -16,7 +16,7 @@ import HTTPError from 'http-errors';
   * @returns { dmId:
   *             } - returns an object containing dmId
  * @returns {error} - return error object in invalid cases
-*/
+**/
 
 function dmCreateV2(token: string, uIds: number[]) {
   const data = getData();

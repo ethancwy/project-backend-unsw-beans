@@ -132,7 +132,7 @@ function messageEditV2(token: string, messageId: number, message: string) {
 function messageRemoveV2(token: string, messageId: number) {
   const data = getData();
 
-  if (!isValidToken) {
+  if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
   }
   const authUserId = getUserId(token);

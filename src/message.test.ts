@@ -357,7 +357,7 @@ describe('Error checking /message/remove/v1', () => {
     // edit empty string (removes message)
     expect(messageEdit(globalOwner.token, messageId.messageId, '')).toStrictEqual({});
     // cannot remove deleted message
-    expect(messageRemove(globalOwner.token, messageId.messageId)).toStrictEqual(403);
+    expect(messageRemove(globalOwner.token, messageId.messageId)).toStrictEqual(400);
   });
 
   test('Testing invalid token', () => {
