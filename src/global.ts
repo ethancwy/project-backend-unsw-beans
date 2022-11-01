@@ -427,6 +427,12 @@ export function messageRemove(token: string, messageId: number) {
 export function messageShare(token: string, ogMessageId: number, message: string, channelId: number, dmId: number) {
   return requestHelper('POST', '/message/share/v1', { ogMessageId, message, channelId, dmId }, token);
 }
+export function messageReact(token: string, messageId: number, reactId: number) {
+  return requestHelper('POST', '/message/react/v1', { messageId, reactId }, token);
+}
+export function messageUnreact(token: string, messageId: number, reactId: number) {
+  return requestHelper('POST', '/message/unreact/v1', { messageId, reactId }, token);
+}
 // ===============================================================================================//
 export function dmCreate(token: string, uIds: Array<number>) {
   return requestHelper('POST', '/dm/create/v2', { uIds }, token);

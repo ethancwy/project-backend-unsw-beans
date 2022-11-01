@@ -332,7 +332,13 @@ function dmMessagesV2(token: string, dmId: number, start: number) {
 
   const messages = [];
   for (let i = start; i < start + 50 && i < data.dms[dmId].messages.length; i++) {
-    messages.push(data.dms[dmId].messages[i]);
+    const msg = data.dms[dmId].messages[i];
+    messages.push({
+      uId: msg.uId,
+      messageId: msg.messageId,
+      message: msg.message,
+      timeSent: msg.timeSent,
+    });
   }
 
   let end = start + 50;

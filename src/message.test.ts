@@ -1,9 +1,11 @@
 import {
-  messageSend, messageEdit, messageRemove, clear, dmCreate, dmMessages, channelMessages, channelJoin
+  messageSend, messageEdit, messageRemove, clear, dmCreate,
+  dmMessages, channelMessages, channelJoin
 } from './global';
 import { authRegister, authLogout } from './global';
 import { channelsCreate } from './global';
 import { messageSendDm, messageShare } from './global';
+import { messageReact, messageUnreact } from './global';
 
 clear();
 // Testing for message/send/v1
@@ -447,5 +449,74 @@ describe('/message/share/v1 success', () => {
     expect(messageShare(auth.token, messageId.messageId, 'substring message', -1, dmId.dmId)).toStrictEqual({ sharedMessageId: expect.any(Number) });
     expect(messageShare(auth.token, messageId.messageId, 'substring message2', -1, dm2.dmId)).toStrictEqual({ sharedMessageId: expect.any(Number) });
     expect(messageShare(auth.token, messageId.messageId, 'substring message3', channelId.channelId, -1)).toStrictEqual({ sharedMessageId: expect.any(Number) });
+  });
+});
+
+// Testing for message/react/v1 and unreact failed cases
+describe('failed cases', () => {
+  test('message not in channel that includes user', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    const dm = dmCreate(auth.token, []);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    const nonmember = authRegister('Nina080113@icloud.com', 'Nina110803', 'Nin11a', 'Y11eh');
+    expect(messageReact(nonmember.token, messageId.messageId, 1)).toStrictEqual(400);
+    expect(messageReact(nonmember.token, dmMessageId.messageId, 1)).toStrictEqual(400);
+  });
+
+  test('react id invalid(not 1)', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    const dm = dmCreate(auth.token, []);
+    const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messageReact(auth.token, messageId.messageId, 11)).toStrictEqual(400);
+    expect(messageReact(auth.token, dmMessageId.messageId, 11)).toStrictEqual(400);
+  });
+
+  test('auth user already reacted with react id', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    expect(messageReact(auth.token, messageId.messageId, 1)).toStrictEqual({});
+    expect(messageReact(auth.token, messageId.messageId, 1)).toStrictEqual(400);
+    const dm = dmCreate(auth.token, []);
+    const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messageReact(auth.token, dmMessageId.messageId, 1)).toStrictEqual({});
+    expect(messageReact(auth.token, dmMessageId.messageId, 1)).toStrictEqual(400);
+  });
+});
+
+// Testing for message/react/v1 and unreact non failure cases
+describe('success cases', () => {
+  test('auth user and member react and unreact to same message in channel', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nina080113@icloud.com', 'Nina110803', 'Nin11a', 'Y11eh');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    channelJoin(member.token, channelId.channelId);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    expect(messageReact(auth.token, messageId.messageId, 1)).toStrictEqual({});
+    expect(messageReact(member.token, messageId.messageId, 1)).toStrictEqual({});
+    expect(messageUnreact(auth.token, messageId.messageId, 1)).toStrictEqual({});
+    expect(messageUnreact(member.token, messageId.messageId, 1)).toStrictEqual({});
+    // add check to see if reaction exists
+  });
+
+  test('auth user and member react and unreact to same message in dm', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nina080113@icloud.com', 'Nina110803', 'Nin11a', 'Y11eh');
+    const dm = dmCreate(auth.token, [member.authUserId]);
+    const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messageReact(auth.token, dmMessageId.messageId, 1)).toStrictEqual({});
+    expect(messageUnreact(auth.token, dmMessageId.messageId, 1)).toStrictEqual({});
+    expect(messageReact(member.token, dmMessageId.messageId, 1)).toStrictEqual({});
+    expect(messageUnreact(member.token, dmMessageId.messageId, 1)).toStrictEqual({});
+    // add check to see if reaction exists
   });
 });

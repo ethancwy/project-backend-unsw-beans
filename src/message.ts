@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore';
+import { getData, setData, reactions } from './dataStore';
 import {
   isValidToken, isValidChannel, isInChannel, getUserId,
   isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails, isGlobalOwner
@@ -39,11 +39,14 @@ function messageSendV2(token: string, channelId: number, message: string) {
 
   const cIndex = getChannelIndex(channelId);
   const messageId = data.messageDetails.length;
+  const react: reactions[] = [];
   const newMessage = {
     messageId: messageId,
     uId: uId,
     message: message,
     timeSent: requestTimesent(),
+    reacts: react,
+    isPinned: false,
   };
   data.channels[cIndex].channelmessages.push(newMessage);
   data.messageDetails.push({
@@ -211,11 +214,14 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
 
   const dmIndex = getDmIndex(dmId);
   const messageId = data.messageDetails.length;
+  const react: reactions[] = [];
   const newMessage = {
     messageId: messageId,
     uId: uId,
     message: message,
     timeSent: requestTimesent(),
+    reacts: react,
+    isPinned: false,
   };
   data.dms[dmIndex].messages.push(newMessage);
   data.messageDetails.push({
@@ -231,7 +237,7 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
 function messageShareV1(token: string, ogMessageId: number, message: string, channelId: number, dmId: number) {
   const data = getData();
   const uId = getUserId(token);
-  if (!isValidToken) {
+  if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
   }
 
@@ -274,4 +280,115 @@ function messageShareV1(token: string, ogMessageId: number, message: string, cha
   return { sharedMessageId: sharedMessageId };
 }
 
-export { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2, messageShareV1 };
+function messageReactV1(token: string, messageId: number, reactId: number) {
+  const data = getData();
+  const uId = getUserId(token);
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'invalid auth user id');
+  }
+
+  const msg = getMessageDetails(messageId);
+
+  if (msg === null) {
+    throw HTTPError(400, 'invalid message id');
+  }
+
+  if (reactId !== 1) {
+    throw HTTPError(400, 'reactId does not exist');
+  }
+
+  if (!msg.isDm) {
+    if (!data.channels[msg.listIndex].memberIds.includes(uId)) {
+      throw HTTPError(400, 'auth user not in message channel');
+    }
+    for (const reaction of data.channels[msg.listIndex].channelmessages[msg.messageIndex].reacts) {
+      if (reaction.reactId === reactId) {
+        if (reaction.uIds.includes(uId)) {
+          throw HTTPError(400, 'auth user already reacted');
+        }
+        reaction.uIds.push(uId);
+        setData(data);
+        return {};
+      }
+    }
+    data.channels[msg.listIndex].channelmessages[msg.messageIndex].reacts.push({
+      reactId: reactId,
+      uIds: [uId],
+    });
+    setData(data);
+    return {};
+  } else {
+    if (!data.dms[msg.listIndex].members.includes(uId)) {
+      throw HTTPError(400, 'auth user not in message dm');
+    }
+    for (const reaction of data.dms[msg.listIndex].messages[msg.messageIndex].reacts) {
+      if (reaction.reactId === reactId) {
+        if (reaction.uIds.includes(uId)) {
+          throw HTTPError(400, 'auth user already reacted');
+        }
+        reaction.uIds.push(uId);
+        setData(data);
+        return {};
+      }
+    }
+    data.dms[msg.listIndex].messages[msg.messageIndex].reacts.push({
+      reactId: reactId,
+      uIds: [uId],
+    });
+    setData(data);
+    return {};
+  }
+}
+
+function messageUnreactV1(token: string, messageId: number, reactId: number) {
+  const data = getData();
+  const uId = getUserId(token);
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'invalid auth user id');
+  }
+
+  const msg = getMessageDetails(messageId);
+
+  if (msg === null) {
+    throw HTTPError(400, 'invalid message id');
+  }
+
+  if (reactId !== 1) {
+    throw HTTPError(400, 'reactId does not exist');
+  }
+
+  if (!msg.isDm) {
+    if (!data.channels[msg.listIndex].memberIds.includes(uId)) {
+      throw HTTPError(400, 'auth user not in message channel');
+    }
+    for (const reaction of data.channels[msg.listIndex].channelmessages[msg.messageIndex].reacts) {
+      if (reaction.reactId === reactId) {
+        if (reaction.uIds.includes(uId)) {
+          reaction.uIds.splice(reaction.uIds.indexOf(uId), 1);
+          setData(data);
+          return {};
+        }
+      }
+    }
+    throw HTTPError(400, 'auth user did not react');
+  } else {
+    if (!data.dms[msg.listIndex].members.includes(uId)) {
+      throw HTTPError(400, 'auth user not in message dm');
+    }
+    for (const reaction of data.dms[msg.listIndex].messages[msg.messageIndex].reacts) {
+      if (reaction.reactId === reactId) {
+        if (reaction.uIds.includes(uId)) {
+          reaction.uIds.splice(reaction.uIds.indexOf(uId), 1);
+          setData(data);
+          return {};
+        }
+      }
+    }
+    throw HTTPError(400, 'auth user did not react');
+  }
+}
+
+export {
+  messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2,
+  messageShareV1, messageReactV1, messageUnreactV1
+};

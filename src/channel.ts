@@ -170,7 +170,12 @@ function channelMessagesV3(token: string, channelId: number, start: number) {
         break;
       }
 
-      list.push(msg);
+      list.push({
+        uId: msg.uId,
+        message: msg.message,
+        messageId: msg.messageId,
+        timeSent: msg.timeSent,
+      });
       count++;
     }
   }
