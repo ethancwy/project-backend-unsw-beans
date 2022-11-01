@@ -228,4 +228,8 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   return { messageId: messageId };
 }
 
-export { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2 };
+function messageShareV1(token: string, ogMessageId: number, message: string, channelId: number, dmId: number) {
+  return { sharedMessageId: 42069 };
+}
+
+export { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2, messageShareV1 };

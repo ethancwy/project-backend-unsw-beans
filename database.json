@@ -1,7 +1,68 @@
 {
-  "users": [],
-  "channels": [],
-  "dms": [],
-  "sessionIds": [],
-  "messageDetails": []
+  "users": [
+    {
+      "uId": 0,
+      "nameFirst": "Nina",
+      "nameLast": "Yeh",
+      "email": "Nina0803@icloud.com",
+      "password": "Nina0803",
+      "handleStr": "ninayeh",
+      "isGlobalOwner": true,
+      "tokens": [
+        "0"
+      ]
+    }
+  ],
+  "channels": [
+    {
+      "channelId": 0,
+      "name": "Dog Channel",
+      "isPublic": true,
+      "ownerIds": [
+        0
+      ],
+      "memberIds": [
+        0
+      ],
+      "channelmessages": []
+    }
+  ],
+  "dms": [
+    {
+      "dmId": 0,
+      "name": "ninayeh",
+      "owner": 0,
+      "members": [
+        0
+      ],
+      "messages": [
+        {
+          "messageId": 0,
+          "uId": 0,
+          "message": "helloo",
+          "timeSent": 1667290473
+        }
+      ]
+    },
+    {
+      "dmId": 1,
+      "name": "ninayeh",
+      "owner": 0,
+      "members": [
+        0
+      ],
+      "messages": []
+    }
+  ],
+  "sessionIds": [
+    "0"
+  ],
+  "messageDetails": [
+    {
+      "messageId": 0,
+      "isDm": true,
+      "listId": 0,
+      "uId": 0
+    }
+  ]
 }
