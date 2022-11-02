@@ -148,6 +148,11 @@ export function getNotificationsV1(token: string) {
     delete i.timeCounter;
   }
 
+  if (arr.length > 20) {
+    return {
+      notifications: arr.slice(0, 19)
+    };
+  }
   return {
     notifications: arr
   };

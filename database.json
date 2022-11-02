@@ -11,15 +11,69 @@
       "tokens": [
         "0"
       ]
+    },
+    {
+      "uId": 1,
+      "nameFirst": "Willy",
+      "nameLast": "Wonka",
+      "email": "chocolate@bar.com",
+      "password": "g00dpassword",
+      "handleStr": "willywonka",
+      "isGlobalOwner": false,
+      "tokens": [
+        "1"
+      ]
     }
   ],
-  "channels": [],
+  "channels": [
+    {
+      "channelId": 0,
+      "name": "testingTagging",
+      "isPublic": true,
+      "ownerIds": [
+        1
+      ],
+      "memberIds": [
+        1
+      ],
+      "channelmessages": [
+        {
+          "messageId": 0,
+          "uId": 1,
+          "message": "@jamescharles hello!",
+          "timeSent": 1667397305,
+          "reacts": [],
+          "isPinned": false,
+          "tags": []
+        }
+      ]
+    }
+  ],
   "dms": [],
   "sessionIds": [
-    "0"
+    "0",
+    "1"
   ],
-  "messageDetails": [],
-  "inviteDetails": [],
+  "messageDetails": [
+    {
+      "uId": 1,
+      "message": "@jamescharles hello!",
+      "messageId": 0,
+      "isDm": false,
+      "listId": 0,
+      "tags": [],
+      "timeCounter": 1
+    }
+  ],
+  "inviteDetails": [
+    {
+      "uId": 1,
+      "isDm": false,
+      "listId": 0,
+      "invited": 0,
+      "timeCounter": 0
+    }
+  ],
   "reactDetails": [],
-  "counter": 0
+  "counter": 2
 }
