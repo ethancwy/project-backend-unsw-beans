@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { getUserId, isValidToken, getMessageDetails, isInChannel, isInDm } from './global';
+import { getChannelDetails, getDmDetails } from './global';
 import { userProfileV3 } from './users';
 import { dmDetailsV2 } from './dm';
 import { channelDetailsV3, channelInviteV3 } from './channel';
@@ -33,8 +34,8 @@ function getTaggedNotif(token: string) {
         const tagger = userProfileV3(token, msg.uId);
         const handle = tagger.user.handleStr;
         if (msg.isDm) { // get DM details
-          const dm = dmDetailsV2(token, msg.listId);
-          const message = data.dms[obj.listIndex].messages[obj.messageIndex].message;
+          const dm = getDmDetails(msg.listId);
+          const message = msg.message;
           const slicedMessage = message.substring(0, 20);
           arr.push({
             channelId: -1,
@@ -45,9 +46,8 @@ function getTaggedNotif(token: string) {
 
 
         } else {  // get channel details
-
-          const channel = channelDetailsV3(token, msg.listId);
-          const message = data.channels[obj.listIndex].channelmessages[obj.messageIndex].message;
+          const channel = getChannelDetails(msg.listId);
+          const message = msg.message;
           const slicedMessage = message.substring(0, 20);
           arr.push({
             channelId: msg.listId,
@@ -75,29 +75,24 @@ function getInvitedNotif(token: string, arr: Array<NotifArr>) {
     let handle = tagger.user.handleStr;
     if (!i.isDm) {
       if (uId === i.invited) {
-        if (isInChannel(uId, i.listId)) {
-          const channel = channelDetailsV3(token, i.listId);
-          arr.push({
-            channelId: i.listId,
-            dmId: -1,
-            notificationMessage: `${handle} added you to ${channel.name}`,
-            timeCounter: i.timeCounter,
-          });
-        }
+        const channel = getChannelDetails(i.listId);
+        arr.push({
+          channelId: i.listId,
+          dmId: -1,
+          notificationMessage: `${handle} added you to ${channel.name}`,
+          timeCounter: i.timeCounter,
+        });
       }
     } else {  // is DM, iterate through invited
       for (const j of i.invited) {
         if (uId === j) {
-          if (isInDm(uId, i.listId)) {
-            const dm = dmDetailsV2(token, i.listId);
-            arr.push({
-              channelId: -1,
-              dmId: i.listId,
-              notificationMessage: `${handle} added you to ${dm.name}`,
-              timeCounter: i.timeCounter,
-            });
-          }
-          break;
+          const dm = getDmDetails(i.listId);
+          arr.push({
+            channelId: -1,
+            dmId: i.listId,
+            notificationMessage: `${handle} added you to ${dm.name}`,
+            timeCounter: i.timeCounter,
+          });
         }
       }
     }
@@ -116,7 +111,7 @@ function getReactNotif(token: string, arr: Array<NotifArr>) {
     if (uId === i.senderId) {
       if (i.isDm) {
         if (isInDm(uId, i.listId)) {
-          const dm = dmDetailsV2(token, i.listId);
+          const dm = getDmDetails(i.listId);
           arr.push({
             channelId: -1,
             dmId: i.listId,
@@ -126,7 +121,7 @@ function getReactNotif(token: string, arr: Array<NotifArr>) {
         }
       } else {
         if (isInChannel(uId, i.listId)) {
-          const channel = channelDetailsV3(token, i.listId);
+          const channel = getChannelDetails(i.listId);
           // console.log(channel);
           arr.push({
             channelId: i.listId,

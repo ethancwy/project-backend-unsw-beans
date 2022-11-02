@@ -61,6 +61,7 @@ function messageSendV2(token: string, channelId: number, message: string) {
   data.channels[cIndex].channelmessages.push(newMessage);
   data.messageDetails.push({
     uId: uId,
+    message: message,
     messageId: messageId,
     isDm: false,
     listId: channelId,
@@ -260,6 +261,7 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   data.dms[dmIndex].messages.push(newMessage);
   data.messageDetails.push({
     messageId: messageId,
+    message: message,
     isDm: true,
     listId: dmId,
     uId: uId,

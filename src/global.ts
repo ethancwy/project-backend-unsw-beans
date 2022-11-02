@@ -77,6 +77,30 @@ export function getChannelIndex(channelId: number) {
   }
 }
 
+export function getChannelDetails(channelId: number) {
+  const data = getData();
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      return {
+        name: channel.name,
+        // add more when needed
+      }
+    }
+  }
+}
+
+export function getDmDetails(dmId: number) {
+  const data = getData();
+  for (const dm of data.dms) {
+    if (dm.dmId === dmId) {
+      return {
+        name: dm.name,
+        // add more when needed
+      }
+    }
+  }
+}
+
 // Fetch the dm index
 export function getDmIndex(dmId: number) {
   const data = getData();

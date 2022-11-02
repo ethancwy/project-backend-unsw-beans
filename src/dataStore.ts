@@ -52,6 +52,7 @@ type dm = {
 
 export type MessageDetails = {
   uId: number;
+  message: string;
   messageId: number;
   isDm: boolean;
   listId: number;

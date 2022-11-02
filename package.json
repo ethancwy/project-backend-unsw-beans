@@ -2,6 +2,7 @@
     "scripts": {
         "test": "jest",
         "tsc": "tsc --noImplicitAny",
+        "ts-node": "ts-node",
         "lint": "eslint src/**.{ts,js}",
         "lint-fix": "eslint --fix src/**.{ts,js}",
         "start1": "ts-node -T src/server.ts",
