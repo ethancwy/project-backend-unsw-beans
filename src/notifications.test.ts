@@ -24,9 +24,9 @@ describe('/notifications/get/v1 added to channel/dm', () => {
     const channel2 = channelsCreate(channelOwner2.token, 'testingNotifs2', false);
     const channel3 = channelsCreate(channelOwner3.token, 'testingNotifs3', true);
 
-    channelInvite(channelOwner1.token, channel1.channelId, globalOwnerId.token);
-    channelInvite(channelOwner1.token, channel1.channelId, globalOwnerId.token);
-    channelInvite(channelOwner1.token, channel1.channelId, globalOwnerId.token);
+    channelInvite(channelOwner1.token, channel1.channelId, globalOwnerId.authUserId);
+    channelInvite(channelOwner2.token, channel2.channelId, globalOwnerId.authUserId);
+    channelInvite(channelOwner3.token, channel3.channelId, globalOwnerId.authUserId);
     expect(getNotifications(globalOwnerId.token)).toStrictEqual({
       notifications: [
         {
@@ -89,8 +89,11 @@ describe('/notifications/get/v1 added to channel/dm', () => {
 
     const dm1 = dmCreate(tester1.token, [globalOwnerId.authUserId]);
     const channel1 = channelsCreate(tester1.token, 'testingNotifs1', true);
+    channelInvite(tester1.token, channel1.channelId, globalOwnerId.authUserId);
+
     const dm2 = dmCreate(tester2.token, [globalOwnerId.authUserId]);
     const channel2 = channelsCreate(tester2.token, 'testingNotifs2', false);
+    channelInvite(tester2.token, channel2.channelId, globalOwnerId.authUserId);
 
     expect(getNotifications(globalOwnerId.token)).toStrictEqual({
       notifications: [
@@ -127,6 +130,7 @@ describe('/notifications/get/v1 reacted message', () => {
 
     const dm1 = dmCreate(tester1.token, [globalOwnerId.authUserId]);
     const channel1 = channelsCreate(tester1.token, 'testingReacts', true);
+    channelInvite(tester1.token, channel1.channelId, globalOwnerId.authUserId);
 
     // globalOwner sends a message to channel and DM
     const dmMessage = messageSendDm(globalOwnerId.token, dm1.dmId, 'hi');
@@ -148,6 +152,16 @@ describe('/notifications/get/v1 reacted message', () => {
           dmId: dm1.dmId,
           notificationMessage: 'willywonka reacted to your message in jamescharles, willywonka'
         },
+        {
+          channelId: channel1.channelId,
+          dmId: -1,
+          notificationMessage: 'willywonka added you to testingReacts'
+        },
+        {
+          channelId: -1,
+          dmId: dm1.dmId,
+          notificationMessage: 'willywonka added you to jamescharles, willywonka'
+        },
       ]
     });
   });
@@ -161,6 +175,7 @@ describe('/notifications/get/v1 tagging', () => {
 
     const dm1 = dmCreate(tester.token, [globalOwnerId.authUserId]);
     const channel1 = channelsCreate(tester.token, 'testingTagging', true);
+    channelInvite(tester.token, channel1.channelId, globalOwnerId.authUserId);
 
     // globalOwner tags tester, and himself, testing with 20+ characters
     messageSendDm(globalOwnerId.token, dm1.dmId, 'hi @willywonka, ityttmom');
@@ -172,12 +187,12 @@ describe('/notifications/get/v1 tagging', () => {
         {
           channelId: channel1.channelId,
           dmId: -1,
-          notificationMessage: 'jamescharles tagged you in testingTagging: hi @willywonka, ityt'
+          notificationMessage: 'jamescharles tagged you in testingTagging: @willywonka@jamescha'
         },
         {
           channelId: -1,
           dmId: dm1.dmId,
-          notificationMessage: 'jamescharles tagged you in jamescharles, willywonka: @willywonka@jamescha'
+          notificationMessage: 'jamescharles tagged you in jamescharles, willywonka: hi @willywonka, ityt'
         },
       ]
     });
@@ -188,6 +203,16 @@ describe('/notifications/get/v1 tagging', () => {
           channelId: channel1.channelId,
           dmId: -1,
           notificationMessage: 'jamescharles tagged you in jamescharles, willywonka: @willywonka@jamescha'
+        },
+        {
+          channelId: channel1.channelId,
+          dmId: -1,
+          notificationMessage: 'willywonka added you to testingTagging'
+        },
+        {
+          channelId: -1,
+          dmId: dm1.dmId,
+          notificationMessage: 'willywonka added you to jamescharles, willywonka'
         },
       ]
     });

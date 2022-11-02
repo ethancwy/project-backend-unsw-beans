@@ -121,7 +121,7 @@ export type InviteDetails = {
   isDm: boolean;
   listId: number; // channel / DM ID
   invited: Array<number> | number; // for dm or channel
-  timeSent: number;
+  timeCounter: number;
 }
 
 export type datatype = {
@@ -131,6 +131,7 @@ export type datatype = {
   sessionIds: Array<string>;
   messageDetails: Array<details>;
   inviteDetails: Array<InviteDetails>;
+  counter: number;
 }
 
 let data: datatype = {
@@ -178,6 +179,7 @@ let data: datatype = {
   sessionIds: [],
   messageDetails: [],
   inviteDetails: [],
+  counter: 0,
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1

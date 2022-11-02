@@ -2,6 +2,8 @@ import { getData, setData } from './dataStore';
 import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember } from './global';
 import HTTPError from 'http-errors';
 
+const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
+
 /**
   * uIds contains the user(s) that this DM is directed to, and will not include
   * the creator. The creator is the owner of the DM. name should be automatically
@@ -83,7 +85,14 @@ function dmCreateV2(token: string, uIds: number[]) {
     members: membersArray,
     messages: [],
   });
-
+  data.inviteDetails.push({
+    uId: ownerId,
+    isDm: true,
+    listId: data.dms.length - 1,
+    invited: uIds,   // an array
+    timeCounter: data.counter,
+  });
+  data.counter++;
   setData(data);
   return { dmId: data.dms.length - 1 };
 }

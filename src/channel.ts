@@ -5,6 +5,8 @@ import {
 } from './global';
 import HTTPError from 'http-errors';
 
+const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
+
 /**
   * Given a channelId of a channel that the authorised user can join,
   * adds them to that channel.
@@ -59,7 +61,7 @@ function channelJoinV3(token: string, channelId: number) {
 */
 
 function channelInviteV3(token: string, channelId: number, uId: number) {
-  const data = getData();
+  let data = getData();
 
   if (!isValidUser(uId)) {
     throw HTTPError(400, 'Invalid uId');
@@ -87,6 +89,14 @@ function channelInviteV3(token: string, channelId: number, uId: number) {
       }
 
       channel.memberIds.push(uId); // add member
+      data.inviteDetails.push({
+        uId: authUserId,
+        isDm: false,
+        listId: channelId,
+        invited: uId,
+        timeCounter: data.counter,
+      });
+      data.counter++;
       setData(data);
       return {};
     }

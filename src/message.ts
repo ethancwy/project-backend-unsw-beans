@@ -58,7 +58,9 @@ function messageSendV2(token: string, channelId: number, message: string) {
     isDm: false,
     listId: channelId,
     tags: tags,
+    timeCounter: data.counter,
   });
+  data.counter++;
   setData(data);
   return { messageId: messageId };
 }
@@ -248,7 +250,9 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
     listId: dmId,
     uId: uId,
     tags: tags,
+    timeCounter: data.counter,
   });
+  data.counter++;
   setData(data);
   return { messageId: messageId };
 }

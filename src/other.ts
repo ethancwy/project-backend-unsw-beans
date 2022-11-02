@@ -8,6 +8,8 @@ function clearV1() {
     dms: [],
     sessionIds: [],
     messageDetails: [],
+    inviteDetails: [],
+    counter: 0,
   };
   setData(data);
   return {};
