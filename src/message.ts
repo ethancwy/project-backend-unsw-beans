@@ -405,7 +405,24 @@ function messageUnreactV1(token: string, messageId: number, reactId: number) {
   }
 }
 
+function messagePinV1(token: string, messageId: number) {
+  return {};
+}
+
+function messageUnpinV1(token: string, messageId: number) {
+  return {};
+}
+
+function messageSendlaterV1(token: string, channelId: number, message: string, timeSent: number) {
+  return { messageId: 1 };
+}
+
+function messageSendlaterdmV1(token: string, dmId: number, message: string, timeSent: number) {
+  return { messageId: 1 };
+}
+
 export {
   messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2,
-  messageShareV1, messageReactV1, messageUnreactV1
+  messageShareV1, messageReactV1, messageUnreactV1, messagePinV1,
+  messageUnpinV1, messageSendlaterV1, messageSendlaterdmV1
 };

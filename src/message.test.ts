@@ -6,6 +6,8 @@ import { authRegister, authLogout } from './global';
 import { channelsCreate } from './global';
 import { messageSendDm, messageShare } from './global';
 import { messageReact, messageUnreact } from './global';
+import { messagePin, messageUnpin } from './global';
+import { messageSendlater, messageSendlaterdm } from './global';
 
 clear();
 // Testing for message/send/v1
