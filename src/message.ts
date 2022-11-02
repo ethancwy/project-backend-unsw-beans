@@ -41,7 +41,7 @@ function messageSendV2(token: string, channelId: number, message: string) {
   const cIndex = getChannelIndex(channelId);
   const messageId = data.messageDetails.length;
   const react: reactions[] = [];
-  let tags = getTags(message);
+  const tags = getTags(message);
 
   for (const i in tags) {
     if (!data.channels[cIndex].memberIds.includes(tags[i])) {
@@ -241,7 +241,7 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   const dmIndex = getDmIndex(dmId);
   const messageId = data.messageDetails.length;
   const react: reactions[] = [];
-  let tags = getTags(message);
+  const tags = getTags(message);
 
   for (const i in tags) {
     if (!data.dms[dmIndex].members.includes(tags[i])) {
@@ -351,7 +351,7 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
         //   isDm: msg.isDm,
         //   listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
         //   messageId: messageId,
-        //   senderId: msg.uId, // sender 
+        //   senderId: msg.uId, // sender
         //   timeCounter: data.counter,
         // })
         // data.counter++;
@@ -369,14 +369,13 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
     //   isDm: msg.isDm,
     //   listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
     //   messageId: messageId,
-    //   senderId: msg.uId, // sender 
+    //   senderId: msg.uId, // sender
     //   timeCounter: data.counter,
     // })
     // data.counter++;
 
     // setData(data);
     // return {};
-
   } else {
     if (!data.dms[msg.listIndex].members.includes(uId)) {
       throw HTTPError(400, 'auth user not in message dm');
@@ -401,7 +400,7 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
     //   isDm: msg.isDm,
     //   listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
     //   messageId: messageId,
-    //   senderId: msg.uId, // sender 
+    //   senderId: msg.uId, // sender
     //   timeCounter: data.counter,
     // })
     // data.counter++;
@@ -414,9 +413,9 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
     isDm: msg.isDm,
     listId: (msg.isDm) ? data.dms[msg.listIndex].dmId : data.channels[msg.listIndex].channelId,
     messageId: messageId,
-    senderId: msg.uId, // sender 
+    senderId: msg.uId, // sender
     timeCounter: data.counter,
-  })
+  });
   data.counter++;
   setData(data);
   return {};

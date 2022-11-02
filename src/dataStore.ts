@@ -118,7 +118,7 @@ export type Notifications = {
 }
 
 export type InviteDetails = {
-  uId: number;  // inviter
+  uId: number; // inviter
   isDm: boolean;
   listId: number; // channel / DM ID
   invited: Array<number> | number; // for dm or channel
@@ -126,11 +126,11 @@ export type InviteDetails = {
 }
 
 export type ReactDetails = {
-  authUserId: number;  // reactor
+  authUserId: number; // reactor
   isDm: boolean;
   listId: number;
   messageId: number;
-  senderId: number; // reacted to 
+  senderId: number; // reacted to
   timeCounter: number;
 }
 

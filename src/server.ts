@@ -24,7 +24,6 @@ import {
   messageSendlaterdmV1
 } from './message';
 
-
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -233,7 +232,6 @@ app.post('/message/unreact/v1', (req: Request, res: Response) => {
   const token = req.header('token');
   const { messageId, reactId } = req.body;
   return res.json(messageUnreactV1(token, messageId, reactId));
-
 });
 
 app.post('/message/pin/v1', (req: Request, res: Response) => {

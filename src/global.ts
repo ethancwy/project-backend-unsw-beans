@@ -84,7 +84,7 @@ export function getChannelDetails(channelId: number) {
       return {
         name: channel.name,
         // add more when needed
-      }
+      };
     }
   }
 }
@@ -96,7 +96,7 @@ export function getDmDetails(dmId: number) {
       return {
         name: dm.name,
         // add more when needed
-      }
+      };
     }
   }
 }

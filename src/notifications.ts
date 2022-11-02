@@ -1,16 +1,7 @@
-import { getData, setData } from './dataStore';
-import { getUserId, isValidToken, getMessageDetails, isInChannel, isInDm } from './global';
+import { getData } from './dataStore';
+import { getUserId, isValidToken, isInChannel, isInDm } from './global';
 import { getChannelDetails, getDmDetails } from './global';
 import { userProfileV3 } from './users';
-import { dmDetailsV2 } from './dm';
-import { channelDetailsV3, channelInviteV3 } from './channel';
-
-
-import { authRegisterV3 } from './auth';
-import { clearV1 } from './other';
-import { channelsCreateV3 } from './channels';
-import { dmCreateV2 } from './dm';
-import { messageSendV2, messageSenddmV2, messageReactV1 } from './message';
 
 // import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember } from './global';
 import HTTPError from 'http-errors';
@@ -25,12 +16,11 @@ type NotifArr = {
 function getTaggedNotif(token: string) {
   const data = getData();
   const uId = getUserId(token);
-  let arr = [];
+  const arr = [];
 
   for (const msg of data.messageDetails) {
     for (const tag of msg.tags) {
       if (uId === tag) {
-        const obj = getMessageDetails(msg.listId);
         const tagger = userProfileV3(token, msg.uId);
         const handle = tagger.user.handleStr;
         if (msg.isDm) { // get DM details
@@ -43,9 +33,7 @@ function getTaggedNotif(token: string) {
             notificationMessage: `${handle} tagged you in ${dm.name}: ${slicedMessage}`,
             timeCounter: msg.timeCounter,
           });
-
-
-        } else {  // get channel details
+        } else { // get channel details
           const channel = getChannelDetails(msg.listId);
           const message = msg.message;
           const slicedMessage = message.substring(0, 20);
@@ -55,7 +43,6 @@ function getTaggedNotif(token: string) {
             notificationMessage: `${handle} tagged you in ${channel.name}: ${slicedMessage}`,
             timeCounter: msg.timeCounter,
           });
-
         }
         break;
       }
@@ -69,10 +56,9 @@ function getInvitedNotif(token: string, arr: Array<NotifArr>) {
   const data = getData();
   const uId = getUserId(token);
 
-
   for (const i of data.inviteDetails) {
-    let tagger = userProfileV3(token, i.uId);
-    let handle = tagger.user.handleStr;
+    const tagger = userProfileV3(token, i.uId);
+    const handle = tagger.user.handleStr;
     if (!i.isDm) {
       if (uId === i.invited) {
         const channel = getChannelDetails(i.listId);
@@ -83,7 +69,7 @@ function getInvitedNotif(token: string, arr: Array<NotifArr>) {
           timeCounter: i.timeCounter,
         });
       }
-    } else {  // is DM, iterate through invited
+    } else { // is DM, iterate through invited
       for (const j of i.invited) {
         if (uId === j) {
           const dm = getDmDetails(i.listId);
@@ -106,8 +92,8 @@ function getReactNotif(token: string, arr: Array<NotifArr>) {
   const uId = getUserId(token);
 
   for (const i of data.reactDetails) {
-    let reactor = userProfileV3(token, i.authUserId);
-    let handle = reactor.user.handleStr;
+    const reactor = userProfileV3(token, i.authUserId);
+    const handle = reactor.user.handleStr;
     if (uId === i.senderId) {
       if (i.isDm) {
         if (isInDm(uId, i.listId)) {
@@ -134,11 +120,10 @@ function getReactNotif(token: string, arr: Array<NotifArr>) {
     }
   }
   return arr;
-
 }
 
 /**
-  * Returns the user's most recent 20 notifications, 
+  * Returns the user's most recent 20 notifications,
   * ordered from most recent to least recent.
   *
   * @param {string} token - a valid token
@@ -148,13 +133,12 @@ function getReactNotif(token: string, arr: Array<NotifArr>) {
 */
 // !check if member is in channel
 export function getNotificationsV1(token: string) {
-  const data = getData();
   if (!isValidToken(token)) {
     throw HTTPError(403, 'Invalid token');
   }
 
   // let arr = getInvitedNotif(token, getTaggedNotif(token));
-  let arr = getReactNotif(token, getInvitedNotif(token, getTaggedNotif(token)));
+  const arr = getReactNotif(token, getInvitedNotif(token, getTaggedNotif(token)));
   // console.log(arr);
   // sort arr by latest notif coming first!
   arr.sort((a, b) => b.timeCounter - a.timeCounter);
@@ -166,7 +150,7 @@ export function getNotificationsV1(token: string) {
 
   return {
     notifications: arr
-  }
+  };
 }
 
 // clearV1();
@@ -232,8 +216,8 @@ export function getNotificationsV1(token: string) {
 // // console.log(data.reactDetails);
 // console.log(getNotificationsV1(globalOwnerId.token));
 /*
-Array of objects, where each object contains types { channelId, dmId, notificationMessage } where 
-      
+Array of objects, where each object contains types { channelId, dmId, notificationMessage } where
+
 channelId is the id of the channel that the event happened in, and is -1 if it is being sent to a DM
 dmId is the DM that the event happened in, and is -1 if it is being sent to a channel
 notificationMessage is a string of the following format for each trigger action:

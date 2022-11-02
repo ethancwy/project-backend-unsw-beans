@@ -250,6 +250,5 @@ describe('/notifications/get/v1 leave channel/dm and get tagged/reacted', () => 
         },
       ]
     });
-
   });
 });
