@@ -9,6 +9,7 @@ function clearV1() {
     sessionIds: [],
     messageDetails: [],
     inviteDetails: [],
+    reactDetails: [],
     counter: 0,
   };
   setData(data);

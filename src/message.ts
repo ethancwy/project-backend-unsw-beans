@@ -41,7 +41,14 @@ function messageSendV2(token: string, channelId: number, message: string) {
   const cIndex = getChannelIndex(channelId);
   const messageId = data.messageDetails.length;
   const react: reactions[] = [];
-  const tags = getTags(message);
+  let tags = getTags(message);
+
+  for (const i in tags) {
+    if (!data.channels[cIndex].memberIds.includes(tags[i])) {
+      tags.splice(parseInt(i), 1);
+    }
+  }
+
   const newMessage = {
     messageId: messageId,
     uId: uId,
@@ -233,7 +240,14 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   const dmIndex = getDmIndex(dmId);
   const messageId = data.messageDetails.length;
   const react: reactions[] = [];
-  const tags = getTags(message);
+  let tags = getTags(message);
+
+  for (const i in tags) {
+    if (!data.dms[dmIndex].members.includes(tags[i])) {
+      tags.splice(parseInt(i), 1);
+    }
+  }
+
   const newMessage = {
     messageId: messageId,
     uId: uId,
@@ -396,7 +410,7 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
   data.reactDetails.push({
     authUserId: uId, // reactor
     isDm: msg.isDm,
-    listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
+    listId: (msg.isDm) ? data.dms[msg.listIndex].dmId : data.channels[msg.listIndex].channelId,
     messageId: messageId,
     senderId: msg.uId, // sender 
     timeCounter: data.counter,

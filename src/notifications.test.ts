@@ -1,7 +1,7 @@
 import {
   authRegister, channelsCreate, channelInvite, dmCreate,
   clear, getNotifications, messageReact,
-  messageSend, messageSendDm
+  messageSend, messageSendDm, channelLeave
 } from './global';
 
 const REACT = 1;
@@ -202,7 +202,7 @@ describe('/notifications/get/v1 tagging', () => {
         {
           channelId: channel1.channelId,
           dmId: -1,
-          notificationMessage: 'jamescharles tagged you in jamescharles, willywonka: @willywonka@jamescha'
+          notificationMessage: 'jamescharles tagged you in testingTagging: @willywonka@jamescha'
         },
         {
           channelId: channel1.channelId,
@@ -216,5 +216,40 @@ describe('/notifications/get/v1 tagging', () => {
         },
       ]
     });
+  });
+});
+
+describe('/notifications/get/v1 leave channel/dm and get tagged/reacted', () => {
+  test('leave channel and get tagged', () => {
+    clear();
+    const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const tester = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+
+    const channel1 = channelsCreate(tester.token, 'testingTagging', true);
+    channelInvite(tester.token, channel1.channelId, globalOwnerId.authUserId);
+
+    expect(getNotifications(globalOwnerId.token)).toStrictEqual({
+      notifications: [
+        {
+          channelId: channel1.channelId,
+          dmId: -1,
+          notificationMessage: 'willywonka added you to testingTagging'
+        },
+      ]
+    });
+
+    channelLeave(globalOwnerId.token, channel1.channelId);
+    messageSend(tester.token, channel1.channelId, '@jamescharles hello!');
+
+    expect(getNotifications(globalOwnerId.token)).toStrictEqual({
+      notifications: [
+        {
+          channelId: channel1.channelId,
+          dmId: -1,
+          notificationMessage: 'willywonka added you to testingTagging'
+        },
+      ]
+    });
+
   });
 });
