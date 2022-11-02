@@ -83,7 +83,14 @@ function dmCreateV2(token: string, uIds: number[]) {
     members: membersArray,
     messages: [],
   });
-
+  data.inviteDetails.push({
+    uId: ownerId,
+    isDm: true,
+    listId: data.dms.length - 1,
+    invited: uIds, // an array
+    timeCounter: data.counter,
+  });
+  data.counter++;
   setData(data);
   return { dmId: data.dms.length - 1 };
 }

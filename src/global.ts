@@ -1,4 +1,4 @@
-import { getData, details } from './dataStore';
+import { getData, MessageDetails } from './dataStore';
 import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
@@ -77,6 +77,30 @@ export function getChannelIndex(channelId: number) {
   }
 }
 
+export function getChannelDetails(channelId: number) {
+  const data = getData();
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      return {
+        name: channel.name,
+        // add more when needed
+      };
+    }
+  }
+}
+
+export function getDmDetails(dmId: number) {
+  const data = getData();
+  for (const dm of data.dms) {
+    if (dm.dmId === dmId) {
+      return {
+        name: dm.name,
+        // add more when needed
+      };
+    }
+  }
+}
+
 // Fetch the dm index
 export function getDmIndex(dmId: number) {
   const data = getData();
@@ -105,7 +129,7 @@ export function getTags(message: string) {
 export function getMessageDetails(messageId: number) {
   const data = getData();
   // const msg = data.messageDetails.find(msg => msg.messageId === messageId);
-  let msg: details = null;
+  let msg: MessageDetails = null;
   for (const message of data.messageDetails) {
     if (message.messageId === messageId) {
       msg = message;
@@ -154,6 +178,7 @@ export function getMessageDetails(messageId: number) {
     isDm: msg.isDm,
     listIndex: listIndex,
     messageIndex: messageIndex,
+    tags: msg.tags,
   };
 }
 
@@ -457,7 +482,7 @@ export function messageSendlater(token: string, channelId: number, message: stri
   return requestHelper('POST', '/message/sendlater/v1', { channelId, message, timeSent }, token);
 }
 export function messageSendlaterdm(token: string, dmId: number, message: string, timeSent: number) {
-  return requestHelper('POST', '/message/sendlater/v1', { dmId, message, timeSent }, token);
+  return requestHelper('POST', '/message/sendlaterdm/v1', { dmId, message, timeSent }, token);
 }
 // ===============================================================================================//
 export function dmCreate(token: string, uIds: Array<number>) {
@@ -493,4 +518,8 @@ export function userSetEmail(token: string, email: string) {
 }
 export function userSetHandle(token: string, handleStr: string) {
   return requestHelper('PUT', '/user/profile/sethandle/v2', { handleStr }, token);
+}
+// ============================ New Iteration 3 function wrappers ================================//
+export function getNotifications(token: string) {
+  return requestHelper('GET', '/notifications/get/v1', {}, token);
 }

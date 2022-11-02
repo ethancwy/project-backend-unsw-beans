@@ -87,6 +87,14 @@ function channelInviteV3(token: string, channelId: number, uId: number) {
       }
 
       channel.memberIds.push(uId); // add member
+      data.inviteDetails.push({
+        uId: authUserId,
+        isDm: false,
+        listId: channelId,
+        invited: uId,
+        timeCounter: data.counter,
+      });
+      data.counter++;
       setData(data);
       return {};
     }

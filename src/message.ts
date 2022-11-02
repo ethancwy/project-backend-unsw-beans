@@ -2,7 +2,7 @@ import { getData, setData, reactions } from './dataStore';
 import {
   isValidToken, isValidChannel, isInChannel, getUserId,
   isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails,
-  isGlobalOwner, getTags
+  isGlobalOwner, getTags, isInDm
 } from './global';
 import HTTPError from 'http-errors';
 const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
@@ -42,6 +42,13 @@ function messageSendV2(token: string, channelId: number, message: string) {
   const messageId = data.messageDetails.length;
   const react: reactions[] = [];
   const tags = getTags(message);
+
+  for (const i in tags) {
+    if (!data.channels[cIndex].memberIds.includes(tags[i])) {
+      tags.splice(parseInt(i), 1);
+    }
+  }
+
   const newMessage = {
     messageId: messageId,
     uId: uId,
@@ -54,10 +61,14 @@ function messageSendV2(token: string, channelId: number, message: string) {
   data.channels[cIndex].channelmessages.push(newMessage);
   data.messageDetails.push({
     uId: uId,
+    message: message,
     messageId: messageId,
     isDm: false,
     listId: channelId,
+    tags: tags,
+    timeCounter: data.counter,
   });
+  data.counter++;
   setData(data);
   return { messageId: messageId };
 }
@@ -231,6 +242,13 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   const messageId = data.messageDetails.length;
   const react: reactions[] = [];
   const tags = getTags(message);
+
+  for (const i in tags) {
+    if (!data.dms[dmIndex].members.includes(tags[i])) {
+      tags.splice(parseInt(i), 1);
+    }
+  }
+
   const newMessage = {
     messageId: messageId,
     uId: uId,
@@ -243,10 +261,14 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   data.dms[dmIndex].messages.push(newMessage);
   data.messageDetails.push({
     messageId: messageId,
+    message: message,
     isDm: true,
     listId: dmId,
     uId: uId,
+    tags: tags,
+    timeCounter: data.counter,
   });
+  data.counter++;
   setData(data);
   return { messageId: messageId };
 }
@@ -324,6 +346,15 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
           throw HTTPError(400, 'auth user already reacted');
         }
         reaction.uIds.push(uId);
+        // data.reactDetails.push({
+        //   authUserId: uId, // reactor
+        //   isDm: msg.isDm,
+        //   listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
+        //   messageId: messageId,
+        //   senderId: msg.uId, // sender
+        //   timeCounter: data.counter,
+        // })
+        // data.counter++;
         setData(data);
         return {};
       }
@@ -332,8 +363,19 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
       reactId: reactId,
       uIds: [uId],
     });
-    setData(data);
-    return {};
+
+    // data.reactDetails.push({
+    //   authUserId: uId, // reactor
+    //   isDm: msg.isDm,
+    //   listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
+    //   messageId: messageId,
+    //   senderId: msg.uId, // sender
+    //   timeCounter: data.counter,
+    // })
+    // data.counter++;
+
+    // setData(data);
+    // return {};
   } else {
     if (!data.dms[msg.listIndex].members.includes(uId)) {
       throw HTTPError(400, 'auth user not in message dm');
@@ -352,9 +394,31 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
       reactId: reactId,
       uIds: [uId],
     });
-    setData(data);
-    return {};
+
+    // data.reactDetails.push({
+    //   authUserId: uId, // reactor
+    //   isDm: msg.isDm,
+    //   listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
+    //   messageId: messageId,
+    //   senderId: msg.uId, // sender
+    //   timeCounter: data.counter,
+    // })
+    // data.counter++;
+    // setData(data);
+    // return {};
   }
+
+  data.reactDetails.push({
+    authUserId: uId, // reactor
+    isDm: msg.isDm,
+    listId: (msg.isDm) ? data.dms[msg.listIndex].dmId : data.channels[msg.listIndex].channelId,
+    messageId: messageId,
+    senderId: msg.uId, // sender
+    timeCounter: data.counter,
+  });
+  data.counter++;
+  setData(data);
+  return {};
 }
 
 function messageUnreactV1(token: string, messageId: number, reactId: number) {
@@ -489,12 +553,50 @@ function messageUnpinV1(token: string, messageId: number) {
   }
 }
 
+function timeout() {
+  console.log('pausing');
+}
+
 function messageSendlaterV1(token: string, channelId: number, message: string, timeSent: number) {
-  return { messageId: 1 };
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'invalid auth user id');
+  }
+  const authUserId = getUserId(token);
+
+  if (!isValidChannel(channelId)) {
+    throw HTTPError(400, 'invalid channel id');
+  }
+
+  if (!isInChannel(authUserId, channelId)) {
+    throw HTTPError(403, 'auth user not in channel');
+  }
+
+  if (timeSent < requestTimesent()) {
+    throw HTTPError(400, 'time invalid');
+  }
+  setTimeout(timeout, timeSent - requestTimesent());
+  return messageSendV2(token, channelId, message);
 }
 
 function messageSendlaterdmV1(token: string, dmId: number, message: string, timeSent: number) {
-  return { messageId: 1 };
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'invalid auth user id');
+  }
+  const authUserId = getUserId(token);
+
+  if (!isDmValid(dmId)) {
+    throw HTTPError(400, 'invalid dm id');
+  }
+
+  if (!isInDm(authUserId, dmId)) {
+    throw HTTPError(403, 'auth user not in channel');
+  }
+
+  if (timeSent < requestTimesent()) {
+    throw HTTPError(400, 'time invalid');
+  }
+  setTimeout(timeout, timeSent - requestTimesent());
+  return messageSenddmV2(token, dmId, message);
 }
 
 export {

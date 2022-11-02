@@ -50,11 +50,13 @@ type dm = {
   messages: Array<message>;
 }
 
-export type details = {
+export type MessageDetails = {
   uId: number;
+  message: string;
   messageId: number;
   isDm: boolean;
   listId: number;
+  tags: Array<number>;
 }
 //= =========ITERATION 3==========//
 export type ChannelsJoined = {
@@ -115,58 +117,43 @@ export type Notifications = {
   */
 }
 
+export type InviteDetails = {
+  uId: number; // inviter
+  isDm: boolean;
+  listId: number; // channel / DM ID
+  invited: Array<number> | number; // for dm or channel
+  timeCounter: number;
+}
+
+export type ReactDetails = {
+  authUserId: number; // reactor
+  isDm: boolean;
+  listId: number;
+  messageId: number;
+  senderId: number; // reacted to
+  timeCounter: number;
+}
+
 export type datatype = {
   users: Array<user>;
   channels: Array<channel>;
   dms: Array<dm>;
   sessionIds: Array<string>;
-  messageDetails: Array<details>;
+  messageDetails: Array<MessageDetails>;
+  inviteDetails: Array<InviteDetails>;
+  reactDetails: Array<ReactDetails>;
+  counter: number;
 }
 
 let data: datatype = {
-  users: [
-    // {
-    //   uId: NaN,
-    //   nameFirst: '',
-    //   nameLast: '',
-    //   email: '',
-    //   password: '',
-    //   handleStr: '',
-    //   isGlobalOwner: false,
-    //   tokens: [],
-    // },
-  ],
-
-  channels: [
-    // {
-    //   channelId: NaN,
-    //   name: '',
-    //   isPublic: false,
-    //   ownerIds: [],
-    //   memberIds: [],
-    //   channelmessages: [
-    //     {
-    //       messageId: NaN,
-    //       uId: NaN,
-    //       message: '',
-    //       timeSent: NaN,
-    //     }
-    //   ]
-    // },
-  ],
-
-  dms: [
-    // {
-    //   dmId: number;
-    //   name: string;
-    //   owner: number;
-    //   members: [];
-    //   messages: [];
-    // }
-  ],
-
+  users: [],
+  channels: [],
+  dms: [],
   sessionIds: [],
   messageDetails: [],
+  inviteDetails: [],
+  reactDetails: [],
+  counter: 0,
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
