@@ -522,3 +522,97 @@ describe('success cases', () => {
     // add check to see if reaction exists
   });
 });
+
+// Testing for message/pin/unpin/v1 failed cases
+describe('/message/pin/unpin/v1 failes', () => {
+  test('user not in messageid channel/dm', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const nonmember = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    const dm = dmCreate(auth.token, []);
+    const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messagePin(nonmember.token, messageId.messageId)).toStrictEqual(400);
+    expect(messageUnpin(nonmember.token, messageId.messageId)).toStrictEqual(400);
+    expect(messagePin(nonmember.token, dmMessageId.messageId)).toStrictEqual(400);
+    expect(messageUnpin(nonmember.token, dmMessageId.messageId)).toStrictEqual(400);
+  });
+
+  test('messageid already pinned/unpinned', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    const dm = dmCreate(auth.token, []);
+    const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messagePin(auth.token, messageId.messageId)).toStrictEqual({});
+    expect(messagePin(auth.token, messageId.messageId)).toStrictEqual(400);
+    expect(messageUnpin(auth.token, messageId.messageId)).toStrictEqual({});
+    expect(messageUnpin(auth.token, messageId.messageId)).toStrictEqual(400);
+    expect(messagePin(auth.token, dmMessageId.messageId)).toStrictEqual({});
+    expect(messagePin(auth.token, dmMessageId.messageId)).toStrictEqual(400);
+    expect(messageUnpin(auth.token, dmMessageId.messageId)).toStrictEqual({});
+    expect(messageUnpin(auth.token, dmMessageId.messageId)).toStrictEqual(400);
+  });
+
+  test('authuser doesnt have owner perms in channel/dm', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    channelJoin(member.token, channelId.channelId);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    const dm = dmCreate(auth.token, [member.authUserId]);
+    const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messagePin(member.token, messageId.messageId)).toStrictEqual(403);
+    expect(messageUnpin(member.token, messageId.messageId)).toStrictEqual(403);
+    expect(messagePin(member.token, dmMessageId.messageId)).toStrictEqual(403);
+    expect(messageUnpin(member.token, dmMessageId.messageId)).toStrictEqual(403);
+  });
+});
+
+// Testing for message/pin/unpin/v1 non failure cases
+describe('/message/pin/unpin/v1 success', () => {
+  test('Successful message pin/unpin in channel and in dm', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    channelJoin(member.token, channelId.channelId);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    const dm = dmCreate(auth.token, [member.authUserId]);
+    const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messagePin(auth.token, messageId.messageId)).toStrictEqual({});
+    expect(messageUnpin(auth.token, messageId.messageId)).toStrictEqual({});
+    expect(messagePin(auth.token, dmMessageId.messageId)).toStrictEqual({});
+    expect(messageUnpin(auth.token, dmMessageId.messageId)).toStrictEqual({});
+  });
+
+  test('Successful message pin/unpin by global owner in channel (failed in dm)', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
+    const channelId = channelsCreate(member.token, 'Dog Channel', true);
+    channelJoin(auth.token, channelId.channelId);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    const dm = dmCreate(member.token, [auth.authUserId]);
+    const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messagePin(auth.token, messageId.messageId)).toStrictEqual({});
+    expect(messageUnpin(auth.token, messageId.messageId)).toStrictEqual({});
+    expect(messagePin(auth.token, dmMessageId.messageId)).toStrictEqual(403);
+    expect(messageUnpin(auth.token, dmMessageId.messageId)).toStrictEqual(403);
+  });
+
+  test('Successful message pin/unpin by different person in channel', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
+    const channelId = channelsCreate(member.token, 'Dog Channel', true);
+    channelJoin(auth.token, channelId.channelId);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    expect(messagePin(auth.token, messageId.messageId)).toStrictEqual({});
+    expect(messageUnpin(member.token, messageId.messageId)).toStrictEqual({});
+    clear();
+  });
+});

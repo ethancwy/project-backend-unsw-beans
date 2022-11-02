@@ -14,55 +14,53 @@
     },
     {
       "uId": 1,
-      "nameFirst": "Nin11a",
-      "nameLast": "Y11eh",
-      "email": "Nina080113@icloud.com",
-      "password": "Nina110803",
-      "handleStr": "ninayeh0",
+      "nameFirst": "Nin1111",
+      "nameLast": "Yeherd",
+      "email": "Nin11a0803@icloud.com",
+      "password": "Nina080311",
+      "handleStr": "ninyeherd",
       "isGlobalOwner": false,
       "tokens": [
         "1"
       ]
     }
   ],
-  "channels": [],
-  "dms": [
+  "channels": [
     {
-      "dmId": 0,
-      "name": "ninayeh, ninayeh0",
-      "owner": 0,
-      "members": [
-        0,
+      "channelId": 0,
+      "name": "Dog Channel",
+      "isPublic": true,
+      "ownerIds": [
         1
       ],
-      "messages": [
+      "memberIds": [
+        1,
+        0
+      ],
+      "channelmessages": [
         {
           "messageId": 0,
           "uId": 0,
           "message": "helloo",
-          "timeSent": 1667360069,
-          "reacts": [
-            {
-              "reactId": 1,
-              "uIds": []
-            }
-          ],
+          "timeSent": 1667361542,
+          "reacts": [],
           "isPinned": false,
           "tags": []
         }
       ]
     }
   ],
+  "dms": [],
   "sessionIds": [
     "0",
     "1"
   ],
   "messageDetails": [
     {
+      "uId": 0,
       "messageId": 0,
-      "isDm": true,
-      "listId": 0,
-      "uId": 0
+      "isDm": false,
+      "listId": 0
     }
   ]
 }
