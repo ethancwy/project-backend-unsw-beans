@@ -28,7 +28,7 @@
   "channels": [
     {
       "channelId": 0,
-      "name": "testingTagging",
+      "name": "testingReacts",
       "isPublic": true,
       "ownerIds": [
         1
@@ -41,14 +41,11 @@
         {
           "messageId": 1,
           "uId": 0,
-          "message": "@willywonka@jamescharles hello!",
-          "timeSent": 1667383837,
+          "message": "hi again",
+          "timeSent": 1667389173,
           "reacts": [],
           "isPinned": false,
-          "tags": [
-            0,
-            1
-          ]
+          "tags": []
         }
       ]
     }
@@ -66,13 +63,11 @@
         {
           "messageId": 0,
           "uId": 0,
-          "message": "hi @willywonka, ityttmom",
-          "timeSent": 1667383837,
+          "message": "hi",
+          "timeSent": 1667389173,
           "reacts": [],
           "isPinned": false,
-          "tags": [
-            1
-          ]
+          "tags": []
         }
       ]
     }
@@ -87,9 +82,7 @@
       "isDm": true,
       "listId": 0,
       "uId": 0,
-      "tags": [
-        1
-      ],
+      "tags": [],
       "timeCounter": 2
     },
     {
@@ -97,10 +90,7 @@
       "messageId": 1,
       "isDm": false,
       "listId": 0,
-      "tags": [
-        0,
-        1
-      ],
+      "tags": [],
       "timeCounter": 3
     }
   ],

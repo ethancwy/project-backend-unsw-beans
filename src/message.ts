@@ -330,6 +330,15 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
           throw HTTPError(400, 'auth user already reacted');
         }
         reaction.uIds.push(uId);
+        // data.reactDetails.push({
+        //   authUserId: uId, // reactor
+        //   isDm: msg.isDm,
+        //   listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
+        //   messageId: messageId,
+        //   senderId: msg.uId, // sender 
+        //   timeCounter: data.counter,
+        // })
+        // data.counter++;
         setData(data);
         return {};
       }
@@ -338,8 +347,20 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
       reactId: reactId,
       uIds: [uId],
     });
-    setData(data);
-    return {};
+
+    // data.reactDetails.push({
+    //   authUserId: uId, // reactor
+    //   isDm: msg.isDm,
+    //   listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
+    //   messageId: messageId,
+    //   senderId: msg.uId, // sender 
+    //   timeCounter: data.counter,
+    // })
+    // data.counter++;
+
+    // setData(data);
+    // return {};
+
   } else {
     if (!data.dms[msg.listIndex].members.includes(uId)) {
       throw HTTPError(400, 'auth user not in message dm');
@@ -358,9 +379,31 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
       reactId: reactId,
       uIds: [uId],
     });
-    setData(data);
-    return {};
+
+    // data.reactDetails.push({
+    //   authUserId: uId, // reactor
+    //   isDm: msg.isDm,
+    //   listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
+    //   messageId: messageId,
+    //   senderId: msg.uId, // sender 
+    //   timeCounter: data.counter,
+    // })
+    // data.counter++;
+    // setData(data);
+    // return {};
   }
+
+  data.reactDetails.push({
+    authUserId: uId, // reactor
+    isDm: msg.isDm,
+    listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
+    messageId: messageId,
+    senderId: msg.uId, // sender 
+    timeCounter: data.counter,
+  })
+  data.counter++;
+  setData(data);
+  return {};
 }
 
 function messageUnreactV1(token: string, messageId: number, reactId: number) {

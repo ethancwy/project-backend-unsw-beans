@@ -1,4 +1,4 @@
-import { getData, details } from './dataStore';
+import { getData, MessageDetails } from './dataStore';
 import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
@@ -105,7 +105,7 @@ export function getTags(message: string) {
 export function getMessageDetails(messageId: number) {
   const data = getData();
   // const msg = data.messageDetails.find(msg => msg.messageId === messageId);
-  let msg: details = null;
+  let msg: MessageDetails = null;
   for (const message of data.messageDetails) {
     if (message.messageId === messageId) {
       msg = message;
