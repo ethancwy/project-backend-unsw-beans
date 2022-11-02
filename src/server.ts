@@ -19,8 +19,7 @@ import {
 import { dmCreateV2, dmDetailsV2, dmLeaveV2, dmListV2, dmRemoveV2, dmMessagesV2 } from './dm';
 import {
   messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2, messageShareV1,
-  messageReactV1, messageUnreactV1, messagePinV1, messageUnpinV1, messageSendlaterV1,
-  messageSendlaterdmV1
+  messageReactV1, messageUnreactV1
 } from './message';
 
 // Set up web app
@@ -226,30 +225,6 @@ app.post('/message/unreact/v1', (req: Request, res: Response) => {
   const token = req.header('token');
   const { messageId, reactId } = req.body;
   return res.json(messageUnreactV1(token, messageId, reactId));
-});
-
-app.post('/message/pin/v1', (req: Request, res: Response) => {
-  const token = req.header('token');
-  const { messageId } = req.body;
-  return res.json(messagePinV1(token, messageId));
-});
-
-app.post('/message/unpin/v1', (req: Request, res: Response) => {
-  const token = req.header('token');
-  const { messageId } = req.body;
-  return res.json(messageUnpinV1(token, messageId));
-});
-
-app.post('/message/sendlater/v1', (req: Request, res: Response) => {
-  const token = req.header('token');
-  const { channelId, message, timeSent } = req.body;
-  return res.json(messageSendlaterV1(token, channelId, message, timeSent));
-});
-
-app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
-  const token = req.header('token');
-  const { dmId, message, timeSent } = req.body;
-  return res.json(messageSendlaterdmV1(token, dmId, message, timeSent));
 });
 
 // handles errors nicely
