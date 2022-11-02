@@ -55,6 +55,7 @@ export type details = {
   messageId: number;
   isDm: boolean;
   listId: number;
+  tags: Array<number>;
 }
 //= =========ITERATION 3==========//
 export type ChannelsJoined = {
