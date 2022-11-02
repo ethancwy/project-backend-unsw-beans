@@ -154,6 +154,7 @@ export function getMessageDetails(messageId: number) {
     isDm: msg.isDm,
     listIndex: listIndex,
     messageIndex: messageIndex,
+    tags: msg.tags,
   };
 }
 
@@ -466,7 +467,7 @@ export function messageSendlater(token: string, channelId: number, message: stri
   return requestHelper('POST', '/message/sendlater/v1', { channelId, message, timeSent }, token);
 }
 export function messageSendlaterdm(token: string, dmId: number, message: string, timeSent: number) {
-  return requestHelper('POST', '/message/sendlater/v1', { dmId, message, timeSent }, token);
+  return requestHelper('POST', '/message/sendlaterdm/v1', { dmId, message, timeSent }, token);
 }
 // ===============================================================================================//
 export function dmCreate(token: string, uIds: Array<number>) {

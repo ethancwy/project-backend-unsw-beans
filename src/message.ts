@@ -2,7 +2,7 @@ import { getData, setData, reactions } from './dataStore';
 import {
   isValidToken, isValidChannel, isInChannel, getUserId,
   isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails,
-  isGlobalOwner, getTags
+  isGlobalOwner, getTags, isInDm
 } from './global';
 import HTTPError from 'http-errors';
 const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
@@ -57,6 +57,7 @@ function messageSendV2(token: string, channelId: number, message: string) {
     messageId: messageId,
     isDm: false,
     listId: channelId,
+    tags: tags,
   });
   setData(data);
   return { messageId: messageId };
@@ -246,6 +247,7 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
     isDm: true,
     listId: dmId,
     uId: uId,
+    tags: tags,
   });
   setData(data);
   return { messageId: messageId };
@@ -489,12 +491,50 @@ function messageUnpinV1(token: string, messageId: number) {
   }
 }
 
+function timeout() {
+  console.log('pausing');
+}
+
 function messageSendlaterV1(token: string, channelId: number, message: string, timeSent: number) {
-  return { messageId: 1 };
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'invalid auth user id');
+  }
+  const authUserId = getUserId(token);
+
+  if (!isValidChannel(channelId)) {
+    throw HTTPError(400, 'invalid channel id');
+  }
+
+  if (!isInChannel(authUserId, channelId)) {
+    throw HTTPError(403, 'auth user not in channel');
+  }
+
+  if (timeSent < requestTimesent()) {
+    throw HTTPError(400, 'time invalid');
+  }
+  setTimeout(timeout, timeSent - requestTimesent());
+  return messageSendV2(token, channelId, message);
 }
 
 function messageSendlaterdmV1(token: string, dmId: number, message: string, timeSent: number) {
-  return { messageId: 1 };
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'invalid auth user id');
+  }
+  const authUserId = getUserId(token);
+
+  if (!isDmValid(dmId)) {
+    throw HTTPError(400, 'invalid dm id');
+  }
+
+  if (!isInDm(authUserId, dmId)) {
+    throw HTTPError(403, 'auth user not in channel');
+  }
+
+  if (timeSent < requestTimesent()) {
+    throw HTTPError(400, 'time invalid');
+  }
+  setTimeout(timeout, timeSent - requestTimesent());
+  return messageSenddmV2(token, dmId, message);
 }
 
 export {

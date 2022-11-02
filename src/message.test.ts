@@ -7,7 +7,8 @@ import { channelsCreate } from './global';
 import { messageSendDm, messageShare } from './global';
 import { messageReact, messageUnreact } from './global';
 import { messagePin, messageUnpin } from './global';
-// import { messageSendlater, messageSendlaterdm } from './global';
+import { messageSendlater, messageSendlaterdm } from './global';
+const requestTime = () => Math.floor((new Date()).getTime() / 1000);
 
 clear();
 // Testing for message/send/v1
@@ -614,5 +615,90 @@ describe('/message/pin/unpin/v1 success', () => {
     expect(messagePin(auth.token, messageId.messageId)).toStrictEqual({});
     expect(messageUnpin(member.token, messageId.messageId)).toStrictEqual({});
     clear();
+  });
+});
+
+// Testing for message/sendlater failed cases
+describe('/message/sendlater failes', () => {
+  test('invalid channel/dm', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
+    const dm = dmCreate(member.token, [auth.authUserId]);
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    expect(messageSendlater(auth.token, channelId.channelId - 10, 'hiiiiii', requestTime() + 1500)).toStrictEqual(400);
+    expect(messageSendlaterdm(auth.token, dm.dmId - 10, 'hiiiiii', requestTime() + 1500)).toStrictEqual(400);
+  });
+
+  test('user not in channel/dm', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    const dm = dmCreate(member.token, []);
+    expect(messageSendlater(member.token, channelId.channelId, 'hiiiiii', requestTime() + 1500)).toStrictEqual(403);
+    expect(messageSendlaterdm(auth.token, dm.dmId, 'hiiiiii', requestTime() + 1500)).toStrictEqual(403);
+  });
+
+  test('invalid message length', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    const dm = dmCreate(member.token, []);
+    let invalidMessage = '';
+    expect(messageSendlater(auth.token, channelId.channelId, invalidMessage, requestTime() + 1500)).toStrictEqual(400);
+    expect(messageSendlaterdm(member.token, dm.dmId, invalidMessage, requestTime() + 1500)).toStrictEqual(400);
+    while (invalidMessage.length < 1005) {
+      invalidMessage += 'ethanchew';
+    }
+    expect(messageSendlater(auth.token, channelId.channelId, invalidMessage, requestTime() + 1500)).toStrictEqual(400);
+    expect(messageSendlaterdm(member.token, dm.dmId, invalidMessage, requestTime() + 1500)).toStrictEqual(400);
+  });
+
+  test('invalid time(time passed)', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    const dm = dmCreate(member.token, []);
+    expect(messageSendlater(auth.token, channelId.channelId, 'invalidMessage', requestTime() - 5000)).toStrictEqual(400);
+    expect(messageSendlaterdm(member.token, dm.dmId, 'invalidMessage', requestTime() - 5000)).toStrictEqual(400);
+  });
+});
+
+// Testing for message/sendlater non failure cases
+describe('/message/sendlater success', () => {
+  test('Successful message sendlater in channel and in dm (dosent exist after call, appears after timeout)', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    const dm = dmCreate(member.token, []);
+    messageSendDm(member.token, dm.dmId, 'helloo');
+
+    const msgChannel = messageSendlater(auth.token, channelId.channelId, 'invalidMessage', requestTime() + 5000);
+    const msgDm = messageSendlaterdm(member.token, dm.dmId, 'invalidMessage', requestTime() + 5000);
+    expect(msgChannel).toStrictEqual({ messageId: expect.any(Number) });
+    expect(msgDm).toStrictEqual({ messageId: expect.any(Number) });
+    expect(channelMessages(auth.token, channelId.channelId, 0)).toStrictEqual({
+      messages: [
+        {
+          messageId: messageId.messageId,
+          uId: auth.authUserId,
+          message: 'helloo',
+          timeSent: expect.any(Number),
+        },
+        {
+          messageId: msgChannel.messageId,
+          uId: auth.authUserId,
+          message: 'invalidMessage',
+          timeSent: expect.any(Number),
+        },
+      ],
+      start: 0,
+      end: -1,
+    });
   });
 });
