@@ -1,68 +1,7 @@
 {
-  "users": [
-    {
-      "uId": 0,
-      "nameFirst": "Nina",
-      "nameLast": "Yeh",
-      "email": "Nina0803@icloud.com",
-      "password": "Nina0803",
-      "handleStr": "ninayeh",
-      "isGlobalOwner": true,
-      "tokens": [
-        "0"
-      ]
-    },
-    {
-      "uId": 1,
-      "nameFirst": "Nin11a",
-      "nameLast": "Y11eh",
-      "email": "Nina080113@icloud.com",
-      "password": "Nina110803",
-      "handleStr": "ninayeh0",
-      "isGlobalOwner": false,
-      "tokens": [
-        "1"
-      ]
-    }
-  ],
+  "users": [],
   "channels": [],
-  "dms": [
-    {
-      "dmId": 0,
-      "name": "ninayeh, ninayeh0",
-      "owner": 0,
-      "members": [
-        0,
-        1
-      ],
-      "messages": [
-        {
-          "messageId": 0,
-          "uId": 0,
-          "message": "helloo",
-          "timeSent": 1667312845,
-          "reacts": [
-            {
-              "reactId": 1,
-              "uIds": []
-            }
-          ],
-          "isPinned": false,
-          "tags": []
-        }
-      ]
-    }
-  ],
-  "sessionIds": [
-    "0",
-    "1"
-  ],
-  "messageDetails": [
-    {
-      "messageId": 0,
-      "isDm": true,
-      "listId": 0,
-      "uId": 0
-    }
-  ]
+  "dms": [],
+  "sessionIds": [],
+  "messageDetails": []
 }

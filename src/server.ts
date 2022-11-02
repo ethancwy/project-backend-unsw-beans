@@ -23,7 +23,8 @@ import { getNotificationsV1 } from './notifications';
 =======
 import {
   messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2, messageShareV1,
-  messageReactV1, messageUnreactV1
+  messageReactV1, messageUnreactV1, messagePinV1, messageUnpinV1, messageSendlaterV1,
+  messageSendlaterdmV1
 } from './message';
 >>>>>>> 903b6212a676ef2e8a71dac91295bd895ee50136
 
@@ -236,6 +237,30 @@ app.post('/message/unreact/v1', (req: Request, res: Response) => {
   const { messageId, reactId } = req.body;
   return res.json(messageUnreactV1(token, messageId, reactId));
 >>>>>>> 903b6212a676ef2e8a71dac91295bd895ee50136
+});
+
+app.post('/message/pin/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { messageId } = req.body;
+  return res.json(messagePinV1(token, messageId));
+});
+
+app.post('/message/unpin/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { messageId } = req.body;
+  return res.json(messageUnpinV1(token, messageId));
+});
+
+app.post('/message/sendlater/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, message, timeSent } = req.body;
+  return res.json(messageSendlaterV1(token, channelId, message, timeSent));
+});
+
+app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { dmId, message, timeSent } = req.body;
+  return res.json(messageSendlaterdmV1(token, dmId, message, timeSent));
 });
 
 // handles errors nicely

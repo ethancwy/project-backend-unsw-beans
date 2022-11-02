@@ -447,6 +447,18 @@ export function messageReact(token: string, messageId: number, reactId: number) 
 export function messageUnreact(token: string, messageId: number, reactId: number) {
   return requestHelper('POST', '/message/unreact/v1', { messageId, reactId }, token);
 }
+export function messagePin(token: string, messageId: number) {
+  return requestHelper('POST', '/message/pin/v1', { messageId }, token);
+}
+export function messageUnpin(token: string, messageId: number) {
+  return requestHelper('POST', '/message/unpin/v1', { messageId }, token);
+}
+export function messageSendlater(token: string, channelId: number, message: string, timeSent: number) {
+  return requestHelper('POST', '/message/sendlater/v1', { channelId, message, timeSent }, token);
+}
+export function messageSendlaterdm(token: string, dmId: number, message: string, timeSent: number) {
+  return requestHelper('POST', '/message/sendlater/v1', { dmId, message, timeSent }, token);
+}
 // ===============================================================================================//
 export function dmCreate(token: string, uIds: Array<number>) {
   return requestHelper('POST', '/dm/create/v2', { uIds }, token);
