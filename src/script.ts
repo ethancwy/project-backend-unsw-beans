@@ -23,3 +23,4 @@ const channelMessage = messageSendV2(globalOwnerId.token, channel1.channelId, 'h
 
 const leave = channelLeaveV2(globalOwnerId.token, channel1.channelId);
 console.log(getNotificationsV1(globalOwnerId.token));
+console.log()

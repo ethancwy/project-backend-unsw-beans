@@ -1,4 +1,5 @@
 package-lock.json
+script.ts
 node_modules
 build
 .DS_store
