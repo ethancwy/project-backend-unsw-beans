@@ -115,12 +115,21 @@ export type Notifications = {
   */
 }
 
+export type InviteDetails = {
+  uId: number;  // inviter
+  isDm: boolean;
+  listId: number; // channel / DM ID
+  invited: Array<number> | number; // for dm or channel
+  timeSent: number;
+}
+
 export type datatype = {
   users: Array<user>;
   channels: Array<channel>;
   dms: Array<dm>;
   sessionIds: Array<string>;
   messageDetails: Array<details>;
+  inviteDetails: Array<InviteDetails>;
 }
 
 let data: datatype = {
@@ -167,6 +176,7 @@ let data: datatype = {
 
   sessionIds: [],
   messageDetails: [],
+  inviteDetails: [],
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1

@@ -157,6 +157,15 @@ export function getMessageDetails(messageId: number) {
   };
 }
 
+export function getInviteDetails() {
+
+  return {
+    uId: msg.uId, // inviter
+    isDm: msg.isDm,
+    listIndex: listIndex, // channel/dm index
+  };
+}
+
 // Checks if channel is valid
 export function isValidChannel(channelId: number) {
   const data = getData();
