@@ -523,3 +523,6 @@ export function userSetHandle(token: string, handleStr: string) {
 export function getNotifications(token: string) {
   return requestHelper('GET', '/notifications/get/v1', {}, token);
 }
+export function standupStart(token: string, channelId: number, length: number) {
+  return requestHelper('POST', '/standup/start/v1', { channelId, length }, token);
+}

@@ -23,6 +23,7 @@ import {
   messageReactV1, messageUnreactV1, messagePinV1, messageUnpinV1, messageSendlaterV1,
   messageSendlaterdmV1
 } from './message';
+import { standupStartV1 } from './standup'
 
 // Set up web app
 const app = express();
@@ -256,6 +257,12 @@ app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
   const token = req.header('token');
   const { dmId, message, timeSent } = req.body;
   return res.json(messageSendlaterdmV1(token, dmId, message, timeSent));
+});
+
+app.post('/standup/start/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, length } = req.body;
+  return res.json(standupStartV1(token, channelId, length));
 });
 
 // handles errors nicely
