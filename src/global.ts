@@ -83,7 +83,7 @@ export function getChannelDetails(channelId: number) {
     if (channel.channelId === channelId) {
       return {
         name: channel.name,
-        // add more when needed
+        channelId: channel.channelId,
       };
     }
   }
@@ -95,7 +95,7 @@ export function getDmDetails(dmId: number) {
     if (dm.dmId === dmId) {
       return {
         name: dm.name,
-        // add more when needed
+        dmId: dm.dmId,
       };
     }
   }

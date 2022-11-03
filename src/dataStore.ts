@@ -132,6 +132,7 @@ export type ReactDetails = {
   messageId: number;
   senderId: number; // reacted to
   timeCounter: number;
+  isSenderMember: boolean;
 }
 
 export type datatype = {

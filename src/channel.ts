@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore';
+import { getData, setData, Reacts } from './dataStore';
 import {
   isValidUser, isValidChannel, isGlobalOwner, isValidToken,
   getUserId, isInChannel, isChannelOwner, isOnlyOwner
@@ -136,11 +136,6 @@ function channelMessagesV3(token: string, channelId: number, start: number) {
     throw HTTPError(400, 'Start cannot be negative');
   }
 
-  // checking if userid valid
-  // if (!isValidUser(authUserId)) {
-  //   return { error: 'error' };
-  // }
-
   let isValid = false;
   let index = 0;
   for (const i in data.channels) {
@@ -178,11 +173,21 @@ function channelMessagesV3(token: string, channelId: number, start: number) {
         break;
       }
 
+      const reacts: Reacts[] = [];
+      for (const react of msg.reacts) {
+        reacts.push({
+          reactId: react.reactId,
+          uIds: react.uIds,
+          isThisUserReacted: !!(react.uIds.includes(authUserId)),
+        });
+      }
       list.push({
         uId: msg.uId,
         message: msg.message,
         messageId: msg.messageId,
         timeSent: msg.timeSent,
+        reacts: reacts,
+        isPinned: msg.isPinned,
       });
       count++;
     }
