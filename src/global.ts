@@ -526,6 +526,6 @@ export function getNotifications(token: string) {
 export function adminUserRemove(token: string, uId: number) {
   return requestHelper('DELETE', '/admin/user/remove/v1', { uId }, token);
 }
-export function adminUserRemove(token: string, uId: number, permissionId: number) {
+export function adminUserpermissionChange(token: string, uId: number, permissionId: number) {
   return requestHelper('POST', '/admin/userpermission/change/v1', { uId, permissionId }, token);
 }
