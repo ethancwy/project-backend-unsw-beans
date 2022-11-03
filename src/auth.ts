@@ -18,7 +18,7 @@ function authLoginV3(email: string, password: string) {
 
   for (const user of data.users) {
     if (user.email === email) {
-      if (user.password === password) {
+      if (user.password === password && !user.isRemoved) {
         const token = generateToken();
         user.tokens.push(token);
         data.sessionIds.push(token);
@@ -67,6 +67,7 @@ function authRegisterV3(email: string, password: string, nameFirst: string, name
     password: password,
     handleStr: handleStr,
     isGlobalOwner: false,
+    isRemoved: false,
     tokens: [token],
   });
 

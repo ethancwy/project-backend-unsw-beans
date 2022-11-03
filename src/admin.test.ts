@@ -41,12 +41,12 @@ describe('/admin/user/remove/v1 non failed cases', () => {
     expect(channelsCreate(user1.token, 'cannot exist channel', true)).toStrictEqual(403);
   });
 
-  test('global owner removing another global owner', () => {
-    clear();
-    const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-    const user1 = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    expect(adminUserpermissionChange(globalOwnerId.token, user1.authUserId, 1)).toStrictEqual({});
-    expect(adminUserRemove(globalOwnerId.token, user1.authUserId)).toStrictEqual({});
-    expect(channelsCreate(user1.token, 'cannot exist channel', true)).toStrictEqual(403);
-  });
+  // test('global owner removing another global owner', () => {
+  //   clear();
+  //   const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+  //   const user1 = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+  //   expect(adminUserpermissionChange(globalOwnerId.token, user1.authUserId, 1)).toStrictEqual({});
+  //   expect(adminUserRemove(globalOwnerId.token, user1.authUserId)).toStrictEqual({});
+  //   expect(channelsCreate(user1.token, 'cannot exist channel', true)).toStrictEqual(403);
+  // });
 });

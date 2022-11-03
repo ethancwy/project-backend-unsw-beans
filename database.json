@@ -8,37 +8,26 @@
       "password": "password",
       "handleStr": "jamescharles",
       "isGlobalOwner": true,
+      "isRemoved": false,
       "tokens": [
         "0"
       ]
     },
     {
       "uId": 1,
-      "nameFirst": "Willy",
-      "nameLast": "Wonka",
+      "nameFirst": "Removed",
+      "nameLast": "user",
       "email": "chocolate@bar.com",
       "password": "g00dpassword",
       "handleStr": "willywonka",
       "isGlobalOwner": false,
+      "isRemoved": true,
       "tokens": [
         "1"
       ]
     }
   ],
-  "channels": [
-    {
-      "channelId": 0,
-      "name": "cannot exist channel",
-      "isPublic": true,
-      "ownerIds": [
-        1
-      ],
-      "memberIds": [
-        1
-      ],
-      "channelmessages": []
-    }
-  ],
+  "channels": [],
   "dms": [],
   "sessionIds": [
     "0",
