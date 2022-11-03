@@ -253,6 +253,23 @@ describe('/notifications/get/v1 leave channel/dm and get tagged/reacted', () => 
         },
       ]
     });
+
+    channelInvite(tester.token, channel1.channelId, globalOwnerId.authUserId);
+
+    expect(getNotifications(globalOwnerId.token)).toStrictEqual({
+      notifications: [
+        {
+          channelId: channel1.channelId,
+          dmId: -1,
+          notificationMessage: 'willywonka added you to testingTagging'
+        },
+        {
+          channelId: channel1.channelId,
+          dmId: -1,
+          notificationMessage: 'willywonka added you to testingTagging'
+        },
+      ]
+    });
   });
 
   test('leave DM, get tagged and reacted to', () => {

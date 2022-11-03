@@ -92,29 +92,31 @@ function getReactNotif(token: string, arr: Array<NotifArr>) {
   const uId = getUserId(token);
 
   for (const i of data.reactDetails) {
-    const reactor = userProfileV3(token, i.authUserId);
-    const handle = reactor.user.handleStr;
-    if (uId === i.senderId) {
-      if (i.isDm) {
-        if (isInDm(uId, i.listId)) {
-          const dm = getDmDetails(i.listId);
-          arr.push({
-            channelId: -1,
-            dmId: i.listId,
-            notificationMessage: `${handle} reacted to your message in ${dm.name}`,
-            timeCounter: i.timeCounter,
-          });
-        }
-      } else {
-        if (isInChannel(uId, i.listId)) {
-          const channel = getChannelDetails(i.listId);
-
-          arr.push({
-            channelId: i.listId,
-            dmId: -1,
-            notificationMessage: `${handle} reacted to your message in ${channel.name}`,
-            timeCounter: i.timeCounter,
-          });
+    if (i.isSenderMember) {
+      const reactor = userProfileV3(token, i.authUserId);
+      const handle = reactor.user.handleStr;
+      if (uId === i.senderId) {
+        if (i.isDm) {
+          if (isInDm(uId, i.listId)) {
+            const dm = getDmDetails(i.listId);
+            arr.push({
+              channelId: -1,
+              dmId: i.listId,
+              notificationMessage: `${handle} reacted to your message in ${dm.name}`,
+              timeCounter: i.timeCounter,
+            });
+          }
+        } else {
+          if (isInChannel(uId, i.listId)) {
+            const channel = getChannelDetails(i.listId);
+            // console.log(channel);
+            arr.push({
+              channelId: i.listId,
+              dmId: -1,
+              notificationMessage: `${handle} reacted to your message in ${channel.name}`,
+              timeCounter: i.timeCounter,
+            });
+          }
         }
       }
     }
@@ -131,7 +133,7 @@ function getReactNotif(token: string, arr: Array<NotifArr>) {
   * @returns {notifications {channelId: number, dmId: number,
   * notificationMessage: string} } - object notifications
 */
-
+// !check if member is in channel
 export function getNotificationsV1(token: string) {
   if (!isValidToken(token)) {
     throw HTTPError(403, 'Invalid token');

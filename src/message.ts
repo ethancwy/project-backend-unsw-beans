@@ -41,11 +41,12 @@ function messageSendV2(token: string, channelId: number, message: string) {
   const cIndex = getChannelIndex(channelId);
   const messageId = data.messageDetails.length;
   const react: reactions[] = [];
-  const tags = getTags(message);
+  const allTags = getTags(message);
+  const tags: number[] = [];
 
-  for (const i in tags) {
-    if (!data.channels[cIndex].memberIds.includes(tags[i])) {
-      tags.splice(parseInt(i), 1);
+  for (const i in allTags) {
+    if (isInChannel(allTags[i], channelId)) {
+      tags.push(allTags[i]);
     }
   }
 
@@ -241,11 +242,12 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   const dmIndex = getDmIndex(dmId);
   const messageId = data.messageDetails.length;
   const react: reactions[] = [];
-  const tags = getTags(message);
+  const allTags = getTags(message);
+  const tags: number[] = [];
 
-  for (const i in tags) {
-    if (!data.dms[dmIndex].members.includes(tags[i])) {
-      tags.splice(parseInt(i), 1);
+  for (const i in allTags) {
+    if (isInDm(allTags[i], dmId)) {
+      tags.push(allTags[i]);
     }
   }
 
@@ -336,6 +338,8 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
     throw HTTPError(400, 'reactId does not exist');
   }
 
+  let isMember = false;
+  let reactCodeExist = false;
   if (!msg.isDm) {
     if (!data.channels[msg.listIndex].memberIds.includes(uId)) {
       throw HTTPError(400, 'auth user not in message channel');
@@ -346,36 +350,19 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
           throw HTTPError(400, 'auth user already reacted');
         }
         reaction.uIds.push(uId);
-        // data.reactDetails.push({
-        //   authUserId: uId, // reactor
-        //   isDm: msg.isDm,
-        //   listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
-        //   messageId: messageId,
-        //   senderId: msg.uId, // sender
-        //   timeCounter: data.counter,
-        // })
-        // data.counter++;
-        setData(data);
-        return {};
+        reactCodeExist = true;
+        break;
       }
     }
-    data.channels[msg.listIndex].channelmessages[msg.messageIndex].reacts.push({
-      reactId: reactId,
-      uIds: [uId],
-    });
-
-    // data.reactDetails.push({
-    //   authUserId: uId, // reactor
-    //   isDm: msg.isDm,
-    //   listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
-    //   messageId: messageId,
-    //   senderId: msg.uId, // sender
-    //   timeCounter: data.counter,
-    // })
-    // data.counter++;
-
-    // setData(data);
-    // return {};
+    if (isInChannel(msg.uId, data.channels[msg.listIndex].channelId)) {
+      isMember = true;
+    }
+    if (!reactCodeExist) {
+      data.channels[msg.listIndex].channelmessages[msg.messageIndex].reacts.push({
+        reactId: reactId,
+        uIds: [uId],
+      });
+    }
   } else {
     if (!data.dms[msg.listIndex].members.includes(uId)) {
       throw HTTPError(400, 'auth user not in message dm');
@@ -386,26 +373,19 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
           throw HTTPError(400, 'auth user already reacted');
         }
         reaction.uIds.push(uId);
-        setData(data);
-        return {};
+        reactCodeExist = true;
+        break;
       }
     }
-    data.dms[msg.listIndex].messages[msg.messageIndex].reacts.push({
-      reactId: reactId,
-      uIds: [uId],
-    });
-
-    // data.reactDetails.push({
-    //   authUserId: uId, // reactor
-    //   isDm: msg.isDm,
-    //   listId: (msg.isDm) ? data.dms[msg.listIndex] : data.channels[msg.listIndex],
-    //   messageId: messageId,
-    //   senderId: msg.uId, // sender
-    //   timeCounter: data.counter,
-    // })
-    // data.counter++;
-    // setData(data);
-    // return {};
+    if (isInDm(msg.uId, data.dms[msg.listIndex].dmId)) {
+      isMember = true;
+    }
+    if (!reactCodeExist) {
+      data.dms[msg.listIndex].messages[msg.messageIndex].reacts.push({
+        reactId: reactId,
+        uIds: [uId],
+      });
+    }
   }
 
   data.reactDetails.push({
@@ -415,6 +395,7 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
     messageId: messageId,
     senderId: msg.uId, // sender
     timeCounter: data.counter,
+    isSenderMember: isMember,
   });
   data.counter++;
   setData(data);

@@ -1,0 +1,6 @@
+[alias]
+    mr = push -u origin HEAD
+    cc = diff master
+    c = commit -m
+    co = checkout -b
+	del = !git branch | grep -v " master" | grep -v "^*" | xargs git branch -D
