@@ -8,7 +8,7 @@ import { dmLeaveV2 } from './dm';
 import { message, user } from './dataStore';
 
 function adminUserRemoveV1(token: string, uId: number) {
-  let data = getData();
+  const data = getData();
 
   if (!isValidToken(token)) {
     throw HTTPError(403, 'token does not exist');
@@ -18,7 +18,7 @@ function adminUserRemoveV1(token: string, uId: number) {
   }
 
   if (!isValidUser(uId)) {
-    throw HTTPError(400, 'user does not exist')
+    throw HTTPError(400, 'user does not exist');
   }
 
   const userToRemove = data.users.find((user: user) => user.uId === uId);
@@ -27,7 +27,7 @@ function adminUserRemoveV1(token: string, uId: number) {
   }
 
   // check is uId is only global owner
-  let globalOwnerCount = 0; 
+  let globalOwnerCount = 0;
   for (const user of data.users) {
     if (isGlobalOwner(user.uId)) {
       globalOwnerCount++;
@@ -50,7 +50,7 @@ function adminUserRemoveV1(token: string, uId: number) {
       channelLeaveV2(token, channel.channelId);
     }
   }
-  
+
   // user leaving all dms(editing all messages)
   for (const dm of data.dms) {
     if (isInDm(uId, dm.dmId)) {
@@ -63,7 +63,7 @@ function adminUserRemoveV1(token: string, uId: number) {
       dmLeaveV2(token, dm.dmId);
     }
   }
-  
+
   const userIndex = data.users.findIndex((userob: user) => userob.uId === uId);
   const removedUser = data.users[userIndex];
   removedUser.isRemoved = true;

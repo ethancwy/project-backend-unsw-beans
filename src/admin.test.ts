@@ -1,8 +1,8 @@
 import {
-    authRegister, channelsCreate, channelInvite, dmCreate,
-    clear, getNotifications, messageReact,
-    messageSend, messageSendDm, channelLeave, dmLeave,
-    adminUserRemove, adminUserpermissionChange
+  authRegister, channelsCreate,
+  clear,
+  adminUserRemove,
+  // adminUserpermissionChange
 } from './global';
 
 // test failed cases for adminuserremove
