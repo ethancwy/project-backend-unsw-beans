@@ -173,12 +173,12 @@ function channelMessagesV3(token: string, channelId: number, start: number) {
         break;
       }
 
-      let reacts: Reacts[] = [];
+      const reacts: Reacts[] = [];
       for (const react of msg.reacts) {
         reacts.push({
           reactId: react.reactId,
           uIds: react.uIds,
-          isThisUserReacted: (react.uIds.includes(authUserId)) ? true : false,
+          isThisUserReacted: !!(react.uIds.includes(authUserId)),
         });
       }
       list.push({

@@ -312,12 +312,12 @@ function dmMessagesV2(token: string, dmId: number, start: number) {
   for (let i = start; i < start + 50 && i < data.dms[dmId].messages.length; i++) {
     const msg = data.dms[dmId].messages[i];
 
-    let reacts: Reacts[] = [];
+    const reacts: Reacts[] = [];
     for (const react of msg.reacts) {
       reacts.push({
         reactId: react.reactId,
         uIds: react.uIds,
-        isThisUserReacted: (react.uIds.includes(userId)) ? true : false,
+        isThisUserReacted: !!(react.uIds.includes(userId)),
       });
     }
     messages.push({
