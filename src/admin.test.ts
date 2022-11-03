@@ -82,8 +82,8 @@ describe('/admin/userpermission/change/v1 failed cases', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const user1 = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    expect(adminUserpermissionChange(globalOwnerId.token, user1.authUserId, 1)).toStrictEqual(400);
-    expect(adminUserpermissionChange(globalOwnerId.token, globalOwnerId.authUserId, 2)).toStrictEqual(400);
+    expect(adminUserpermissionChange(globalOwnerId.token, user1.authUserId, 2)).toStrictEqual(400);
+    expect(adminUserpermissionChange(globalOwnerId.token, globalOwnerId.authUserId, 1)).toStrictEqual(400);
   });
 });
 
@@ -93,7 +93,9 @@ describe('/admin/userpermission/change/v1 non failed cases', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const user1 = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    expect(adminUserpermissionChange(globalOwnerId.token, user1.authUserId, 2)).toStrictEqual({});
-    expect(adminUserpermissionChange(globalOwnerId.token, globalOwnerId.authUserId, 1)).toStrictEqual({});
+    expect(adminUserpermissionChange(globalOwnerId.token, user1.authUserId, 1)).toStrictEqual({});
+    expect(adminUserpermissionChange(globalOwnerId.token, globalOwnerId.authUserId, 2)).toStrictEqual({});
+    expect(adminUserpermissionChange(user1.token, globalOwnerId.authUserId, 1)).toStrictEqual({});
+    expect(adminUserpermissionChange(user1.token, user1.authUserId, 2)).toStrictEqual({});
   });
 });
