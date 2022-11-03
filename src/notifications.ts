@@ -108,7 +108,7 @@ function getReactNotif(token: string, arr: Array<NotifArr>) {
       } else {
         if (isInChannel(uId, i.listId)) {
           const channel = getChannelDetails(i.listId);
-          // console.log(channel);
+
           arr.push({
             channelId: i.listId,
             dmId: -1,
@@ -131,7 +131,7 @@ function getReactNotif(token: string, arr: Array<NotifArr>) {
   * @returns {notifications {channelId: number, dmId: number,
   * notificationMessage: string} } - object notifications
 */
-// !check if member is in channel
+
 export function getNotificationsV1(token: string) {
   if (!isValidToken(token)) {
     throw HTTPError(403, 'Invalid token');

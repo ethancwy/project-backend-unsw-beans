@@ -53,14 +53,16 @@ function dmCreateV2(token: string, uIds: number[]) {
     array.push(data.users[uids].handleStr);
   }
 
-  let temp;
-  for (let i = 1; i < array.length; i++) {
-    if (array[i].localeCompare(array[i - 1]) === -1) {
-      temp = array[i];
-      array[i] = array[i - 1];
-      array[i - 1] = temp;
-    }
-  }
+  array.sort();
+
+  // let temp;
+  // for (let i = 1; i < array.length; i++) {
+  //   if (array[i].localeCompare(array[i - 1]) === -1) {
+  //     temp = array[i];
+  //     array[i] = array[i - 1];
+  //     array[i - 1] = temp;
+  //   }
+  // }
 
   // Creating name
   let name = array[0];
