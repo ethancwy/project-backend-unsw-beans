@@ -361,6 +361,7 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
       data.channels[msg.listIndex].channelmessages[msg.messageIndex].reacts.push({
         reactId: reactId,
         uIds: [uId],
+        isThisUserReacted: true,
       });
     }
   } else {
@@ -384,6 +385,7 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
       data.dms[msg.listIndex].messages[msg.messageIndex].reacts.push({
         reactId: reactId,
         uIds: [uId],
+        isThisUserReacted: true,
       });
     }
   }

@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore';
+import { getData, setData, Reacts } from './dataStore';
 import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember } from './global';
 import HTTPError from 'http-errors';
 
@@ -54,15 +54,6 @@ function dmCreateV2(token: string, uIds: number[]) {
   }
 
   array.sort();
-
-  // let temp;
-  // for (let i = 1; i < array.length; i++) {
-  //   if (array[i].localeCompare(array[i - 1]) === -1) {
-  //     temp = array[i];
-  //     array[i] = array[i - 1];
-  //     array[i - 1] = temp;
-  //   }
-  // }
 
   // Creating name
   let name = array[0];
@@ -169,17 +160,6 @@ function dmRemoveV2(token: string, dmId: number) {
     throw HTTPError(403, 'auth user not owner');
   }
 
-  // let found = false;
-  // for (let i = 0; i < data.dms.length - 1; i++) {
-  //   if (data.dms[i].dmId === dmId) {
-  //     found = true;
-  //   }
-  //   if (found === true) {
-  //     data.dms[i] = data.dms[i + 1];
-  //   }
-  // }
-  // data.dms[dmId].members.pop();
-
   // remove members
   for (const i in data.dms[dmId].members) {
     data.dms[dmId].members.splice(parseInt(i), 1);
@@ -272,17 +252,6 @@ function dmLeaveV2(token: string, dmId: number) {
     throw HTTPError(403, 'auth user not member');
   }
 
-  // let found = false;
-  // for (let i = 0; i < data.dms[dmId].members.length - 1; i++) {
-  //   if (data.dms[dmId].members[i] === userId) {
-  //     found = true;
-  //   }
-  //   if (found === true) {
-  //     data.dms[dmId].members[i] = data.dms[dmId].members[i + 1];
-  //   }
-  // }
-  // data.dms[dmId].members.pop();
-
   // Remove member from DM
   for (const i in data.dms[dmId].members) {
     if (userId === data.dms[dmId].members[i]) {
@@ -342,11 +311,22 @@ function dmMessagesV2(token: string, dmId: number, start: number) {
   const messages = [];
   for (let i = start; i < start + 50 && i < data.dms[dmId].messages.length; i++) {
     const msg = data.dms[dmId].messages[i];
+
+    let reacts: Reacts[] = [];
+    for (const react of msg.reacts) {
+      reacts.push({
+        reactId: react.reactId,
+        uIds: react.uIds,
+        isThisUserReacted: (react.uIds.includes(userId)) ? true : false,
+      });
+    }
     messages.push({
       uId: msg.uId,
       messageId: msg.messageId,
       message: msg.message,
       timeSent: msg.timeSent,
+      reacts: reacts,
+      isPinned: msg.isPinned,
     });
   }
 
