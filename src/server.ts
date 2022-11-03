@@ -23,6 +23,7 @@ import {
   messageReactV1, messageUnreactV1, messagePinV1, messageUnpinV1, messageSendlaterV1,
   messageSendlaterdmV1
 } from './message';
+import { adminUserRemoveV1, adminUserpermissionChangeV1 } from './admin';
 
 // Set up web app
 const app = express();
@@ -256,6 +257,18 @@ app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
   const token = req.header('token');
   const { dmId, message, timeSent } = req.body;
   return res.json(messageSendlaterdmV1(token, dmId, message, timeSent));
+});
+
+app.delete('/admin/user/remove/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const uId = parseInt(req.query.uId as string);
+  return res.json(adminUserRemoveV1(token, uId));
+});
+
+app.post('/admin/userpermission/change/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { uId, permissionId } = req.body;
+  return res.json(adminUserpermissionChangeV1(token, uId, permissionId));
 });
 
 // handles errors nicely

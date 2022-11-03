@@ -523,3 +523,9 @@ export function userSetHandle(token: string, handleStr: string) {
 export function getNotifications(token: string) {
   return requestHelper('GET', '/notifications/get/v1', {}, token);
 }
+export function adminUserRemove(token: string, uId: number) {
+  return requestHelper('DELETE', '/admin/user/remove/v1', { uId }, token);
+}
+export function adminUserRemove(token: string, uId: number, permissionId: number) {
+  return requestHelper('POST', '/admin/userpermission/change/v1', { uId, permissionId }, token);
+}
