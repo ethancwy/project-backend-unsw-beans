@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-type user = {
+export type user = {
   uId: number;
   nameFirst: string;
   nameLast: string;
@@ -9,6 +9,7 @@ type user = {
   handleStr: string;
   isGlobalOwner: boolean;
   tokens: Array<string>;
+  isRemoved: boolean;
   profileImgUrl?: string;
 }
 
@@ -23,7 +24,7 @@ export type reactions = {
   uIds: Array<number>;
 }
 
-type message = {
+export type message = {
   messageId: number;
   uId: number;
   message: string;

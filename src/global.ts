@@ -2,6 +2,7 @@ import { getData, MessageDetails } from './dataStore';
 import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
+import { user as userType } from './dataStore';
 const SERVER_URL = `${url}:${port}`;
 
 // const OK = 200;
@@ -60,7 +61,7 @@ export type error = { error: string };
 export function isValidUser(authUserId: number) {
   const data = getData();
   for (const user of data.users) {
-    if (authUserId === user.uId) {
+    if (authUserId === user.uId && !user.isRemoved) {
       return true;
     }
   }
@@ -211,7 +212,13 @@ export function isGlobalOwner(authUserId: number) {
 export function isValidToken(token: string) {
   const data = getData();
 
-  if (data.sessionIds.includes(token)) return true;
+  if (data.sessionIds.includes(token)) {
+    const uId = getUserId(token);
+    const user = data.users.find((user: userType) => user.uId === uId);
+    if (!user.isRemoved) {
+      return true;
+    }
+  }
   return false;
 }
 
@@ -284,7 +291,7 @@ export function isOnlyOwner(uId: number, channelId: number) {
 }
 
 // Helper function to find authUserId of token owner
-export function getUserId(token: string): number {
+export function getUserId(token: string) {
   const data = getData();
 
   for (const user of data.users) {
@@ -522,4 +529,10 @@ export function userSetHandle(token: string, handleStr: string) {
 // ============================ New Iteration 3 function wrappers ================================//
 export function getNotifications(token: string) {
   return requestHelper('GET', '/notifications/get/v1', {}, token);
+}
+export function adminUserRemove(token: string, uId: number) {
+  return requestHelper('DELETE', '/admin/user/remove/v1', { uId }, token);
+}
+export function adminUserpermissionChange(token: string, uId: number, permissionId: number) {
+  return requestHelper('POST', '/admin/userpermission/change/v1', { uId, permissionId }, token);
 }
