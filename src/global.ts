@@ -187,7 +187,7 @@ export function isActiveStandup(channelId: number) {
   const data = getData();
   for (const i of data.channels) {
     if (i.channelId === channelId) {
-      if (i.isActiveStandup) {
+      if (i.standupDetails.isActiveStandup) {
         return true;
       }
     }
@@ -555,7 +555,7 @@ export function standupStart(token: string, channelId: number, length: number) {
   return requestHelper('POST', '/standup/start/v1', { channelId, length }, token);
 }
 export function standupActive(token: string, channelId: number) {
-  return requestHelper('POST', '/standup/active/v1', { channelId }, token);
+  return requestHelper('GET', '/standup/active/v1', { channelId }, token);
 }
 export function standupSend(token: string, channelId: number, message: string) {
   return requestHelper('POST', '/standup/send/v1', { channelId, message }, token);
