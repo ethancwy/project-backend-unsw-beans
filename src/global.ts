@@ -220,6 +220,15 @@ export function isGlobalOwner(authUserId: number) {
   return false;
 }
 
+// Helper function to pause time
+export function sleep(milliseconds: number) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
+
 // Checks if token is valid
 export function isValidToken(token: string) {
   const data = getData();
@@ -544,6 +553,12 @@ export function getNotifications(token: string) {
 }
 export function standupStart(token: string, channelId: number, length: number) {
   return requestHelper('POST', '/standup/start/v1', { channelId, length }, token);
+}
+export function standupActive(token: string, channelId: number) {
+  return requestHelper('POST', '/standup/active/v1', { channelId }, token);
+}
+export function standupSend(token: string, channelId: number, message: string) {
+  return requestHelper('POST', '/standup/send/v1', { channelId, message }, token);
 }
 export function adminUserRemove(token: string, uId: number) {
   return requestHelper('DELETE', '/admin/user/remove/v1', { uId }, token);
