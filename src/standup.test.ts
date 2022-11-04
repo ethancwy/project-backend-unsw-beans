@@ -3,20 +3,24 @@ import {
   clear, messageSend, channelLeave, standupStart
 } from './global';
 
+type userType = {
+  token?: string;
+  authUserId?: number;
+}
+
 const requestTime = () => Math.floor((new Date()).getTime() / 1000);
 
-clear();
-// Tests for /tandup/start/v1
+// Tests for /standup/start/v1
 describe('/standup/start/v1 ', () => {
+  let globalOwnerId: userType;
+  let channel: { channelId: number };
   beforeEach(() => {
     clear();
-    const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-    const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
+    globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
   });
 
   test('success', () => {
-    // const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-    // const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     const timeNow = requestTime();
     expect(standupStart(globalOwnerId.token, channel.channelId, 10)).toStrictEqual({
       timeFinish: timeNow + 10,

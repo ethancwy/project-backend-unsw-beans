@@ -23,7 +23,11 @@ import {
   messageReactV1, messageUnreactV1, messagePinV1, messageUnpinV1, messageSendlaterV1,
   messageSendlaterdmV1
 } from './message';
-import { standupStartV1 } from './standup'
+
+import { standupStartV1 } from './standup';
+
+import { adminUserRemoveV1, adminUserpermissionChangeV1 } from './admin';
+
 
 // Set up web app
 const app = express();
@@ -263,6 +267,18 @@ app.post('/standup/start/v1', (req: Request, res: Response) => {
   const token = req.header('token');
   const { channelId, length } = req.body;
   return res.json(standupStartV1(token, channelId, length));
+});
+
+app.delete('/admin/user/remove/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const uId = parseInt(req.query.uId as string);
+  return res.json(adminUserRemoveV1(token, uId));
+});
+
+app.post('/admin/userpermission/change/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { uId, permissionId } = req.body;
+  return res.json(adminUserpermissionChangeV1(token, uId, permissionId));
 });
 
 // handles errors nicely

@@ -62,6 +62,9 @@ function usersAllV2(token: string) {
 
   const userArr = [];
   for (const user of data.users) {
+    if (user.isRemoved) {
+      continue;
+    }
     userArr.push({
       uId: user.uId,
       email: user.email,
