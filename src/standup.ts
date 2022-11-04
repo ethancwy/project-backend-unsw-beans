@@ -2,7 +2,7 @@
 import { getData, setData } from './dataStore';
 import {
   getUserId, isValidToken, isInChannel, isInDm, isValidChannel,
-  isActiveStandup, getChannelIndex, sleep
+  isActiveStandup, getChannelIndex,
 } from './global';
 import { getChannelDetails, getDmDetails } from './global';
 import { userProfileV3 } from './users';
@@ -10,7 +10,17 @@ import { messageSendV2 } from './message';
 import HTTPError from 'http-errors';
 
 const requestTime = () => Math.floor((new Date()).getTime() / 1000);
-// const timeout = () => console.log('pausing');
+
+const sleep = async (milliseconds) => {
+  await new Promise(resolve => {
+    return setTimeout(resolve, milliseconds)
+  });
+};
+
+const testSleep = async (length: number, channelId: number, index: number, uId: number) => {
+  await sleep(length * 1000);
+  standupMessage(channelId, index, uId);
+}
 
 export function standupStartV1(token: string, channelId: number, length: number) {
   const data = getData();
@@ -33,18 +43,12 @@ export function standupStartV1(token: string, channelId: number, length: number)
   const index = getChannelIndex(channelId);
   data.channels[index].standupDetails.isActiveStandup = true;
   data.channels[index].standupDetails.timeFinish = finishTime;
-
   setData(data);
-  console.log('before sleep');
-  sleep(length * 1000);
-  console.log('after sleep');
 
-  // !during the wait, standupSend may be called //
+  // sleep for length duration, then send messages to channel
+  testSleep(length, channelId, index, uId);
 
-  // helper function to get from standup message queue (created by standupSend)
-  standupMessage(channelId, index, uId);
-
-  return { timeFinish: requestTime() };
+  return { timeFinish: finishTime };
 }
 
 export function standupActiveV1(token: string, channelId: number) {
@@ -93,6 +97,7 @@ export function standupSendV1(token: string, channelId: number, message: string)
 
   const index = getChannelIndex(channelId);
   data.channels[index].standupDetails.standupMessages.push(output);
+
   setData(data);
   return {};
 }
@@ -102,6 +107,7 @@ function standupMessage(channelId: number, index: number, uId: number) {
   const data = getData();
   let finalOutput = '';
   let standupChannel = data.channels[index].standupDetails;
+
   if (standupChannel.standupMessages.length !== 0) {
     for (let i = 0; i < standupChannel.standupMessages.length - 1; i++) {
       finalOutput += (standupChannel.standupMessages[i] + '\n');
@@ -120,7 +126,7 @@ function standupMessage(channelId: number, index: number, uId: number) {
       isPinned: false,
       tags: [],
     };
-    data.channels[index].channelmessages.unshift(newMessage);
+    data.channels[index].channelmessages.push(newMessage);
   }
 
   // no longer active
@@ -128,6 +134,5 @@ function standupMessage(channelId: number, index: number, uId: number) {
   standupChannel.standupMessages = [];
   delete standupChannel.timeFinish;
   setData(data);
-  console.log('reached');
   return {};
 }
