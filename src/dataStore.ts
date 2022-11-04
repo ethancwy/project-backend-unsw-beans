@@ -34,11 +34,6 @@ export type message = {
   tags: Array<number>;
 }
 
-type StandupDetails = {
-  timeFinish?: number;
-  isActiveStandup: boolean;
-}
-
 type channel = {
   channelId: number;
   name: string;
@@ -46,7 +41,11 @@ type channel = {
   ownerIds: Array<number>;
   memberIds: Array<number>;
   channelmessages: Array<message>;
-  standupDetails: StandupDetails;
+  standupDetails: {
+    isActiveStandup: boolean;
+    standupMessages: Array<string>;
+    timeFinish?: number;
+  };
 }
 
 type dm = {

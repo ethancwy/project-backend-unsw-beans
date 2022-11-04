@@ -10,7 +10,7 @@ import { messageSendV2 } from './message';
 import HTTPError from 'http-errors';
 
 const requestTime = () => Math.floor((new Date()).getTime() / 1000);
-const timeout = () => console.log('pausing');
+// const timeout = () => console.log('pausing');
 
 export function standupStartV1(token: string, channelId: number, length: number) {
   const data = getData();
@@ -35,9 +35,14 @@ export function standupStartV1(token: string, channelId: number, length: number)
   data.channels[index].standupDetails.timeFinish = finishTime;
 
   setData(data);
-
+  console.log('before sleep');
   sleep(length * 1000);
+  console.log('after sleep');
+
+  // !during the wait, standupSend may be called //
+
   // helper function to get from standup message queue (created by standupSend)
+  standupMessage(channelId, index, uId);
 
   return { timeFinish: requestTime() };
 }
@@ -59,9 +64,70 @@ export function standupActiveV1(token: string, channelId: number) {
   const isActive = data.channels[index].standupDetails.isActiveStandup;
   const finishTime = data.channels[index].standupDetails.timeFinish;
   return {
-    isActive: (isActive) ? true : false,
+    isActive: !!(isActive),
     timeFinish: (!isActive) ? null : finishTime,
   };
 }
 
+export function standupSendV1(token: string, channelId: number, message: string) {
+  const data = getData();
 
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  } else if (!isValidChannel(channelId)) {
+    throw HTTPError(400, 'Invalid channelId');
+  } else if (message.length > 1000) {
+    throw HTTPError(400, 'Length cannot be over 1000 characters');
+  } else if (!isActiveStandup(channelId)) {
+    throw HTTPError(400, 'No active standup currently running');
+  }
+  const uId = getUserId(token);
+  if (!isInChannel(uId, channelId)) {
+    throw HTTPError(403, 'Authorised user not member of channel');
+  }
+
+  const user = userProfileV3(token, uId);
+  const handle = user.user.handleStr;
+
+  const output: string = `${handle}: ${message}`;
+
+  const index = getChannelIndex(channelId);
+  data.channels[index].standupDetails.standupMessages.push(output);
+  setData(data);
+  return {};
+}
+
+// helper function that sends message to channel after end of standupStart
+function standupMessage(channelId: number, index: number, uId: number) {
+  const data = getData();
+  let finalOutput = '';
+  let standupChannel = data.channels[index].standupDetails;
+  if (standupChannel.standupMessages.length !== 0) {
+    for (let i = 0; i < standupChannel.standupMessages.length - 1; i++) {
+      finalOutput += (standupChannel.standupMessages[i] + '\n');
+    }
+    // don't print newline for last message
+    finalOutput += standupChannel.standupMessages[standupChannel.standupMessages.length - 1];
+
+    const messageId = data.messageDetails.length;
+
+    const newMessage = {
+      messageId: messageId,
+      uId: uId,
+      message: finalOutput,
+      timeSent: requestTime(),
+      reacts: [],
+      isPinned: false,
+      tags: [],
+    };
+    data.channels[index].channelmessages.unshift(newMessage);
+  }
+
+  // no longer active
+  standupChannel.isActiveStandup = false;
+  standupChannel.standupMessages = [];
+  delete standupChannel.timeFinish;
+  setData(data);
+  console.log('reached');
+  return {};
+}

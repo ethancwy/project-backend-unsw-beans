@@ -12,19 +12,6 @@
       "tokens": [
         "0"
       ]
-    },
-    {
-      "uId": 1,
-      "nameFirst": "Nina",
-      "nameLast": "Yeh",
-      "email": "Nina0803@icloud.com",
-      "password": "Nina0803",
-      "handleStr": "ninayeh",
-      "isGlobalOwner": false,
-      "isRemoved": false,
-      "tokens": [
-        "1"
-      ]
     }
   ],
   "channels": [
@@ -39,13 +26,15 @@
         0
       ],
       "channelmessages": [],
-      "isActiveStandup": false
+      "standupDetails": {
+        "isActiveStandup": false,
+        "standupMessages": []
+      }
     }
   ],
   "dms": [],
   "sessionIds": [
-    "0",
-    "1"
+    "0"
   ],
   "messageDetails": [],
   "inviteDetails": [],

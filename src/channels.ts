@@ -37,7 +37,10 @@ function channelsCreateV3(token: string, name: string, isPublic: boolean) {
     ownerIds: [authUserId],
     memberIds: [authUserId],
     channelmessages: [],
-    isActiveStandup: false,
+    standupDetails: {
+      isActiveStandup: false,
+      standupMessages: [],
+    },
   });
 
   setData(data);
