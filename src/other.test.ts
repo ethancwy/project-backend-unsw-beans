@@ -1,7 +1,9 @@
-import { authRegister, authLogin, authLogout, clear, search } from './global';
+import { authLogin, authLogout, clear, search } from './global';
 import {
   authRegister, channelsCreate, channelInvite, dmCreate,
-  messageSend, messageSendDm, channelLeave, dmLeave } from './global';
+  messageSend, messageSendDm
+} from './global';
+import { reactions } from './dataStore';
 
 clear();
 
@@ -54,28 +56,39 @@ describe('Testing search function success', () => {
     messageSendDm(tester.token, dm1.dmId, 'hello! hihi ');
     messageSendDm(tester.token, dm1.dmId, 'bye');
 
-    function expectedMessages(times: number) {
+    type msgType = {
+      messageId: number;
+      uId: number;
+      message: string;
+      timeSent: number;
+      reacts: Array<reactions>;
+      isPinned: boolean;
+    };
+    type expected = {
+      messages: msgType[];
+    }
+    function expectedMessages(times: number, cmpStr: string, senderId: number) {
       const expectedMessage = {
         messageId: expect.any(Number),
-        uId: globalOwnerId.authUserId,
-        message: expect.stringContaining('hello'),
+        uId: senderId,
+        message: expect.stringContaining(cmpStr),
         timeSent: expect.any(Number),
-        reacts: expect.any(),
+        reacts: expect.any(Array),
         isPinned: false,
       };
-      const expectedList = {
+      const expectedList: expected = {
         messages: []
       };
-      
-      for (const i = 0 ; i < times ; i++) {
+
+      for (let i = 0; i < times; i++) {
         expectedList.messages.push(expectedMessage);
       }
 
       return expectedList;
     }
 
-    expect(search(globalOwnerId.token, 'hello')).toStrictEqual(expectedMessages(4));
-    expect(search(globalOwnerId.token, 'hel')).toStrictEqual(expectedMessages(5));
-    expect(search(tester.token, 'hello')).toStrictEqual(expectedMessages(3));
+    expect(search(globalOwnerId.token, 'hello')).toStrictEqual(expectedMessages(4, 'hello', globalOwnerId.authUserId));
+    expect(search(globalOwnerId.token, 'hel')).toStrictEqual(expectedMessages(5, 'hel', globalOwnerId.authUserId));
+    expect(search(tester.token, 'hello')).toStrictEqual(expectedMessages(3, 'hello', tester.authUserId));
   });
 });
