@@ -7,7 +7,7 @@ import errorHandler from 'middleware-http-errors';
 
 import { authRegisterV3, authLoginV3, authLogoutV2 } from './auth';
 import { channelsCreateV3, channelsListV3, channelsListAllV3 } from './channels';
-import { clearV1 } from './other';
+import { clearV1, searchV1 } from './other';
 import {
   channelJoinV3, channelInviteV3, channelDetailsV3,
   channelMessagesV3, channelLeaveV2, channelAddOwnerV2, channelRemoveOwnerV2
@@ -269,6 +269,12 @@ app.post('/admin/userpermission/change/v1', (req: Request, res: Response) => {
   const token = req.header('token');
   const { uId, permissionId } = req.body;
   return res.json(adminUserpermissionChangeV1(token, uId, permissionId));
+});
+
+app.get('/search/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const queryStr = req.query.queryStr as string;
+  return res.json(searchV1(token, queryStr));
 });
 
 // handles errors nicely
