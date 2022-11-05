@@ -1,0 +1,56 @@
+npm verb cli /import/kamen/3/cs1531/.nvm/versions/node/v18.10.0/bin/node /import/kamen/3/cs1531/.nvm/versions/node/v18.10.0/bin/npm
+npm info using npm@8.19.2
+npm info using node@v18.10.0
+npm timing npm:load:whichnode Completed in 0ms
+npm timing config:load:defaults Completed in 2ms
+npm timing config:load:file:/import/kamen/3/cs1531/.nvm/versions/node/v18.10.0/lib/node_modules/npm/npmrc Completed in 2ms
+npm timing config:load:builtin Completed in 2ms
+npm timing config:load:cli Completed in 3ms
+npm timing config:load:env Completed in 0ms
+npm timing config:load:file:/import/kamen/3/cs1531/project-automarking/tempstore/.npmrc Completed in 0ms
+npm timing config:load:project Completed in 21ms
+npm timing config:load:file:/import/kamen/3/cs1531/.npmrc Completed in 0ms
+npm timing config:load:user Completed in 0ms
+npm timing config:load:file:/import/kamen/3/cs1531/.nvm/versions/node/v18.10.0/etc/npmrc Completed in 0ms
+npm timing config:load:global Completed in 0ms
+npm timing config:load:validate Completed in 1ms
+npm timing config:load:credentials Completed in 1ms
+npm timing config:load:setEnvs Completed in 0ms
+npm timing config:load Completed in 31ms
+npm timing npm:load:configload Completed in 32ms
+npm timing npm:load:mkdirpcache Completed in 1ms
+npm timing npm:load:mkdirplogs Completed in 0ms
+npm verb title npm run test **/?(*.)+(test).ts
+npm verb argv "run" "test" "--loglevel" "verbose" "--testMatch" "**/?(*.)+(test).ts"
+npm timing npm:load:setTitle Completed in 2ms
+npm timing config:load:flatten Completed in 3ms
+npm timing npm:load:display Completed in 6ms
+npm verb logfile logs-max:10 dir:/import/kamen/3/cs1531/.npm/_logs
+npm verb logfile /import/kamen/3/cs1531/.npm/_logs/2022-10-29T00_57_32_156Z-debug-0.log
+npm timing npm:load:logFile Completed in 28ms
+npm timing npm:load:timers Completed in 0ms
+npm timing npm:load:configScope Completed in 0ms
+npm timing npm:load Completed in 70ms
+
+> test
+> jest **/?(*.)+(test).ts
+
+  Invalid testPattern **/?(*.)+(test).ts supplied. Running all tests instead.
+  Invalid testPattern **/?(*.)+(test).ts supplied. Running all tests instead.
+PASS src/channel.test.ts (22.955 s)
+PASS src/dm.test.ts (13.994 s)
+PASS src/message.test.ts (14.598 s)
+PASS src/users.test.ts (10.454 s)
+PASS src/channels.test.ts (5.864 s)
+PASS src/auth.test.ts (7.272 s)
+PASS src/other.test.ts
+
+Test Suites: 7 passed, 7 total
+Tests:       153 passed, 153 total
+Snapshots:   0 total
+Time:        76.822 s, estimated 136 s
+Ran all test suites.
+npm timing command:run Completed in 77998ms
+npm verb exit 0
+npm timing npm Completed in 78076ms
+npm info ok 
