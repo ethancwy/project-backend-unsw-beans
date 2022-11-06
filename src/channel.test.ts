@@ -768,7 +768,7 @@ describe('Error checking channelRemoveOwnerV1', () => {
     expect(channelRemoveOwner(anotherMember.token, channel.channelId, member.authUserId)).toStrictEqual(403);
   });
 
-  test('globalowner not in channel', () => {
+  test('globalowner non member cannot remove owner', () => {
     clear();
     const globalOwner = authRegister('ahahahahahahaha@bar.com', 'g00dsdadpassword', 'itsme', 'mario');
     const channelOwner = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
@@ -776,8 +776,9 @@ describe('Error checking channelRemoveOwnerV1', () => {
 
     const channel = channelsCreate(channelOwner.token, 'Boost', true);
     channelJoin(member.token, channel.channelId);
+    channelAddOwner(channelOwner.token, channel.channelId, member.authUserId);
 
-    expect(channelRemoveOwner(globalOwner.token, channel.channelId, channelOwner.authUserId)).toStrictEqual(400);
+    expect(channelRemoveOwner(globalOwner.token, channel.channelId, channelOwner.authUserId)).toStrictEqual(403);
   });
 
   test('globalowner cannot remove final owner', () => {

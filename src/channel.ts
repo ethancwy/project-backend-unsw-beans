@@ -390,13 +390,17 @@ function channelRemoveOwnerV2(token: string, channelId: number, uId: number) {
   } else if (!isChannelOwner(uId, channelId)) {
     throw HTTPError(400, 'uId not a channel owner');
   }
+  const authUserId = getUserId(token);
+  // non member (global owner or not) cannot remove owner
+  if (!isInChannel(authUserId, channelId)) {
+    throw HTTPError(403, 'Authorised user not member of channel');
+  }
 
   // Only owner in channel
   if (isOnlyOwner(uId, channelId)) {
     throw HTTPError(400, 'Cannot remove only owner in channel');
   }
 
-  const authUserId = getUserId(token);
   // authUserId no owner perms
   if (!isGlobalOwner(authUserId) && !isChannelOwner(authUserId, channelId)) {
     throw HTTPError(403, 'No owner permissions');
