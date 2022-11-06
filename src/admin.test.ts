@@ -9,7 +9,7 @@ import {
 describe('/admin/user/remove/v1 failed cases', () => {
   test('token invalid', () => {
     clear();
-    const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    authRegister('foo@bar.com', 'password', 'James', 'Charles');
     expect(adminUserRemove('fake', -10)).toStrictEqual(403);
   });
 
