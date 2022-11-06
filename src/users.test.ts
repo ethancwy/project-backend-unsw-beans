@@ -1,10 +1,11 @@
 import {
   authRegister, authLogout, userProfile, clear,
-  usersAll, userSetName, userSetEmail, userSetHandle
+  usersAll, userSetName, userSetEmail, userSetHandle, channelsCreate, channelJoin, dmCreate,
+  userStats, usersStats
 } from './global';
 
 clear();
-describe('Testing userProfileV2', () => {
+describe('Testing userProfileV3', () => {
   test('Testing for valid user', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
@@ -22,7 +23,7 @@ describe('Testing userProfileV2', () => {
   });
 });
 
-describe('Error checking userProfileV2', () => {
+describe('Error checking userProfileV3', () => {
   test('Testing for invalid users', () => {
     clear();
     const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
@@ -314,3 +315,45 @@ describe('Error checking userSetHandleV1', () => {
     clear();
   });
 });
+
+describe('Testing userStatsV1', () => {
+  test('Successfully returning stats of user', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+    // Creating channels to test stats
+    const channel1 = channelsCreate(member1.token, 'channel1', true);
+    const channel2 = channelsCreate(member1.token, 'channel2', false);
+    channelJoin(member2.token, channel1.channelId);
+    // Creating dm to test stats
+    const dm = dmCreate(member1.token, [member2.authUserId]);
+
+    // Testing user stats of member 1
+    expect(userStats(member1.token)).toStrictEqual({
+      channelsJoined: [{numChannelsJoined: 2, timestamp: expect.any(Number)}],
+      dmsJoined: [{numDmsJoined: 1, timestamp: expect.any(Number)}],
+      messagesSent: [],
+      involvementRate: 1,
+    });
+
+    // Testing user stats of member 2
+    expect(userStats(member2.token)).toStrictEqual({
+      channelsJoined: [{numChannelsJoined: 1, timestamp: expect.any(Number)}],
+      dmsJoined: [{numDmsJoined: 1, timestamp: expect.any(Number)}],
+      messagesSent: [],
+      involvementRate: 2 / 3,
+    });
+  );
+});
+
+describe('Error checking userStatsV1', () => {
+  test('Invalid token', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+
+    const invalidToken = member1.token + 'lolol';
+    // invalid token
+    expect(userStatsV1(invalidToken)).toStrictEqual(403);
+  });
+});
+

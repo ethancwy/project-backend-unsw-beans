@@ -152,6 +152,11 @@ app.put('/user/profile/sethandle/v2', (req: Request, res: Response) => {
   return res.json(userSetHandleV2(token, handleStr));
 });
 
+app.get('/user/stats/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  return res.json(userStatsV1(token));
+})
+
 app.post('/dm/create/v2', (req: Request, res: Response) => {
   const token = req.header('token');
   const uIds = req.body.uIds as number[];

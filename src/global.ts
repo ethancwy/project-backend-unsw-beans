@@ -526,6 +526,13 @@ export function userSetEmail(token: string, email: string) {
 export function userSetHandle(token: string, handleStr: string) {
   return requestHelper('PUT', '/user/profile/sethandle/v2', { handleStr }, token);
 }
+// Iteration 3 user/users functions
+export function userStats(token: string) {
+  return requestHelper('GET', 'user/stats/V1', {}, token);
+}
+export function usersStats(token: string) {
+  return requestHelper('GET', 'user/stats/V1', {}, token);
+}
 // ============================ New Iteration 3 function wrappers ================================//
 export function getNotifications(token: string) {
   return requestHelper('GET', '/notifications/get/v1', {}, token);
