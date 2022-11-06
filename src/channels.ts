@@ -1,6 +1,7 @@
 import { getData, setData } from './dataStore';
 import { getUserId, isValidToken } from './global';
-import HTTPError from 'http-errors';
+import HTTPError from 'http-errors';  
+const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 
 /**
   *
@@ -38,6 +39,14 @@ function channelsCreateV3(token: string, name: string, isPublic: boolean) {
     memberIds: [authUserId],
     channelmessages: [],
   });
+
+  // Adding to channel creaters userStats
+  // Finding current amount of channels joined
+  data.users[authUserId].userStats.channelsJoined.push({
+      numChannelsJoined: data.users[authUserId].userStats.channelsJoined.length - 1,
+      timeStamp: requestTimesent(),
+    }
+  );
 
   setData(data);
   return { channelId: data.channels[data.channels.length - 1].channelId };

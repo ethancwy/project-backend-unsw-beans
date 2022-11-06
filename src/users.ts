@@ -1,10 +1,12 @@
 import { getData, setData } from './dataStore';
-import { isValidToken } from './global';
+import { getUserId, isValidToken } from './global';
 import {
   validName, validEmail, anotherUserEmail, alphanumeric,
   isValidHandleLength, anotherUserHandle
 } from './global';
 import HTTPError from 'http-errors';
+import { arrayBuffer } from 'stream/consumers';
+import { channel } from 'diagnostics_channel';
 
 /**
   * For a valid user, returns information about their user ID, email,
@@ -177,4 +179,13 @@ function userSetHandleV2(token: string, handleStr: string) {
   return {};
 }
 
-export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2 };
+function userStatsV1(token) {
+  const data = getData();
+  // invalid token
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  }
+  
+}
+
+export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2, userStatsV1 };

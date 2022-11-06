@@ -10,6 +10,7 @@ export type user = {
   isGlobalOwner: boolean;
   tokens: Array<string>;
   isRemoved: boolean;
+  userStats: userStats;
   profileImgUrl?: string;
 }
 
