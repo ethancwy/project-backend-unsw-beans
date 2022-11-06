@@ -1,9 +1,10 @@
-import { getData, MessageDetails } from './dataStore';
+import { datatype, getData, MessageDetails, setData } from './dataStore';
 import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
 import { user as userType } from './dataStore';
 const SERVER_URL = `${url}:${port}`;
+const requestTimeStamp = () => Math.floor((new Date()).getTime() / 1000);
 
 // const OK = 200;
 
@@ -383,6 +384,48 @@ export function isDmMember(uid: number, dmId: number) {
 
   return false;
 }
+
+// Updates userStats
+// Takes in uId of user to update, category(ie channel, dms, messages)
+// and function(ie add, remove)
+export function updateUserStats(uId: number, categ: string, func: string) {
+  const data = getData();
+  
+  if (categ === 'channels') {
+    if (func === 'add') { // Joining a channel
+      data.users[uId].userStats.channelsJoined.push({
+        numChannelsJoined: data.users[uId].userStats.channelsJoined.length,
+        timeStamp: requestTimeStamp(),
+      });
+    } else { // Leaving a channel
+      data.users[uId].userStats.channelsJoined.push({
+        numChannelsJoined: data.users[uId].userStats.channelsJoined.length - 2,
+        timeStamp: requestTimeStamp(),
+      });
+    }
+  } else if (categ === 'dms') {
+    if (func === 'add') { // Joining a dm
+      data.users[uId].userStats.dmsJoined.push({
+        numDmsJoined: data.users[uId].userStats.dmsJoined.length,
+        timeStamp: requestTimeStamp(),
+      });
+    } else { // Leaving a dm
+      data.users[uId].userStats.dmsJoined.push({
+        numDmsJoined: data.users[uId].userStats.dmsJoined.length - 2,
+        timeStamp: requestTimeStamp(),
+      });
+    }
+  } else if (categ === 'msgs') { // Creating a message
+    data.users[uId].userStats.messagesSent.push({
+      numMessagesSent: data.users[uId].userStats.messagesSent.length,
+      timeStamp: requestTimeStamp(),
+    });
+  }
+
+  setData(data);
+  return;
+}
+
 
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //
 

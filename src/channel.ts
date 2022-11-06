@@ -1,9 +1,10 @@
 import { getData, setData, Reacts } from './dataStore';
 import {
   isValidUser, isValidChannel, isGlobalOwner, isValidToken,
-  getUserId, isInChannel, isChannelOwner, isOnlyOwner
+  getUserId, isInChannel, isChannelOwner, isOnlyOwner, updateUserStats
 } from './global';
 import HTTPError from 'http-errors';
+
 
 /**
   * Given a channelId of a channel that the authorised user can join,
@@ -38,7 +39,10 @@ function channelJoinV3(token: string, channelId: number) {
         }
       }
       channel.memberIds.push(authUserId); // add member
+
       setData(data);
+      // edit userStats
+      updateUserStats(authUserId, 'channels', 'add');
       return {};
     }
   }
@@ -95,7 +99,10 @@ function channelInviteV3(token: string, channelId: number, uId: number) {
         timeCounter: data.counter,
       });
       data.counter++;
+    
       setData(data);
+      // edit userStats
+      updateUserStats(uId, 'channels', 'add');
       return {};
     }
   }
@@ -323,7 +330,10 @@ function channelLeaveV2(token: string, channelId: number) {
       break;
     }
   }
+
   setData(data);
+  // edit userStats
+  updateUserStats(uId, 'channels', 'remove');
   return {};
 }
 
