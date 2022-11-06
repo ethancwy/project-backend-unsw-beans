@@ -367,3 +367,40 @@ describe('Error checking userStatsV1', () => {
   });
 });
 
+describe('Testing usersStatsV1', () => {
+  test('Successfully returning stats of workspace', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+    // Creating channels to test stats
+    channelsCreate(member1.token, 'channel1', true);
+    channelsCreate(member1.token, 'channel2', false);
+    // Creating dm to test stats
+    const dm = dmCreate(member1.token, [member2.authUserId]);
+
+    // Testing user stats of member 1
+    expect(usersStats(member1.token)).toStrictEqual({
+      channelsExist: [
+        {numChannelsExist: 0, timeStamp: expect.any(Number)},
+        {numChannelsExist: 1, timeStamp: expect.any(Number)},
+        {numChannelsExist: 2, timeStamp: expect.any(Number)}],
+      dmsExist: [
+        {numDmsExist: 0, timeStamp: expect.any(Number)},
+        {numDmsExist: 1, timeStamp: expect.any(Number)}],
+      messagesExist: [{numMessagesExist: 0, timeStamp: expect.any(Number)}],
+      utilizationRate: 1,
+    });
+  });
+});
+
+describe('Error checking usersStatsV1', () => {
+  test('Invalid token', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+
+    const invalidToken = member1.token + 'lolol';
+    // invalid token
+    expect(userStats(invalidToken)).toStrictEqual(403);
+  });
+});
+

@@ -217,4 +217,7 @@ function userStatsV1(token) {
   return data.users[uId].userStats;
 }
 
-export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2, userStatsV1 };
+function usersStatsV1 () {
+
+}
+export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2, userStatsV1, usersStatsV1 };
