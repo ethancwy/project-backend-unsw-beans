@@ -47,6 +47,17 @@ function searchV1(token: string, queryStr: string) {
       }
     }
   }
+  // const msgList = data.channels.filter(channel => {
+  //   if (channel.memberIds.includes(authUserId)) {
+  //     if (channel.channelmessages.uId === authUserId) {
+  //       if (channel.channelmessages.message.includes(queryStr)) {
+  //         let message = channel.channelmessages;
+  //         delete message.tags;
+  //         return message;
+  //       }
+  //     }
+  //   }
+  // });
 
   // checking dms
   for (const dm of data.dms) {
@@ -61,17 +72,6 @@ function searchV1(token: string, queryStr: string) {
       }
     }
   }
-  // const msgList = data.channels.filter(channel => {
-  //   if (channel.memberIds.includes(authUserId)) {
-  //     if (channel.channelmessages.uId === authUserId) {
-  //       if (channel.channelmessages.message.includes(queryStr)) {
-  //         let message = channel.channelmessages;
-  //         delete message.tags;
-  //         return message;
-  //       }
-  //     }
-  //   }
-  // });
 
   return { messages: msgList };
 }

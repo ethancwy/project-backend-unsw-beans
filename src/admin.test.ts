@@ -1,12 +1,18 @@
 import {
   authRegister, channelsCreate,
-  clear,
-  adminUserRemove,
+  clear, channelMessages,
+  adminUserRemove, messageSend, channelInvite,
   adminUserpermissionChange
 } from './global';
 
 // test failed cases for adminuserremove
 describe('/admin/user/remove/v1 failed cases', () => {
+  test('token invalid', () => {
+    clear();
+    authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    expect(adminUserRemove('fake', -10)).toStrictEqual(403);
+  });
+
   test('uId invalid does not exist/already removed', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
@@ -37,7 +43,39 @@ describe('/admin/user/remove/v1 non failed cases', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const user1 = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const channel1 = channelsCreate(user1.token, 'testingTagging', true);
+    const msgId = messageSend(user1.token, channel1.channelId, '@willywonka@jamescharles hello!');
+    channelInvite(user1.token, channel1.channelId, globalOwnerId.authUserId);
+
+    expect(channelMessages(globalOwnerId.token, channel1.channelId, 0)).toStrictEqual({
+      messages: [
+        {
+          messageId: msgId.messageId,
+          uId: user1.authUserId,
+          message: '@willywonka@jamescharles hello!',
+          timeSent: expect.any(Number),
+          reacts: [],
+          isPinned: false,
+        }
+      ],
+      start: 0,
+      end: -1,
+    });
     expect(adminUserRemove(globalOwnerId.token, user1.authUserId)).toStrictEqual({});
+    expect(channelMessages(globalOwnerId.token, channel1.channelId, 0)).toStrictEqual({
+      messages: [
+        {
+          messageId: msgId.messageId,
+          uId: user1.authUserId,
+          message: 'Removed user',
+          timeSent: expect.any(Number),
+          reacts: [],
+          isPinned: false,
+        }
+      ],
+      start: 0,
+      end: -1,
+    });
     expect(channelsCreate(user1.token, 'cannot exist channel', true)).toStrictEqual(403);
   });
 
