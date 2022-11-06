@@ -1,35 +1,26 @@
 import { getData, setData, message } from './dataStore';
 import {
-  getUserId, isValidToken, isInChannel, isInDm, isValidChannel,
-  isActiveStandup, getChannelIndex,
+  getUserId, isValidToken, isInChannel, getChannel
 } from './global';
 import { userProfileV3 } from './users';
-import { messageSendV2 } from './message';
 import HTTPError from 'http-errors';
 
 const requestTime = () => Math.floor((new Date()).getTime() / 1000);
 
-// const sleep = async (milliseconds: number) => {
-//   await new Promise(resolve => {
-//     return setTimeout(resolve, milliseconds)
-//   });
-// };
-
-// const testSleep = async (length: number, channelId: number, index: number, uId: number) => {
-//   await sleep(length * 1000);
-//   sendMessagesToChannel(channelId, index, uId);
-// }
-
 export function standupStartV1(token: string, channelId: number, length: number) {
-  const data = getData();
   const finishTime = requestTime() + length;
+  const data = getData();
   if (!isValidToken(token)) {
     throw HTTPError(403, 'Invalid token');
-  } else if (!isValidChannel(channelId)) {
+  }
+  const channel = getChannel(channelId, data.channels);
+  if (!channel) {
     throw HTTPError(400, 'Invalid channelId');
-  } else if (length <= 0) {
+  }
+  if (length <= 0) {
     throw HTTPError(400, 'Length cannot be negative');
-  } else if (isActiveStandup(channelId)) {
+  }
+  if (channel.standupDetails.isActiveStandup) {
     throw HTTPError(400, 'Active standup currently running');
   }
   const uId = getUserId(token);
@@ -37,14 +28,12 @@ export function standupStartV1(token: string, channelId: number, length: number)
     throw HTTPError(403, 'Authorised user not member of channel');
   }
 
-  // setTimeout(timeout, length * 1000);
-  const index = getChannelIndex(channelId);
+  const index = data.channels.indexOf(channel);
   data.channels[index].standupDetails.isActiveStandup = true;
   data.channels[index].standupDetails.timeFinish = finishTime;
   setData(data);
 
   // sleep for length duration, then send messages to channel
-  // testSleep(length, channelId, index, uId);
   setTimeout(function () { sendMessagesToChannel(channelId, index, uId); }, length * 1000);
 
   return { timeFinish: finishTime };
@@ -55,7 +44,9 @@ export function standupActiveV1(token: string, channelId: number) {
 
   if (!isValidToken(token)) {
     throw HTTPError(403, 'Invalid token');
-  } else if (!isValidChannel(channelId)) {
+  }
+  const channel = getChannel(channelId, data.channels);
+  if (!channel) {
     throw HTTPError(400, 'Invalid channelId');
   }
   const uId = getUserId(token);
@@ -63,12 +54,10 @@ export function standupActiveV1(token: string, channelId: number) {
     throw HTTPError(403, 'Authorised user not member of channel');
   }
 
-  const index = getChannelIndex(channelId);
-  const isActive = data.channels[index].standupDetails.isActiveStandup;
-  const finishTime = data.channels[index].standupDetails.timeFinish;
+  const finishTime = channel.standupDetails.timeFinish;
   return {
-    isActive: !!(isActive),
-    timeFinish: (!isActive) ? null : finishTime,
+    isActive: !!(channel.standupDetails.isActiveStandup),
+    timeFinish: (!channel.standupDetails.isActiveStandup) ? null : finishTime,
   };
 }
 
@@ -77,11 +66,15 @@ export function standupSendV1(token: string, channelId: number, message: string)
 
   if (!isValidToken(token)) {
     throw HTTPError(403, 'Invalid token');
-  } else if (!isValidChannel(channelId)) {
+  }
+  const channel = getChannel(channelId, data.channels);
+  if (!channel) {
     throw HTTPError(400, 'Invalid channelId');
-  } else if (message.length > 1000) {
+  }
+  if (message.length > 1000) {
     throw HTTPError(400, 'Length cannot be over 1000 character');
-  } else if (!isActiveStandup(channelId)) {
+  }
+  if (!channel.standupDetails.isActiveStandup) {
     throw HTTPError(400, 'No active standup currently running');
   }
   const uId = getUserId(token);
@@ -93,9 +86,9 @@ export function standupSendV1(token: string, channelId: number, message: string)
     const user = userProfileV3(token, uId);
     const handle = user.user.handleStr;
 
-    const output: string = `${handle}: ${message}`;
+    const output = `${handle}: ${message}`;
 
-    const index = getChannelIndex(channelId);
+    const index = data.channels.indexOf(channel);
     data.channels[index].standupDetails.standupMessages.push(output);
     setData(data);
   }
@@ -107,7 +100,10 @@ export function standupSendV1(token: string, channelId: number, message: string)
 function sendMessagesToChannel(channelId: number, index: number, uId: number) {
   const data = getData();
   let finalOutput = '';
-  let standupChannel = data.channels[index].standupDetails;
+  if (data.channels[index] === undefined) {
+    return;
+  }
+  const standupChannel = data.channels[index].standupDetails;
 
   if (standupChannel.standupMessages.length !== 0) {
     for (let i = 0; i < standupChannel.standupMessages.length - 1; i++) {

@@ -10,7 +10,7 @@ import HTTPError from 'http-errors';
   * @param {integer} token - a valid authUserId
   * @param {string} name - a valid name that is greater than 1 and smaller than 20
   * @param {boolean} isPublic - deciding factor for setting if channel should be public
-  * 
+  *
   *
   * @returns {integer} - channelId of the channel created
 */
