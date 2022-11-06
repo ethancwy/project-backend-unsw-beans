@@ -1,4 +1,4 @@
-import { getData, MessageDetails } from './dataStore';
+import { getData, MessageDetails, channel } from './dataStore';
 import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
@@ -241,6 +241,16 @@ export function isValidToken(token: string) {
     }
   }
   return false;
+}
+
+export function getChannel(channelId: number, channelsArray: channel[]) {
+  let channel: channel;
+  for (let i = 0; i < channelsArray.length; i++) {
+    if (channelId === channelsArray[i].channelId) {
+      channel = channelsArray[i];
+    }
+  }
+  return channel;
 }
 
 // Checks if user is in channel
