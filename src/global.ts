@@ -566,3 +566,6 @@ export function adminUserRemove(token: string, uId: number) {
 export function adminUserpermissionChange(token: string, uId: number, permissionId: number) {
   return requestHelper('POST', '/admin/userpermission/change/v1', { uId, permissionId }, token);
 }
+export function search(token: string, queryStr: string) {
+  return requestHelper('GET', '/search/v1', { queryStr }, token);
+}
