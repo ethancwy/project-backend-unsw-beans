@@ -330,20 +330,30 @@ describe('Testing userStatsV1', () => {
 
     // Testing user stats of member 1
     expect(userStats(member1.token)).toStrictEqual({
-      channelsJoined: [{numChannelsJoined: 2, timestamp: expect.any(Number)}],
-      dmsJoined: [{numDmsJoined: 1, timestamp: expect.any(Number)}],
-      messagesSent: [],
+      channelsJoined: [
+        {numChannelsJoined: 0, timeStamp: expect.any(Number)},
+        {numChannelsJoined: 1, timeStamp: expect.any(Number)},
+        {numChannelsJoined: 2, timeStamp: expect.any(Number)}],
+      dmsJoined: [
+        {numDmsJoined: 0, timeStamp: expect.any(Number)},
+        {numDmsJoined: 1, timeStamp: expect.any(Number)}],
+      messagesSent: [{numMessagesSent: 0, timeStamp: expect.any(Number)}],
       involvementRate: 1,
     });
 
     // Testing user stats of member 2
     expect(userStats(member2.token)).toStrictEqual({
-      channelsJoined: [{numChannelsJoined: 1, timestamp: expect.any(Number)}],
-      dmsJoined: [{numDmsJoined: 1, timestamp: expect.any(Number)}],
-      messagesSent: [],
+      channelsJoined: [
+        {numChannelsJoined: 0, timeStamp: expect.any(Number)},
+        {numChannelsJoined: 1, timeStamp: expect.any(Number)}],
+      dmsJoined: [
+        {numDmsJoined: 0, timeStamp: expect.any(Number)},
+        {numDmsJoined: 1, timeStamp: expect.any(Number)}],
+      messagesSent: [{numMessagesSent: 0, timeStamp: expect.any(Number)}],
       involvementRate: 2 / 3,
     });
-  );
+    
+  });
 });
 
 describe('Error checking userStatsV1', () => {
@@ -353,7 +363,7 @@ describe('Error checking userStatsV1', () => {
 
     const invalidToken = member1.token + 'lolol';
     // invalid token
-    expect(userStatsV1(invalidToken)).toStrictEqual(403);
+    expect(userStats(invalidToken)).toStrictEqual(403);
   });
 });
 

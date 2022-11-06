@@ -14,7 +14,7 @@ import {
 } from './channel';
 import {
   userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2,
-  userSetHandleV2
+  userSetHandleV2, userStatsV1
 } from './users';
 import { dmCreateV2, dmDetailsV2, dmLeaveV2, dmListV2, dmRemoveV2, dmMessagesV2 } from './dm';
 import { getNotificationsV1 } from './notifications';

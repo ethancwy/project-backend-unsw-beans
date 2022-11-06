@@ -75,9 +75,9 @@ export type MessagesSent = {
 }
 
 export type userStats = {
-  channelsJoined: ChannelsJoined;
-  dmsJoined: DmsJoined;
-  messagesSent: MessagesSent;
+  channelsJoined: Array<ChannelsJoined>;
+  dmsJoined: Array<DmsJoined>;
+  messagesSent: Array<MessagesSent>;
   involvementRate: number;
   // ^ sum(numChannelsJoined, numDmsJoined, numMsgsSent) /
   // sum(numChannels, numDms, numMsgs)

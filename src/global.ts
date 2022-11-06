@@ -571,10 +571,10 @@ export function userSetHandle(token: string, handleStr: string) {
 }
 // Iteration 3 user/users functions
 export function userStats(token: string) {
-  return requestHelper('GET', 'user/stats/V1', {}, token);
+  return requestHelper('GET', '/user/stats/v1', {}, token);
 }
 export function usersStats(token: string) {
-  return requestHelper('GET', 'user/stats/V1', {}, token);
+  return requestHelper('GET', '/users/stats/v1', {}, token);
 }
 // ============================ New Iteration 3 function wrappers ================================//
 export function getNotifications(token: string) {

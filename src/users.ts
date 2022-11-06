@@ -185,7 +185,36 @@ function userStatsV1(token) {
   if (!isValidToken(token)) {
     throw HTTPError(403, 'Invalid token');
   }
+
+  const uId = getUserId(token);
+
+  // Calculating involvement
+  const denom =  data.channels.length + data.dms.length;
+  let involvement = 0;
+  // Calculating involvement if denom != 0
+  if (denom) {
+    // Finding number of involved channels, dms and msgs sent
+    // Finding length of each array in userStatus
+    const chLength = data.users[uId].userStats.channelsJoined.length - 1;
+    const dmsLength = data.users[uId].userStats.dmsJoined.length - 1;
+    const msgsLength = data.users[uId].userStats.messagesSent.length - 1;
+    // Finding value of lates element in each array in userStatus
+    const chFinal = data.users[uId].userStats.channelsJoined[chLength].numChannelsJoined;
+    const dmsFinal = data.users[uId].userStats.dmsJoined[dmsLength].numDmsJoined;
+    const msgsFinal = data.users[uId].userStats.messagesSent[msgsLength].numMessagesSent;
+    
+    const numer = chFinal + dmsFinal + msgsFinal;
+    involvement = numer / denom;
+  }
+
+  // Setting involvement to 1 if greater than 1
+  if (involvement > 1) {
+    involvement = 1;
+  }
+
+  data.users[uId].userStats.involvementRate = involvement;
   
+  return data.users[uId].userStats;
 }
 
 export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2, userStatsV1 };
