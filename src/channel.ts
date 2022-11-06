@@ -181,7 +181,7 @@ function channelMessagesV3(token: string, channelId: number, start: number) {
           isThisUserReacted: !!(react.uIds.includes(authUserId)),
         });
       }
-      list.push({
+      list.unshift({
         uId: msg.uId,
         message: msg.message,
         messageId: msg.messageId,

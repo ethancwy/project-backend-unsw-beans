@@ -1,26 +1,24 @@
-// package structured message, send to channel (messagesend
-import { getData, setData } from './dataStore';
+import { getData, setData, message } from './dataStore';
 import {
   getUserId, isValidToken, isInChannel, isInDm, isValidChannel,
   isActiveStandup, getChannelIndex,
 } from './global';
-import { getChannelDetails, getDmDetails } from './global';
 import { userProfileV3 } from './users';
 import { messageSendV2 } from './message';
 import HTTPError from 'http-errors';
 
 const requestTime = () => Math.floor((new Date()).getTime() / 1000);
 
-const sleep = async (milliseconds) => {
-  await new Promise(resolve => {
-    return setTimeout(resolve, milliseconds)
-  });
-};
+// const sleep = async (milliseconds: number) => {
+//   await new Promise(resolve => {
+//     return setTimeout(resolve, milliseconds)
+//   });
+// };
 
-const testSleep = async (length: number, channelId: number, index: number, uId: number) => {
-  await sleep(length * 1000);
-  standupMessage(channelId, index, uId);
-}
+// const testSleep = async (length: number, channelId: number, index: number, uId: number) => {
+//   await sleep(length * 1000);
+//   sendMessagesToChannel(channelId, index, uId);
+// }
 
 export function standupStartV1(token: string, channelId: number, length: number) {
   const data = getData();
@@ -46,7 +44,8 @@ export function standupStartV1(token: string, channelId: number, length: number)
   setData(data);
 
   // sleep for length duration, then send messages to channel
-  testSleep(length, channelId, index, uId);
+  // testSleep(length, channelId, index, uId);
+  setTimeout(function () { sendMessagesToChannel(channelId, index, uId); }, length * 1000);
 
   return { timeFinish: finishTime };
 }
@@ -81,7 +80,7 @@ export function standupSendV1(token: string, channelId: number, message: string)
   } else if (!isValidChannel(channelId)) {
     throw HTTPError(400, 'Invalid channelId');
   } else if (message.length > 1000) {
-    throw HTTPError(400, 'Length cannot be over 1000 characters');
+    throw HTTPError(400, 'Length cannot be over 1000 character');
   } else if (!isActiveStandup(channelId)) {
     throw HTTPError(400, 'No active standup currently running');
   }
@@ -90,20 +89,22 @@ export function standupSendV1(token: string, channelId: number, message: string)
     throw HTTPError(403, 'Authorised user not member of channel');
   }
 
-  const user = userProfileV3(token, uId);
-  const handle = user.user.handleStr;
+  if (message.length !== 0) {
+    const user = userProfileV3(token, uId);
+    const handle = user.user.handleStr;
 
-  const output: string = `${handle}: ${message}`;
+    const output: string = `${handle}: ${message}`;
 
-  const index = getChannelIndex(channelId);
-  data.channels[index].standupDetails.standupMessages.push(output);
+    const index = getChannelIndex(channelId);
+    data.channels[index].standupDetails.standupMessages.push(output);
+    setData(data);
+  }
 
-  setData(data);
   return {};
 }
 
 // helper function that sends message to channel after end of standupStart
-function standupMessage(channelId: number, index: number, uId: number) {
+function sendMessagesToChannel(channelId: number, index: number, uId: number) {
   const data = getData();
   let finalOutput = '';
   let standupChannel = data.channels[index].standupDetails;
@@ -113,11 +114,11 @@ function standupMessage(channelId: number, index: number, uId: number) {
       finalOutput += (standupChannel.standupMessages[i] + '\n');
     }
     // don't print newline for last message
-    finalOutput += standupChannel.standupMessages[standupChannel.standupMessages.length - 1];
+    finalOutput += standupChannel.standupMessages[(standupChannel.standupMessages.length) - 1];
 
     const messageId = data.messageDetails.length;
 
-    const newMessage = {
+    const newMessage: message = {
       messageId: messageId,
       uId: uId,
       message: finalOutput,
@@ -127,6 +128,14 @@ function standupMessage(channelId: number, index: number, uId: number) {
       tags: [],
     };
     data.channels[index].channelmessages.push(newMessage);
+    data.messageDetails.push({
+      uId: uId,
+      message: finalOutput,
+      messageId: messageId,
+      isDm: false,
+      listId: channelId,
+      tags: [],
+    });
   }
 
   // no longer active

@@ -320,7 +320,7 @@ function dmMessagesV2(token: string, dmId: number, start: number) {
         isThisUserReacted: !!(react.uIds.includes(userId)),
       });
     }
-    messages.push({
+    messages.unshift({
       uId: msg.uId,
       messageId: msg.messageId,
       message: msg.message,
