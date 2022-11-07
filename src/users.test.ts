@@ -317,20 +317,21 @@ describe('Error checking userSetHandleV1', () => {
 });
 
 describe('Testing userStatsV1', () => {
-  clear();
-  const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-  const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
-  // Creating channels to test stats
-  const channel1 = channelsCreate(member1.token, 'channel1', true);
-  const channel2 = channelsCreate(member1.token, 'channel2', false);
-  channelJoin(member2.token, channel1.channelId);
-  // Creating dm to test stats
-  const dm = dmCreate(member1.token, [member2.authUserId]);
-  // Creating messages to test stats
-  messageSend(member1.token, channel1.channelId, 'hello there');
-  messageSendDm(member2.token, dm.dmId, 'yep');
-
+  
   test('Successfully returning stats of user', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+    // Creating channels to test stats
+    const channel1 = channelsCreate(member1.token, 'channel1', true);
+    const channel2 = channelsCreate(member1.token, 'channel2', false);
+    channelJoin(member2.token, channel1.channelId);
+    // Creating dm to test stats
+    const dm = dmCreate(member1.token, [member2.authUserId]);
+    // Creating messages to test stats
+    messageSend(member1.token, channel1.channelId, 'hello there');
+    messageSendDm(member2.token, dm.dmId, 'yep');
+
     // Testing user stats of member 1
     expect(userStats(member1.token)).toStrictEqual({
       channelsJoined: [
@@ -368,6 +369,19 @@ describe('Testing userStatsV1', () => {
   });
 
   test('Testing user/stats with channelleave and dmremove/leave', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
+    // Creating channels to test stats
+    const channel1 = channelsCreate(member1.token, 'channel1', true);
+    const channel2 = channelsCreate(member1.token, 'channel2', false);
+    channelJoin(member2.token, channel1.channelId);
+    // Creating dm to test stats
+    const dm = dmCreate(member1.token, [member2.authUserId]);
+    // Creating messages to test stats
+    messageSend(member1.token, channel1.channelId, 'hello there');
+    messageSendDm(member2.token, dm.dmId, 'yep');
+    
     channelLeave(member2.token, channel1.channelId);
     dmLeave(member2.token, dm.dmId);
 
@@ -438,4 +452,3 @@ describe('Error checking usersStatsV1', () => {
     expect(userStats(invalidToken)).toStrictEqual(403);
   });
 });
-

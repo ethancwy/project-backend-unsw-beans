@@ -2,11 +2,11 @@
   "users": [
     {
       "uId": 0,
-      "nameFirst": "James",
-      "nameLast": "Charles",
-      "email": "foo@bar.com",
-      "password": "password",
-      "handleStr": "jamescharles",
+      "nameFirst": "Nina",
+      "nameLast": "Yeh",
+      "email": "Nina0803@icloud.com",
+      "password": "Nina0803",
+      "handleStr": "ninayeh",
       "isGlobalOwner": true,
       "isRemoved": false,
       "tokens": [

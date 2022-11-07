@@ -214,8 +214,6 @@ function userStatsV1(token) {
   }
 
   data.users[uId].userStats.involvementRate = involvement;
-  
-  setData(data);
   return data.users[uId].userStats;
 }
 
@@ -234,8 +232,6 @@ function usersStatsV1 (token: string) {
   // Caclulating utilisation rate
   // numUsersWhoHaveJoinedAtLeastOneChannelOrDm / numUsers
   data.workspaceStats.utilizationRate = usersJ / numusers;
-
-  setData(data);
   return data.workspaceStats;  
 }
 
