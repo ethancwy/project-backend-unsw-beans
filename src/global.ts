@@ -456,7 +456,7 @@ export function updateWorkSpace(categ: string, func: string) {
     }
   } else if (categ === 'msgs') {
     data.workspaceStats.messagesExist.push({
-      numMessagesExist: data.counter,
+      numMessagesExist: data.workspaceStats.messagesExist.length,
       timeStamp: requestTimeStamp(),
     });
   }

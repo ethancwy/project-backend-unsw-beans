@@ -190,7 +190,7 @@ function userStatsV1(token) {
 
   // Calculating involvement
   // sum(numChannelsJoined, numDmsJoined, numMsgsSent) / sum(numChannels, numDms, numMsgs)
-  const denom =  data.channels.length + data.dms.length;
+  const denom =  data.channels.length + data.dms.length + data.workspaceStats.messagesExist.length - 1;
   let involvement = 0;
   // Calculating involvement if denom != 0
   if (denom) {
@@ -199,7 +199,7 @@ function userStatsV1(token) {
     const chLength = data.users[uId].userStats.channelsJoined.length - 1;
     const dmsLength = data.users[uId].userStats.dmsJoined.length - 1;
     const msgsLength = data.users[uId].userStats.messagesSent.length - 1;
-    // Finding value of lates element in each array in userStatus
+    // Finding value of latest element in each array in userStatus
     const chFinal = data.users[uId].userStats.channelsJoined[chLength].numChannelsJoined;
     const dmsFinal = data.users[uId].userStats.dmsJoined[dmsLength].numDmsJoined;
     const msgsFinal = data.users[uId].userStats.messagesSent[msgsLength].numMessagesSent;
