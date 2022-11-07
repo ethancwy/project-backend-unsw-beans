@@ -414,6 +414,7 @@ describe('/message/share/v1 failes', () => {
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const channel2 = channelsCreate(member.token, 'Dog11 Channel', true);
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    expect(messageShare(member.token, messageId.messageId, '', channel2.channelId, -1)).toStrictEqual(400);
     expect(messageShare(auth.token, messageId.messageId, '', channel2.channelId, -1)).toStrictEqual(403);
   });
 
@@ -481,7 +482,7 @@ describe('failed cases', () => {
     expect(messageReact(nonmember.token, dmMessageId.messageId, 1)).toStrictEqual(400);
   });
 
-  test('react id invalid(not 1)', () => {
+  test('token / react id invalid(not 1)', () => {
     clear();
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
@@ -489,20 +490,26 @@ describe('failed cases', () => {
     const dm = dmCreate(auth.token, []);
     const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
     expect(messageReact(auth.token, messageId.messageId, 11)).toStrictEqual(400);
+    expect(messageReact('fake token', messageId.messageId, 11)).toStrictEqual(403);
     expect(messageReact(auth.token, dmMessageId.messageId, 11)).toStrictEqual(400);
   });
 
-  test('auth user already reacted with react id', () => {
+  test('messageId invalid / auth user already reacted with react id', () => {
     clear();
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const nonmember = authRegister('Nina0803sad@icloud.com', 'Nidsana0803', 'Nidsana', 'Ydsah');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    expect(messageUnreact(auth.token, messageId.messageId, 1)).toStrictEqual(400);
+    expect(messageReact(auth.token, -1000, 1)).toStrictEqual(400);
     expect(messageReact(auth.token, messageId.messageId, 1)).toStrictEqual({});
+    expect(messageUnreact(auth.token, messageId.messageId, 123)).toStrictEqual(400);
     expect(messageReact(auth.token, messageId.messageId, 1)).toStrictEqual(400);
     const dm = dmCreate(auth.token, []);
     const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
     expect(messageReact(auth.token, dmMessageId.messageId, 1)).toStrictEqual({});
-    expect(messageReact(auth.token, dmMessageId.messageId, 1)).toStrictEqual(400);
+    expect(messageUnreact(nonmember.token, messageId.messageId, 1)).toStrictEqual(400);
+    expect(messageUnreact(nonmember.token, dmMessageId.messageId, 1)).toStrictEqual(400);
   });
 });
 
@@ -517,6 +524,8 @@ describe('success cases', () => {
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
     expect(messageReact(auth.token, messageId.messageId, 1)).toStrictEqual({});
     expect(messageReact(member.token, messageId.messageId, 1)).toStrictEqual({});
+    expect(messageUnreact('fake token', messageId.messageId, 1)).toStrictEqual(403);
+    expect(messageUnreact(auth.token, -190, 1)).toStrictEqual(400);
     expect(messageUnreact(auth.token, messageId.messageId, 1)).toStrictEqual({});
     expect(messageUnreact(member.token, messageId.messageId, 1)).toStrictEqual({});
     // add check to see if reaction exists
@@ -546,6 +555,8 @@ describe('/message/pin/unpin/v1 failes', () => {
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
     const dm = dmCreate(auth.token, []);
     const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messagePin('fake', messageId.messageId)).toStrictEqual(403);
+    expect(messageUnpin('fake', messageId.messageId)).toStrictEqual(403);
     expect(messagePin(nonmember.token, messageId.messageId)).toStrictEqual(400);
     expect(messageUnpin(nonmember.token, messageId.messageId)).toStrictEqual(400);
     expect(messagePin(nonmember.token, dmMessageId.messageId)).toStrictEqual(400);
@@ -559,6 +570,8 @@ describe('/message/pin/unpin/v1 failes', () => {
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
     const dm = dmCreate(auth.token, []);
     const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messagePin(auth.token, -199)).toStrictEqual(400);
+    expect(messageUnpin(auth.token, -123)).toStrictEqual(400);
     expect(messagePin(auth.token, messageId.messageId)).toStrictEqual({});
     expect(messagePin(auth.token, messageId.messageId)).toStrictEqual(400);
     expect(messageUnpin(auth.token, messageId.messageId)).toStrictEqual({});
@@ -638,6 +651,7 @@ describe('/message/sendlater fails', () => {
     const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
     const dm = dmCreate(member.token, [auth.authUserId]);
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    expect(messageSendlater('fake', channelId.channelId, 'hiiiiii', requestTime() + 1500)).toStrictEqual(403);
     expect(messageSendlater(auth.token, channelId.channelId - 10, 'hiiiiii', requestTime() + 1500)).toStrictEqual(400);
     expect(messageSendlaterdm(auth.token, dm.dmId - 10, 'hiiiiii', requestTime() + 1500)).toStrictEqual(400);
   });

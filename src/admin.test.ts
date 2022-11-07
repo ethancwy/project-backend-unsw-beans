@@ -1,8 +1,8 @@
 import {
-  authRegister, channelsCreate,
-  clear, channelMessages,
+  authRegister, channelsCreate, dmCreate,
+  clear, channelMessages, dmMessages,
   adminUserRemove, messageSend, channelInvite,
-  adminUserpermissionChange
+  adminUserpermissionChange, messageSendDm
 } from './global';
 
 // test failed cases for adminuserremove
@@ -46,6 +46,9 @@ describe('/admin/user/remove/v1 non failed cases', () => {
     const channel1 = channelsCreate(user1.token, 'testingTagging', true);
     const msgId = messageSend(user1.token, channel1.channelId, '@willywonka@jamescharles hello!');
     channelInvite(user1.token, channel1.channelId, globalOwnerId.authUserId);
+  
+    const dm1 = dmCreate(user1.token, [globalOwnerId.authUserId]);
+    const dmMsgId = messageSendDm(user1.token, dm1.dmId, 'msgtodel');
 
     expect(channelMessages(globalOwnerId.token, channel1.channelId, 0)).toStrictEqual({
       messages: [
@@ -53,6 +56,20 @@ describe('/admin/user/remove/v1 non failed cases', () => {
           messageId: msgId.messageId,
           uId: user1.authUserId,
           message: '@willywonka@jamescharles hello!',
+          timeSent: expect.any(Number),
+          reacts: [],
+          isPinned: false,
+        }
+      ],
+      start: 0,
+      end: -1,
+    });
+    expect(dmMessages(globalOwnerId.token, dm1.dmId, 0)).toStrictEqual({
+      messages: [
+        {
+          messageId: dmMsgId.messageId,
+          uId: user1.authUserId,
+          message: 'msgtodel',
           timeSent: expect.any(Number),
           reacts: [],
           isPinned: false,
@@ -76,9 +93,23 @@ describe('/admin/user/remove/v1 non failed cases', () => {
       start: 0,
       end: -1,
     });
+    expect(dmMessages(globalOwnerId.token, dm1.dmId, 0)).toStrictEqual({
+      messages: [
+        {
+          messageId: dmMsgId.messageId,
+          uId: user1.authUserId,
+          message: 'Removed user',
+          timeSent: expect.any(Number),
+          reacts: [],
+          isPinned: false,
+        }
+      ],
+      start: 0,
+      end: -1,
+    });
     expect(channelsCreate(user1.token, 'cannot exist channel', true)).toStrictEqual(403);
   });
-
+  
   test('global owner removing another global owner', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
@@ -91,11 +122,13 @@ describe('/admin/user/remove/v1 non failed cases', () => {
 
 // test failed cases for adminuserpermissionchange
 describe('/admin/userpermission/change/v1 failed cases', () => {
-  test('uId invalid does not exist/already removed', () => {
+  test('token & uId invalid does not exist/already removed, code invalid', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const user1 = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    expect(adminUserRemove('fake token', user1.authUserId)).toStrictEqual(403);
     expect(adminUserRemove(globalOwnerId.token, user1.authUserId)).toStrictEqual({});
+    expect(adminUserpermissionChange('fake token', user1.authUserId, 2)).toStrictEqual(403);
     expect(adminUserpermissionChange(globalOwnerId.token, user1.authUserId, 2)).toStrictEqual(400);
     expect(adminUserpermissionChange(globalOwnerId.token, user1.authUserId, 1)).toStrictEqual(400);
   });
@@ -103,7 +136,7 @@ describe('/admin/userpermission/change/v1 failed cases', () => {
   test('uId is only global owner and being demoted to user', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-    expect(adminUserpermissionChange(globalOwnerId.token, globalOwnerId.authUserId, 1)).toStrictEqual(400);
+    expect(adminUserpermissionChange(globalOwnerId.token, globalOwnerId.authUserId, 2)).toStrictEqual(400);
   });
 
   test('auth user is not global owner', () => {
@@ -120,6 +153,7 @@ describe('/admin/userpermission/change/v1 failed cases', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const user1 = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    expect(adminUserpermissionChange(globalOwnerId.token, user1.authUserId, 111)).toStrictEqual(400);
     expect(adminUserpermissionChange(globalOwnerId.token, user1.authUserId, 2)).toStrictEqual(400);
     expect(adminUserpermissionChange(globalOwnerId.token, globalOwnerId.authUserId, 1)).toStrictEqual(400);
   });
