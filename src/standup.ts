@@ -7,6 +7,17 @@ import HTTPError from 'http-errors';
 
 const requestTime = () => Math.floor((new Date()).getTime() / 1000);
 
+/**
+  *
+  * For a given channel, starts a standup period lasting length seconds.
+  *
+  * @param {string} token - a valid token
+  * @param {number} channelId - a valid channelId
+  * @param {number} length - length of standup
+  *
+  * @returns {timeFinish: number} - the time that standup finishes
+*/
+
 export function standupStartV1(token: string, channelId: number, length: number) {
   const finishTime = requestTime() + length;
   const data = getData();
@@ -39,6 +50,20 @@ export function standupStartV1(token: string, channelId: number, length: number)
   return { timeFinish: finishTime };
 }
 
+/**
+  *
+  * For a given channel, returns whether a standup is active in it,
+  * and what time the standup finishes.
+  *
+  * @param {string} token - a valid token
+  * @param {number} channelId - a valid channelId
+  *
+  * @returns {isActive: boolean
+  *           timeFinish: number
+  *           } - if the standup is active AND
+  *             - the time that standup finishes
+*/
+
 export function standupActiveV1(token: string, channelId: number) {
   const data = getData();
 
@@ -60,6 +85,18 @@ export function standupActiveV1(token: string, channelId: number) {
     timeFinish: (!channel.standupDetails.isActiveStandup) ? null : finishTime,
   };
 }
+
+/**
+  *
+  * For a given channel, if a standup is currently active in the channel,
+  * sends a message to get buffered in the standup queue.
+  *
+  * @param {string} token - a valid token
+  * @param {number} channelId - a valid channelId
+  * @param {string} message - a valid message
+  *
+  * @returns {} - empty object
+*/
 
 export function standupSendV1(token: string, channelId: number, message: string) {
   const data = getData();
@@ -96,7 +133,7 @@ export function standupSendV1(token: string, channelId: number, message: string)
   return {};
 }
 
-// helper function that sends message to channel after end of standupStart
+// Helper function that sends message to channel after end of standupStart
 function sendMessagesToChannel(channelId: number, index: number, uId: number) {
   const data = getData();
   let finalOutput = '';
