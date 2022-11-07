@@ -2,11 +2,11 @@
   "users": [
     {
       "uId": 0,
-      "nameFirst": "Nina",
-      "nameLast": "Yeh",
-      "email": "Nina0803@icloud.com",
-      "password": "Nina0803",
-      "handleStr": "ninayeh",
+      "nameFirst": "hao",
+      "nameLast": "yang",
+      "email": "hao@mail.com",
+      "password": "1234512345",
+      "handleStr": "haoyang",
       "isGlobalOwner": true,
       "isRemoved": false,
       "tokens": [
@@ -17,6 +17,56 @@
           {
             "numChannelsJoined": 0,
             "timeStamp": 0
+          },
+          {
+            "numChannelsJoined": 1,
+            "timeStamp": 1667860501
+          },
+          {
+            "numChannelsJoined": 2,
+            "timeStamp": 1667860502
+          },
+          {
+            "numChannelsJoined": 3,
+            "timeStamp": 1667860502
+          }
+        ],
+        "dmsJoined": [
+          {
+            "numDmsJoined": 0,
+            "timeStamp": 0
+          }
+        ],
+        "messagesSent": [
+          {
+            "numMessagesSent": 0,
+            "timeStamp": 0
+          }
+        ],
+        "involvementRate": 0
+      }
+    },
+    {
+      "uId": 1,
+      "nameFirst": "ethan",
+      "nameLast": "chew",
+      "email": "ethan@mail.com",
+      "password": "5678956789",
+      "handleStr": "ethanchew",
+      "isGlobalOwner": false,
+      "isRemoved": false,
+      "tokens": [
+        "1"
+      ],
+      "userStats": {
+        "channelsJoined": [
+          {
+            "numChannelsJoined": 0,
+            "timeStamp": 0
+          },
+          {
+            "numChannelsJoined": 1,
+            "timeStamp": 1667860502
           }
         ],
         "dmsJoined": [
@@ -35,10 +85,60 @@
       }
     }
   ],
-  "channels": [],
+  "channels": [
+    {
+      "channelId": 0,
+      "name": "hao/channel1",
+      "isPublic": true,
+      "ownerIds": [
+        0
+      ],
+      "memberIds": [
+        0
+      ],
+      "channelmessages": []
+    },
+    {
+      "channelId": 1,
+      "name": "hao/channel2",
+      "isPublic": true,
+      "ownerIds": [
+        0
+      ],
+      "memberIds": [
+        0
+      ],
+      "channelmessages": []
+    },
+    {
+      "channelId": 2,
+      "name": "hao/channel3",
+      "isPublic": false,
+      "ownerIds": [
+        0
+      ],
+      "memberIds": [
+        0
+      ],
+      "channelmessages": []
+    },
+    {
+      "channelId": 3,
+      "name": "ethan/channel1",
+      "isPublic": true,
+      "ownerIds": [
+        1
+      ],
+      "memberIds": [
+        1
+      ],
+      "channelmessages": []
+    }
+  ],
   "dms": [],
   "sessionIds": [
-    "0"
+    "0",
+    "1"
   ],
   "messageDetails": [],
   "inviteDetails": [],
@@ -48,6 +148,22 @@
       {
         "numChannelsExist": 0,
         "timeStamp": 0
+      },
+      {
+        "numChannelsExist": 1,
+        "timeStamp": 1667860501
+      },
+      {
+        "numChannelsExist": 2,
+        "timeStamp": 1667860502
+      },
+      {
+        "numChannelsExist": 3,
+        "timeStamp": 1667860502
+      },
+      {
+        "numChannelsExist": 4,
+        "timeStamp": 1667860502
       }
     ],
     "dmsExist": [

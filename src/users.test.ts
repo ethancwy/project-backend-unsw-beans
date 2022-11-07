@@ -381,7 +381,7 @@ describe('Testing userStatsV1', () => {
     // Creating messages to test stats
     messageSend(member1.token, channel1.channelId, 'hello there');
     messageSendDm(member2.token, dm.dmId, 'yep');
-    
+    // Leaving channels and dms to test userStats
     channelLeave(member2.token, channel1.channelId);
     dmLeave(member2.token, dm.dmId);
 
