@@ -72,9 +72,9 @@ function messageSendV2(token: string, channelId: number, message: string) {
   data.counter++;
   setData(data);
   // Updating userStats
-  updateUserStats(uId, 'msgs', 'add');
+  updateUserStats(uId, 'msgs', 'add', newMessage.timeSent);
   // Updating workspace
-  updateWorkSpace('msgs', 'add');
+  updateWorkSpace('msgs', 'add', newMessage.timeSent);
   return { messageId: messageId };
 }
 
@@ -277,9 +277,9 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   data.counter++;
   setData(data);
   // Updating userStats
-  updateUserStats(uId, 'msgs', 'add');
+  updateUserStats(uId, 'msgs', 'add', newMessage.timeSent);
   // Updating workspace
-  updateWorkSpace('msgs', 'add');
+  updateWorkSpace('msgs', 'add', newMessage.timeSent);
   return { messageId: messageId };
 }
 

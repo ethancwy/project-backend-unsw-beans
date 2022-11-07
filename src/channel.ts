@@ -42,7 +42,7 @@ function channelJoinV3(token: string, channelId: number) {
 
       setData(data);
       // edit userStats
-      updateUserStats(authUserId, 'channels', 'add');
+      updateUserStats(authUserId, 'channels', 'add', 0);
       return {};
     }
   }
@@ -102,7 +102,7 @@ function channelInviteV3(token: string, channelId: number, uId: number) {
     
       setData(data);
       // edit userStats
-      updateUserStats(uId, 'channels', 'add');
+      updateUserStats(uId, 'channels', 'add', 0);
       return {};
     }
   }
@@ -333,7 +333,7 @@ function channelLeaveV2(token: string, channelId: number) {
 
   setData(data);
   // edit userStats
-  updateUserStats(uId, 'channels', 'remove');
+  updateUserStats(uId, 'channels', '', 0);
   return {};
 }
 

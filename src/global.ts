@@ -389,7 +389,7 @@ export function isDmMember(uid: number, dmId: number) {
 // Updates userStats
 // Takes in uId of user to update, category(ie channel, dms, messages)
 // and function(ie add, remove)
-export function updateUserStats(uId: number, categ: string, func: string) {
+export function updateUserStats(uId: number, categ: string, func: string, time: number) {
   const data = getData();
   
   if (categ === 'channels') {
@@ -419,7 +419,7 @@ export function updateUserStats(uId: number, categ: string, func: string) {
   } else if (categ === 'msgs') { // Creating a message
     data.users[uId].userStats.messagesSent.push({
       numMessagesSent: data.users[uId].userStats.messagesSent.length,
-      timeStamp: requestTimeStamp(),
+      timeStamp: time,
     });
   }
 
@@ -427,7 +427,7 @@ export function updateUserStats(uId: number, categ: string, func: string) {
   return;
 }
 
-export function updateWorkSpace(categ: string, func: string) {
+export function updateWorkSpace(categ: string, func: string, time: number) {
   const data = getData();
 
   if (categ === 'channels') {
@@ -457,7 +457,7 @@ export function updateWorkSpace(categ: string, func: string) {
   } else if (categ === 'msgs') {
     data.workspaceStats.messagesExist.push({
       numMessagesExist: data.workspaceStats.messagesExist.length,
-      timeStamp: requestTimeStamp(),
+      timeStamp: time,
     });
   }
 

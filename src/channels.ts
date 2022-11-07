@@ -41,9 +41,9 @@ function channelsCreateV3(token: string, name: string, isPublic: boolean) {
   
   setData(data);
   // Adding to channel creaters userStats
-  updateUserStats(authUserId, 'channels', 'add'); 
+  updateUserStats(authUserId, 'channels', 'add', 0); 
   // Updating workspace
-  updateWorkSpace('channels', 'add');
+  updateWorkSpace('channels', 'add', 0);
   return { channelId: data.channels[data.channels.length - 1].channelId };
 }
 
