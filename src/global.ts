@@ -3,6 +3,7 @@ import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
 import { user as userType } from './dataStore';
+import { timeStamp } from 'console';
 const SERVER_URL = `${url}:${port}`;
 const requestTimeStamp = () => Math.floor((new Date()).getTime() / 1000);
 
@@ -426,6 +427,43 @@ export function updateUserStats(uId: number, categ: string, func: string) {
   return;
 }
 
+export function updateWorkSpace(categ: string, func: string) {
+  const data = getData();
+
+  if (categ === 'channels') {
+    if (func === 'add') {
+      data.workspaceStats.channelsExist.push({
+        numChannelsExist: data.workspaceStats.channelsExist.length,
+        timeStamp: requestTimeStamp(),
+      });
+    } else {
+      data.workspaceStats.channelsExist.push({
+        numChannelsExist: data.workspaceStats.channelsExist.length - 2,
+        timeStamp: requestTimeStamp(),
+      });
+    }
+  } else if (categ === 'dms') {
+    if (func === 'add') {
+      data.workspaceStats.dmsExist.push({
+        numDmsExist: data.workspaceStats.dmsExist.length,
+        timeStamp: requestTimeStamp(),
+      });
+    } else {
+      data.workspaceStats.dmsExist.push({
+        numDmsExist: data.workspaceStats.dmsExist.length - 2,
+        timeStamp: requestTimeStamp(),
+      });
+    }
+  } else if (categ === 'msgs') {
+    data.workspaceStats.messagesExist.push({
+      numMessagesExist: data.counter,
+      timeStamp: requestTimeStamp(),
+    });
+  }
+
+  setData(data);
+  return;
+}
 
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //
 

@@ -69,12 +69,12 @@ function authRegisterV3(email: string, password: string, nameFirst: string, name
     isGlobalOwner: false,
     isRemoved: false,
     tokens: [token],
-    userStats: [{
+    userStats: {
       channelsJoined: [{numChannelsJoined: 0, timeStamp: 0}],
       dmsJoined: [{numDmsJoined: 0, timeStamp: 0}],
       messagesSent: [{numMessagesSent: 0, timeStamp: 0}],
       involvementRate: 0,
-    }],
+    },
   });
 
   if (data.users.length === 1) {

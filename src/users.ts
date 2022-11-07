@@ -189,6 +189,7 @@ function userStatsV1(token) {
   const uId = getUserId(token);
 
   // Calculating involvement
+  // sum(numChannelsJoined, numDmsJoined, numMsgsSent) / sum(numChannels, numDms, numMsgs)
   const denom =  data.channels.length + data.dms.length;
   let involvement = 0;
   // Calculating involvement if denom != 0
@@ -214,10 +215,28 @@ function userStatsV1(token) {
 
   data.users[uId].userStats.involvementRate = involvement;
   
+  setData(data);
   return data.users[uId].userStats;
 }
 
-function usersStatsV1 () {
+function usersStatsV1 (token: string) {
+  const data = getData();
 
+  // Finding utilisation rate
+  // Finding the number of users who have joined at least one channel or dm
+  const numusers = data.users.length;
+  let usersJ = 0;
+  for (const members of data.users) {
+    if (members.userStats.channelsJoined.length > 1 || members.userStats.dmsJoined.length > 1) {
+      usersJ++;
+    }
+  }
+  // Caclulating utilisation rate
+  // numUsersWhoHaveJoinedAtLeastOneChannelOrDm / numUsers
+  data.workspaceStats.utilizationRate = usersJ / numusers;
+
+  setData(data);
+  return data.workspaceStats;  
 }
+
 export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2, userStatsV1, usersStatsV1 };

@@ -13,6 +13,12 @@ function clearV1() {
     messageDetails: [],
     inviteDetails: [],
     reactDetails: [],
+    workspaceStats: {
+      channelsExist: [{numChannelsExist: 0, timeStamp: 0}],
+      dmsExist: [{numDmsExist: 0, timeStamp: 0}],
+      messagesExist: [{numMessagesExist: 0, timeStamp: 0}],
+      utilizationRate: 0,
+    },
     counter: 0,
   };
   setData(data);

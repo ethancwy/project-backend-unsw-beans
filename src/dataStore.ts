@@ -1,3 +1,4 @@
+import { timeStamp } from 'console';
 import fs from 'fs';
 
 export type user = {
@@ -98,10 +99,10 @@ export type MessagesExist = {
   timeStamp: number;
 }
 
-export type workspaceStats = {
-  channelsExist: ChannelsExist;
-  dmsExist: DmsExist;
-  messagesExist: MessagesExist;
+export type workspaceStat = {
+  channelsExist: Array<ChannelsExist>;
+  dmsExist: Array<DmsExist>;
+  messagesExist: Array<MessagesExist>;
   utilizationRate: number;
   // ^ numUsersWhoHaveJoinedAtLeastOneChannelOrDm / numUsers
 }
@@ -145,6 +146,7 @@ export type datatype = {
   messageDetails: Array<MessageDetails>;
   inviteDetails: Array<InviteDetails>;
   reactDetails: Array<ReactDetails>;
+  workspaceStats: workspaceStat;
   counter: number;
 }
 
@@ -156,6 +158,12 @@ let data: datatype = {
   messageDetails: [],
   inviteDetails: [],
   reactDetails: [],
+  workspaceStats: {
+    channelsExist: [{numChannelsExist: 0, timeStamp: 0}],
+    dmsExist: [{numDmsExist: 0, timeStamp: 0}],
+    messagesExist: [{numMessagesExist: 0, timeStamp: 0}],
+    utilizationRate: 0,
+  },
   counter: 0,
 };
 
