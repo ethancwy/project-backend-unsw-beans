@@ -23,6 +23,9 @@ import {
   messageReactV1, messageUnreactV1, messagePinV1, messageUnpinV1, messageSendlaterV1,
   messageSendlaterdmV1
 } from './message';
+
+import { standupStartV1, standupActiveV1, standupSendV1 } from './standup';
+
 import { adminUserRemoveV1, adminUserpermissionChangeV1 } from './admin';
 
 // Set up web app
@@ -257,6 +260,24 @@ app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
   const token = req.header('token');
   const { dmId, message, timeSent } = req.body;
   return res.json(messageSendlaterdmV1(token, dmId, message, timeSent));
+});
+
+app.post('/standup/start/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, length } = req.body;
+  return res.json(standupStartV1(token, channelId, length));
+});
+
+app.get('/standup/active/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const channelId = parseInt(req.query.channelId as string);
+  return res.json(standupActiveV1(token, channelId));
+});
+
+app.post('/standup/send/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { channelId, message } = req.body;
+  return res.json(standupSendV1(token, channelId, message));
 });
 
 app.delete('/admin/user/remove/v1', (req: Request, res: Response) => {

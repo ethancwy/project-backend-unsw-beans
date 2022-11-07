@@ -22,17 +22,17 @@ describe('/message/send/v1 success', () => {
     expect(channelMessages(auth.token, channelId.channelId, 0)).toStrictEqual({
       messages: [
         {
-          messageId: messageId1.messageId,
+          messageId: messageId2.messageId,
           uId: auth.authUserId,
-          message: 'helloo',
+          message: 'there',
           timeSent: expect.any(Number),
           reacts: [],
           isPinned: false,
         },
         {
-          messageId: messageId2.messageId,
+          messageId: messageId1.messageId,
           uId: auth.authUserId,
-          message: 'there',
+          message: 'helloo',
           timeSent: expect.any(Number),
           reacts: [],
           isPinned: false,
@@ -112,17 +112,17 @@ describe('message/senddm/v1 success', () => {
     expect(dmMessages(auth1.token, dmId.dmId, 0)).toStrictEqual({
       messages: [
         {
-          messageId: message1.messageId,
-          uId: auth1.authUserId,
-          message: 'meow1',
+          messageId: message2.messageId,
+          uId: auth2.authUserId,
+          message: 'meow2',
           timeSent: expect.any(Number),
           reacts: [],
           isPinned: false,
         },
         {
-          messageId: message2.messageId,
-          uId: auth2.authUserId,
-          message: 'meow2',
+          messageId: message1.messageId,
+          uId: auth1.authUserId,
+          message: 'meow1',
           timeSent: expect.any(Number),
           reacts: [],
           isPinned: false,
@@ -631,7 +631,7 @@ describe('/message/pin/unpin/v1 success', () => {
 });
 
 // Testing for message/sendlater failed cases
-describe('/message/sendlater failes', () => {
+describe('/message/sendlater fails', () => {
   test('invalid channel/dm', () => {
     clear();
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
@@ -697,14 +697,6 @@ describe('/message/sendlater success', () => {
     expect(channelMessages(auth.token, channelId.channelId, 0)).toStrictEqual({
       messages: [
         {
-          messageId: messageId.messageId,
-          uId: auth.authUserId,
-          message: 'helloo',
-          timeSent: expect.any(Number),
-          reacts: [],
-          isPinned: false,
-        },
-        {
           messageId: msgChannel.messageId,
           uId: auth.authUserId,
           message: 'invalidMessage',
@@ -712,6 +704,14 @@ describe('/message/sendlater success', () => {
           reacts: [],
           isPinned: false,
         },
+        {
+          messageId: messageId.messageId,
+          uId: auth.authUserId,
+          message: 'helloo',
+          timeSent: expect.any(Number),
+          reacts: [],
+          isPinned: false,
+        }
       ],
       start: 0,
       end: -1,

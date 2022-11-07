@@ -34,13 +34,18 @@ export type message = {
   tags: Array<number>;
 }
 
-type channel = {
+export type channel = {
   channelId: number;
   name: string;
   isPublic: boolean;
   ownerIds: Array<number>;
   memberIds: Array<number>;
   channelmessages: Array<message>;
+  standupDetails: {
+    isActiveStandup: boolean;
+    standupMessages: Array<string>;
+    timeFinish?: number;
+  };
 }
 
 type dm = {
@@ -58,6 +63,7 @@ export type MessageDetails = {
   isDm: boolean;
   listId: number;
   tags: Array<number>;
+  timeCounter?: number;
 }
 //= =========ITERATION 3==========//
 export type ChannelsJoined = {

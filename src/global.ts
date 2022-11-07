@@ -1,4 +1,4 @@
-import { getData, MessageDetails } from './dataStore';
+import { getData, MessageDetails, channel } from './dataStore';
 import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
@@ -183,6 +183,18 @@ export function getMessageDetails(messageId: number) {
   };
 }
 
+export function isActiveStandup(channelId: number) {
+  const data = getData();
+  for (const i of data.channels) {
+    if (i.channelId === channelId) {
+      if (i.standupDetails.isActiveStandup) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 // Checks if channel is valid
 export function isValidChannel(channelId: number) {
   const data = getData();
@@ -208,6 +220,15 @@ export function isGlobalOwner(authUserId: number) {
   return false;
 }
 
+// Helper function to pause time
+export function sleep(milliseconds: number) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
+
 // Checks if token is valid
 export function isValidToken(token: string) {
   const data = getData();
@@ -220,6 +241,16 @@ export function isValidToken(token: string) {
     }
   }
   return false;
+}
+
+export function getChannel(channelId: number, channelsArray: channel[]) {
+  let channel: channel;
+  for (let i = 0; i < channelsArray.length; i++) {
+    if (channelId === channelsArray[i].channelId) {
+      channel = channelsArray[i];
+    }
+  }
+  return channel;
 }
 
 // Checks if user is in channel
@@ -529,6 +560,15 @@ export function userSetHandle(token: string, handleStr: string) {
 // ============================ New Iteration 3 function wrappers ================================//
 export function getNotifications(token: string) {
   return requestHelper('GET', '/notifications/get/v1', {}, token);
+}
+export function standupStart(token: string, channelId: number, length: number) {
+  return requestHelper('POST', '/standup/start/v1', { channelId, length }, token);
+}
+export function standupActive(token: string, channelId: number) {
+  return requestHelper('GET', '/standup/active/v1', { channelId }, token);
+}
+export function standupSend(token: string, channelId: number, message: string) {
+  return requestHelper('POST', '/standup/send/v1', { channelId, message }, token);
 }
 export function adminUserRemove(token: string, uId: number) {
   return requestHelper('DELETE', '/admin/user/remove/v1', { uId }, token);

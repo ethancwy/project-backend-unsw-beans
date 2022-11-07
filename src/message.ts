@@ -44,9 +44,11 @@ function messageSendV2(token: string, channelId: number, message: string) {
   const allTags = getTags(message);
   const tags: number[] = [];
 
-  for (const i in allTags) {
-    if (isInChannel(allTags[i], channelId)) {
-      tags.push(allTags[i]);
+  if (!data.channels[cIndex].standupDetails.isActiveStandup) {
+    for (const i in allTags) {
+      if (isInChannel(allTags[i], channelId)) {
+        tags.push(allTags[i]);
+      }
     }
   }
 

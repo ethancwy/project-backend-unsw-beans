@@ -1,38 +1,8 @@
 {
-  "users": [
-    {
-      "uId": 0,
-      "nameFirst": "James",
-      "nameLast": "Charles",
-      "email": "foo@bar.com",
-      "password": "password",
-      "handleStr": "jamescharles",
-      "isGlobalOwner": true,
-      "isRemoved": false,
-      "tokens": [
-        "0"
-      ]
-    },
-    {
-      "uId": 1,
-      "nameFirst": "Willy",
-      "nameLast": "Wonka",
-      "email": "chocolate@bar.com",
-      "password": "g00dpassword",
-      "handleStr": "willywonka",
-      "isGlobalOwner": false,
-      "isRemoved": false,
-      "tokens": [
-        "1"
-      ]
-    }
-  ],
+  "users": [],
   "channels": [],
   "dms": [],
-  "sessionIds": [
-    "0",
-    "1"
-  ],
+  "sessionIds": [],
   "messageDetails": [],
   "inviteDetails": [],
   "reactDetails": [],

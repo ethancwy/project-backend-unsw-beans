@@ -1,9 +1,15 @@
 // import { getData, setData } from './dataStore';
-// import { getUserId, isValidToken, getMessageDetails, isInChannel, isInDm } from './global';
+// import {
+//   getUserId, isValidToken, getMessageDetails, isInChannel, isInDm,
+//   getChannelIndex, sleep
+// } from './global';
 // import { userProfileV3 } from './users';
 // import { dmDetailsV2, dmLeaveV2 } from './dm';
-// import { channelDetailsV3, channelInviteV3, channelJoinV3, channelLeaveV2 } from './channel';
-
+// import {
+//   channelDetailsV3, channelInviteV3, channelJoinV3, channelLeaveV2,
+//   channelMessagesV3
+// } from './channel';
+// import { standupStartV1, standupActiveV1, standupSendV1 } from './standup';
 // import { authRegisterV3 } from './auth';
 // import { clearV1 } from './other';
 // import { channelsCreateV3 } from './channels';
@@ -11,24 +17,22 @@
 // import { messageSendV2, messageSenddmV2, messageReactV1 } from './message';
 // import { getNotificationsV1 } from './notifications';
 
+// const timeout = () => console.log('pausing');
+
 // clearV1();
+// const data = getData();
 // const globalOwnerId = authRegisterV3('foo@bar.com', 'password', 'James', 'Charles');
-// const dmMember = authRegisterV3('chocolate@bar.com', 'g00dpa31ssword', 'Willy', 'Wonka');
-// const dmOwner = authRegisterV3('chocola231te@bar.com', 'g00dpass31word', 'billy', 'bonka');
+// const member = authRegisterV3('test@bar.com', 'asasasdsd', 'uwu', 'carles');
+// const channel = channelsCreateV3(globalOwnerId.token, 'testingStandup', true);
+// // channelJoinV3(member.token, channel.channelId);
 
-// // const channel1 = channelsCreateV3(channelOwner1.token, 'testingNotifs1', true);
-// // const join = channelInviteV3(channelOwner1.token, channel1.channelId, globalOwnerId.authUserId);
-// const dm = dmCreateV2(dmOwner.token, [dmMember.authUserId, globalOwnerId.authUserId]);
-
-// const dmMessage = messageSenddmV2(globalOwnerId.token, dm.dmId, 'hi  again');
-// const dmMessage2 = messageSenddmV2(dmOwner.token, dm.dmId, 'LOLOLOLOLOL ');
-
-// const react = messageReactV1(globalOwnerId.token, dmMessage.messageId, 1);
-// const react2 = messageReactV1(dmOwner.token, dmMessage2.messageId, 1);
-
-// console.log('global owner');
-// console.log('global owner');
-// console.log(getNotificationsV1(globalOwnerId.token))
-// console.log('dm member');
-// console.log('dm member');
-// console.log(getNotificationsV1(dmMember.token))
+// // const owner = userProfileV3(globalOwnerId.token, globalOwnerId.authUserId);
+// // const handle = owner.user.handleStr;
+// // standupStartV1(globalOwnerId.token, channel.channelId, 1);
+// // standupSendV1(globalOwnerId.token, channel.channelId, 'hello');
+// // standupSendV1(member.token, channel.channelId, 'bye');
+// standupStartV1(globalOwnerId.token, channel.channelId, 3);
+// console.log(standupActiveV1(globalOwnerId.token, channel.channelId));
+// // wait for a few seconds
+// // setTimeout(function () { console.log(channelMessagesV3(globalOwnerId.token, channel.channelId, 0)); }, 5000);
+// // console.log('test');
