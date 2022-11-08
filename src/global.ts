@@ -244,7 +244,7 @@ export function isValidToken(token: string) {
 }
 
 export function getChannel(channelId: number, channelsArray: channel[]) {
-  let channel: channel;
+  let channel: channel = null;
   for (let i = 0; i < channelsArray.length; i++) {
     if (channelId === channelsArray[i].channelId) {
       channel = channelsArray[i];

@@ -20,9 +20,9 @@
 // const timeout = () => console.log('pausing');
 
 // clearV1();
-// const data = getData();
+// // const data = getData();
 // const globalOwnerId = authRegisterV3('foo@bar.com', 'password', 'James', 'Charles');
-// const member = authRegisterV3('test@bar.com', 'asasasdsd', 'uwu', 'carles');
+// // const member = authRegisterV3('test@bar.com', 'asasasdsd', 'uwu', 'carles');
 // const channel = channelsCreateV3(globalOwnerId.token, 'testingStandup', true);
 // // channelJoinV3(member.token, channel.channelId);
 
@@ -31,7 +31,7 @@
 // // standupStartV1(globalOwnerId.token, channel.channelId, 1);
 // // standupSendV1(globalOwnerId.token, channel.channelId, 'hello');
 // // standupSendV1(member.token, channel.channelId, 'bye');
-// standupStartV1(globalOwnerId.token, channel.channelId, 3);
+// console.log(standupStartV1(globalOwnerId.token, channel.channelId, 10));
 // console.log(standupActiveV1(globalOwnerId.token, channel.channelId));
 // // wait for a few seconds
 // // setTimeout(function () { console.log(channelMessagesV3(globalOwnerId.token, channel.channelId, 0)); }, 5000);
