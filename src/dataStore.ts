@@ -44,7 +44,7 @@ export type channel = {
   standupDetails: {
     isActiveStandup: boolean;
     standupMessages: Array<string>;
-    timeFinish?: number;
+    timeFinish: number;
   };
 }
 

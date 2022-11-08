@@ -137,9 +137,6 @@ export function standupSendV1(token: string, channelId: number, message: string)
 // Helper function that sends message to channel after end of standupStart
 function sendMessagesToChannel(channelId: number, index: number, uId: number) {
   const data = getData();
-  if (data.channels[index] === undefined) {
-    return;
-  }
   const standupChannel = data.channels[index].standupDetails;
 
   if (standupChannel.standupMessages.length !== 0) {
@@ -174,7 +171,7 @@ function sendMessagesToChannel(channelId: number, index: number, uId: number) {
   // no longer active
   standupChannel.isActiveStandup = false;
   standupChannel.standupMessages = [];
-  delete standupChannel.timeFinish;
+  standupChannel.timeFinish = null;
   setData(data);
   return {};
 }

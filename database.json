@@ -1,93 +1,10 @@
 {
-  "users": [
-    {
-      "uId": 0,
-      "nameFirst": "Nina",
-      "nameLast": "Yeh",
-      "email": "Nina0803@icloud.com",
-      "password": "Nina0803",
-      "handleStr": "ninayeh",
-      "isGlobalOwner": true,
-      "isRemoved": false,
-      "tokens": [
-        "0"
-      ]
-    },
-    {
-      "uId": 1,
-      "nameFirst": "Ni111na",
-      "nameLast": "11Yeh",
-      "email": "Nina10803@icloud.com",
-      "password": "Nina011803",
-      "handleStr": "ninayeh0",
-      "isGlobalOwner": false,
-      "isRemoved": false,
-      "tokens": [
-        "1"
-      ]
-    }
-  ],
-  "channels": [
-    {
-      "channelId": 0,
-      "name": "Dog Channel",
-      "isPublic": true,
-      "ownerIds": [
-        0
-      ],
-      "memberIds": [
-        0
-      ],
-      "channelmessages": [
-        {
-          "messageId": 0,
-          "uId": 0,
-          "message": "helloo",
-          "timeSent": 1667910764,
-          "reacts": [],
-          "isPinned": false,
-          "tags": []
-        }
-      ],
-      "standupDetails": {
-        "isActiveStandup": false,
-        "standupMessages": []
-      }
-    },
-    {
-      "channelId": 1,
-      "name": "Dog11 Channel",
-      "isPublic": true,
-      "ownerIds": [
-        1
-      ],
-      "memberIds": [
-        1
-      ],
-      "channelmessages": [],
-      "standupDetails": {
-        "isActiveStandup": false,
-        "standupMessages": []
-      }
-    }
-  ],
+  "users": [],
+  "channels": [],
   "dms": [],
-  "sessionIds": [
-    "0",
-    "1"
-  ],
-  "messageDetails": [
-    {
-      "uId": 0,
-      "message": "helloo",
-      "messageId": 0,
-      "isDm": false,
-      "listId": 0,
-      "tags": [],
-      "timeCounter": 0
-    }
-  ],
+  "sessionIds": [],
+  "messageDetails": [],
   "inviteDetails": [],
   "reactDetails": [],
-  "counter": 1
+  "counter": 0
 }
