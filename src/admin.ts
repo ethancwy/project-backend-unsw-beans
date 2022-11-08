@@ -18,12 +18,7 @@ function adminUserRemoveV1(token: string, uId: number) {
   }
 
   if (!isValidUser(uId)) {
-    throw HTTPError(400, 'user does not exist');
-  }
-
-  const userToRemove = data.users.find((user: user) => user.uId === uId);
-  if (userToRemove.isRemoved) {
-    throw HTTPError(400, 'user already removed');
+    throw HTTPError(400, 'user does not exist/isremoved');
   }
 
   // check is uId is only global owner
@@ -106,7 +101,6 @@ function adminUserpermissionChangeV1(token: string, uId: number, permissionId: n
           globalOwnerCount++;
         }
       }
-
       if (globalOwnerCount === 1 && isGlobalOwner(uId)) {
         throw HTTPError(400, 'uId is only global owner');
       }
