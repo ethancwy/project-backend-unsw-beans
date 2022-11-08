@@ -46,7 +46,7 @@ describe('/admin/user/remove/v1 non failed cases', () => {
     const channel1 = channelsCreate(user1.token, 'testingTagging', true);
     const msgId = messageSend(user1.token, channel1.channelId, '@willywonka@jamescharles hello!');
     channelInvite(user1.token, channel1.channelId, globalOwnerId.authUserId);
-  
+
     const dm1 = dmCreate(user1.token, [globalOwnerId.authUserId]);
     const dmMsgId = messageSendDm(user1.token, dm1.dmId, 'msgtodel');
 
@@ -109,7 +109,7 @@ describe('/admin/user/remove/v1 non failed cases', () => {
     });
     expect(channelsCreate(user1.token, 'cannot exist channel', true)).toStrictEqual(403);
   });
-  
+
   test('global owner removing another global owner', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');

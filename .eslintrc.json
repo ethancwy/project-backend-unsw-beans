@@ -1,5 +1,7 @@
 {
-  "ignorePatterns": [],
+  "ignorePatterns": [
+    "**/myScript.ts"
+  ],
   "parser": "@typescript-eslint/parser",
   "plugins": [
     "@typescript-eslint",

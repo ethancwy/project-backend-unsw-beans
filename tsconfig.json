@@ -9,5 +9,6 @@
   },
   "exclude": [
     "**/**_broken.ts",
+    "**/myScript.ts",
   ]
 }
