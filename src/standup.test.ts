@@ -73,15 +73,12 @@ describe('/standup/active/v1 ', () => {
     const timeFinish = standupStart(globalOwnerId.token, channel.channelId, 3);
     // expect(timeFinish).toEqual({ timeFinish: expect.any(Number) });
 
+    expect(standupActive(globalOwnerId.token, channel.channelId)).toEqual({
+      isActive: true,
+      timeFinish: timeFinish.timeFinish,
+    });
     while (timeFinish.timeFinish >= requestTime()) {
-      if (timeFinish.timeFinish !== requestTime()) {
-        expect(standupActive(globalOwnerId.token, channel.channelId)).toEqual({
-          isActive: true,
-          timeFinish: timeFinish.timeFinish,
-        });
-      } else {
-        continue;
-      }
+      continue;
     }
     expect(standupActive(globalOwnerId.token, channel.channelId)).toEqual({
       isActive: false,

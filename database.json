@@ -1,8 +1,42 @@
 {
-  "users": [],
-  "channels": [],
+  "users": [
+    {
+      "uId": 0,
+      "nameFirst": "James",
+      "nameLast": "Charles",
+      "email": "foo@bar.com",
+      "password": "password",
+      "handleStr": "jamescharles",
+      "isGlobalOwner": true,
+      "isRemoved": false,
+      "tokens": [
+        "0"
+      ]
+    }
+  ],
+  "channels": [
+    {
+      "channelId": 0,
+      "name": "testingStandup",
+      "isPublic": true,
+      "ownerIds": [
+        0
+      ],
+      "memberIds": [
+        0
+      ],
+      "channelmessages": [],
+      "standupDetails": {
+        "isActiveStandup": false,
+        "standupMessages": [],
+        "timeFinish": null
+      }
+    }
+  ],
   "dms": [],
-  "sessionIds": [],
+  "sessionIds": [
+    "0"
+  ],
   "messageDetails": [],
   "inviteDetails": [],
   "reactDetails": [],
