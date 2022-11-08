@@ -391,8 +391,7 @@ describe('test block for channelMessagesV2', () => {
     const personId = authRegister('tony@mail.com', 'tonytony1', 'tony', 'yeung');
     const channelId = channelsCreate(personId.token, 'tonyschannel', true);
 
-    const res = channelMessages(personId.token, channelId.channelId, 0);
-    for (let i = 0 ; i < 51 ; i++) {
+    for (let i = 0; i < 51; i++) {
       messageSend(personId.token, channelId.channelId, 'hi');
     }
     expect(channelMessages(personId.token, channelId.channelId, 0)).toStrictEqual({
