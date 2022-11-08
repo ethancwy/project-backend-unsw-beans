@@ -45,7 +45,7 @@ export function standupStartV1(token: string, channelId: number, length: number)
   setData(data);
 
   // sleep for length duration, then send messages to channel
-  setTimeout(function () { sendMessagesToChannel(channelId, index, uId); }, length * 1000);
+  setTimeout(() => { sendMessagesToChannel(channelId, index, uId); }, length * 1000);
 
   return { timeFinish: finishTime };
 }
@@ -71,7 +71,7 @@ export function standupActiveV1(token: string, channelId: number) {
     throw HTTPError(403, 'Invalid token');
   }
   const channel = getChannel(channelId, data.channels);
-  if (!channel) {
+  if (channel === null) {
     throw HTTPError(400, 'Invalid channelId');
   }
   const uId = getUserId(token);
@@ -80,9 +80,10 @@ export function standupActiveV1(token: string, channelId: number) {
   }
 
   const finishTime = channel.standupDetails.timeFinish;
+  const status: boolean = channel.standupDetails.isActiveStandup;
   return {
-    isActive: !!(channel.standupDetails.isActiveStandup),
-    timeFinish: (!channel.standupDetails.isActiveStandup) ? null : finishTime,
+    isActive: status,
+    timeFinish: (!status) ? null : finishTime,
   };
 }
 
@@ -136,13 +137,13 @@ export function standupSendV1(token: string, channelId: number, message: string)
 // Helper function that sends message to channel after end of standupStart
 function sendMessagesToChannel(channelId: number, index: number, uId: number) {
   const data = getData();
-  let finalOutput = '';
   if (data.channels[index] === undefined) {
     return;
   }
   const standupChannel = data.channels[index].standupDetails;
 
   if (standupChannel.standupMessages.length !== 0) {
+    let finalOutput = '';
     for (let i = 0; i < standupChannel.standupMessages.length - 1; i++) {
       finalOutput += (standupChannel.standupMessages[i] + '\n');
     }
@@ -170,7 +171,6 @@ function sendMessagesToChannel(channelId: number, index: number, uId: number) {
       tags: [],
     });
   }
-
   // no longer active
   standupChannel.isActiveStandup = false;
   standupChannel.standupMessages = [];
