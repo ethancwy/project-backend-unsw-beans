@@ -15,11 +15,11 @@
     },
     {
       "uId": 1,
-      "nameFirst": "Nin1111",
-      "nameLast": "Yeherd",
-      "email": "Nin11a0803@icloud.com",
-      "password": "Nina080311",
-      "handleStr": "ninyeherd",
+      "nameFirst": "Ni111na",
+      "nameLast": "11Yeh",
+      "email": "Nina10803@icloud.com",
+      "password": "Nina011803",
+      "handleStr": "ninayeh0",
       "isGlobalOwner": false,
       "isRemoved": false,
       "tokens": [
@@ -43,16 +43,7 @@
           "messageId": 0,
           "uId": 0,
           "message": "helloo",
-          "timeSent": 1667825800,
-          "reacts": [],
-          "isPinned": false,
-          "tags": []
-        },
-        {
-          "messageId": 2,
-          "uId": 0,
-          "message": "invalidMessage",
-          "timeSent": 1667825800,
+          "timeSent": 1667910764,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -62,38 +53,25 @@
         "isActiveStandup": false,
         "standupMessages": []
       }
-    }
-  ],
-  "dms": [
+    },
     {
-      "dmId": 0,
-      "name": "ninyeherd",
-      "owner": 1,
-      "members": [
+      "channelId": 1,
+      "name": "Dog11 Channel",
+      "isPublic": true,
+      "ownerIds": [
         1
       ],
-      "messages": [
-        {
-          "messageId": 1,
-          "uId": 1,
-          "message": "helloo",
-          "timeSent": 1667825800,
-          "reacts": [],
-          "isPinned": false,
-          "tags": []
-        },
-        {
-          "messageId": 3,
-          "uId": 1,
-          "message": "invalidMessage",
-          "timeSent": 1667825800,
-          "reacts": [],
-          "isPinned": false,
-          "tags": []
-        }
-      ]
+      "memberIds": [
+        1
+      ],
+      "channelmessages": [],
+      "standupDetails": {
+        "isActiveStandup": false,
+        "standupMessages": []
+      }
     }
   ],
+  "dms": [],
   "sessionIds": [
     "0",
     "1"
@@ -107,44 +85,9 @@
       "listId": 0,
       "tags": [],
       "timeCounter": 0
-    },
-    {
-      "messageId": 1,
-      "message": "helloo",
-      "isDm": true,
-      "listId": 0,
-      "uId": 1,
-      "tags": [],
-      "timeCounter": 2
-    },
-    {
-      "uId": 0,
-      "message": "invalidMessage",
-      "messageId": 2,
-      "isDm": false,
-      "listId": 0,
-      "tags": [],
-      "timeCounter": 3
-    },
-    {
-      "messageId": 3,
-      "message": "invalidMessage",
-      "isDm": true,
-      "listId": 0,
-      "uId": 1,
-      "tags": [],
-      "timeCounter": 4
     }
   ],
-  "inviteDetails": [
-    {
-      "uId": 1,
-      "isDm": true,
-      "listId": 0,
-      "invited": [],
-      "timeCounter": 1
-    }
-  ],
+  "inviteDetails": [],
   "reactDetails": [],
-  "counter": 5
+  "counter": 1
 }
