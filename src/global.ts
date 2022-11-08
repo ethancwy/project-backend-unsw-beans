@@ -579,3 +579,11 @@ export function adminUserpermissionChange(token: string, uId: number, permission
 export function search(token: string, queryStr: string) {
   return requestHelper('GET', '/search/v1', { queryStr }, token);
 }
+// ======================================================================================
+export function authPasswordRequest(email: string) {
+  return requestHelper('POST', '/auth/passwordreset/request/v1', { email });
+}
+
+export function authPasswordReset(resetCode: string, newPassword: string) {
+  return requestHelper('POST', '/auth/passwordreset/reset/v1', { resetCode, newPassword });
+}

@@ -5,7 +5,8 @@ import config from './config.json';
 import cors from 'cors';
 import errorHandler from 'middleware-http-errors';
 
-import { authRegisterV3, authLoginV3, authLogoutV2 } from './auth';
+import { authRegisterV3, authLoginV3, authLogoutV2, 
+  authPasswordRequestV1, authPasswordResetV1 } from './auth';
 import { channelsCreateV3, channelsListV3, channelsListAllV3 } from './channels';
 import { clearV1, searchV1 } from './other';
 import {
@@ -56,6 +57,16 @@ app.post('/auth/register/v3', (req: Request, res: Response) => {
 app.post('/auth/login/v3', (req: Request, res: Response) => {
   const { email, password } = req.body;
   return res.json(authLoginV3(email, password));
+});
+
+app.post('/auth/passwordreset/request/v1', (req: Request, res: Response) => {
+  const { email } = req.body;
+  return res.json(authPasswordRequestV1(email));
+});
+
+app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
+  const { resetCode, newPassword } = req.body;
+  return res.json(authPasswordResetV1(resetCode, newPassword)); 
 });
 
 app.post('/channels/create/v3', (req: Request, res: Response) => {
