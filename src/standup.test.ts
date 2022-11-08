@@ -157,7 +157,7 @@ describe('/standup/send/v1 ', () => {
     });
   });
   test('success send empty string', () => {
-    standupStart(globalOwnerId.token, channel.channelId, 2);
+    standupStart(globalOwnerId.token, channel.channelId, 3);
     expect(standupSend(globalOwnerId.token, channel.channelId, '')).toEqual({});
   });
 

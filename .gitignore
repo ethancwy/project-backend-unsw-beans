@@ -1,5 +1,5 @@
 package-lock.json
-src/script.ts
+src/myScript.ts
 node_modules
 build
 .DS_store

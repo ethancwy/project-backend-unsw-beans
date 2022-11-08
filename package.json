@@ -44,5 +44,10 @@
         "exclude": [
             "echo.*"
         ]
+    },
+    "eslint": {
+        "exclude": [
+            "**/myScript.ts"
+        ]
     }
 }

@@ -35,9 +35,12 @@ describe('Testing search function success', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const tester = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const rando = authRegister('chocolat123e@bar.com', 'g00dpasswo213rd', 'Wil23ly', 'Won321ka');
 
     const dm1 = dmCreate(tester.token, [globalOwnerId.authUserId]);
     const channel1 = channelsCreate(tester.token, 'search testing', true);
+    dmCreate(rando.token, [globalOwnerId.authUserId]);
+    channelsCreate(rando.token, 'searsdach testing', true);
     channelInvite(tester.token, channel1.channelId, globalOwnerId.authUserId);
 
     messageSend(globalOwnerId.token, channel1.channelId, 'hello!');
