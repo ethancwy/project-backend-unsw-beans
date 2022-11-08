@@ -160,10 +160,8 @@ function dmRemoveV2(token: string, dmId: number) {
     throw HTTPError(403, 'auth user not owner');
   }
 
-  // remove members
-  for (const i in data.dms[dmId].members) {
-    data.dms[dmId].members.splice(parseInt(i), 1);
-  }
+  // remove dms
+  data.dms.splice(dmId, 1);
 
   setData(data);
   return {};
