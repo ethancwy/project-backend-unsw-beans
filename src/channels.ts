@@ -40,6 +40,7 @@ function channelsCreateV3(token: string, name: string, isPublic: boolean) {
     standupDetails: {
       isActiveStandup: false,
       standupMessages: [],
+      timeFinish: null,
     },
   });
 

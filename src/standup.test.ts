@@ -18,10 +18,9 @@ describe('/standup/start/v1 ', () => {
     const time = standupStart(globalOwnerId.token, channel.channelId, 2);
     expect(time.timeFinish).toBeGreaterThanOrEqual(timeNow + 2);
     expect(time.timeFinish).toBeLessThanOrEqual(timeNow + 3);
-    while (time.timeFinish > requestTime()) {
+    while (time.timeFinish >= requestTime()) {
       continue;
     }
-    clear();
   });
 
   test('error 403: invalid token', () => {
@@ -29,7 +28,6 @@ describe('/standup/start/v1 ', () => {
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     expect(standupStart(globalOwnerId.token + 'hi', channel.channelId, 2)).toEqual(403);
-    clear();
   });
 
   test('error 400: invalid channelId', () => {
@@ -37,7 +35,6 @@ describe('/standup/start/v1 ', () => {
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     expect(standupStart(globalOwnerId.token, channel.channelId + 1, 2)).toEqual(400);
-    clear();
   });
 
   test('error 400: negative length', () => {
@@ -45,7 +42,6 @@ describe('/standup/start/v1 ', () => {
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     expect(standupStart(globalOwnerId.token, channel.channelId, -1)).toEqual(400);
-    clear();
   });
 
   test('error 400: active standup currently running', () => {
@@ -54,10 +50,9 @@ describe('/standup/start/v1 ', () => {
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     const time = standupStart(globalOwnerId.token, channel.channelId, 2);
     expect(standupStart(globalOwnerId.token, channel.channelId, 2)).toEqual(400);
-    while (time.timeFinish > requestTime()) {
+    while (time.timeFinish >= requestTime()) {
       continue;
     }
-    clear();
   });
 
   test('error 403: authorised user not a member of channel', () => {
@@ -66,7 +61,6 @@ describe('/standup/start/v1 ', () => {
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     const random = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     expect(standupStart(random.token, channel.channelId, 3)).toEqual(403);
-    clear();
   });
 });
 
@@ -83,11 +77,13 @@ describe('/standup/active/v1 ', () => {
       isActive: true,
       timeFinish: timeFinish.timeFinish,
     });
-
-    while (timeFinish.timeFinish > requestTime()) {
+    while (timeFinish.timeFinish >= requestTime()) {
       continue;
     }
-    clear();
+    expect(standupActive(globalOwnerId.token, channel.channelId)).toEqual({
+      isActive: false,
+      timeFinish: null,
+    });
   });
 
   test('error 400: invalid channelId', () => {
@@ -96,10 +92,9 @@ describe('/standup/active/v1 ', () => {
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     const time = standupStart(globalOwnerId.token, channel.channelId, 1);
     expect(standupActive(globalOwnerId.token, channel.channelId + 1)).toEqual(400);
-    while (time.timeFinish > requestTime()) {
+    while (time.timeFinish >= requestTime()) {
       continue;
     }
-    clear();
   });
 
   test('error 403: invalid token', () => {
@@ -108,10 +103,9 @@ describe('/standup/active/v1 ', () => {
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     const time = standupStart(globalOwnerId.token, channel.channelId, 1);
     expect(standupActive(globalOwnerId.token + 'hi', channel.channelId)).toEqual(403);
-    while (time.timeFinish > requestTime()) {
+    while (time.timeFinish >= requestTime()) {
       continue;
     }
-    clear();
   });
 
   test('error 403: Authorised user not member of channel', () => {
@@ -121,10 +115,9 @@ describe('/standup/active/v1 ', () => {
     const random = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const time = standupStart(globalOwnerId.token, channel.channelId, 1);
     expect(standupActive(random.token, channel.channelId)).toEqual(403);
-    while (time.timeFinish > requestTime()) {
+    while (time.timeFinish >= requestTime()) {
       continue;
     }
-    clear();
   });
 
   test('success with inactive standup', () => {
@@ -135,7 +128,6 @@ describe('/standup/active/v1 ', () => {
       isActive: false,
       timeFinish: null,
     });
-    clear();
   });
 });
 
@@ -170,10 +162,9 @@ describe('/standup/send/v1 ', () => {
       start: 0,
       end: -1
     });
-    while (finishTime.timeFinish > requestTime()) {
+    while (finishTime.timeFinish >= requestTime()) {
       continue;
     }
-    clear();
   });
 
   test('error 400: no active standup running', () => {
@@ -181,7 +172,6 @@ describe('/standup/send/v1 ', () => {
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     expect(standupSend(globalOwnerId.token, channel.channelId, 'hello')).toEqual(400);
-    clear();
   });
   test('error 400: invalid channelId', () => {
     clear();
@@ -189,10 +179,9 @@ describe('/standup/send/v1 ', () => {
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     const time = standupStart(globalOwnerId.token, channel.channelId, 2);
     expect(standupSend(globalOwnerId.token, channel.channelId + 1, 'hello')).toEqual(400);
-    while (time.timeFinish > requestTime()) {
+    while (time.timeFinish >= requestTime()) {
       continue;
     }
-    clear();
   });
 
   test('error 400: message over 1000 characters', () => {
@@ -214,10 +203,9 @@ describe('/standup/send/v1 ', () => {
     dsdsasdsdasddsdsadasdadasdsdsasdsdasddsdsadasdadasdsdsasdsdasddsdsadasdadas
     dsdsasdsdasddsdsadasdadasdsdsasdsdasddsdsadasdadasdsdsasdsdasddsdsadasdadas
     dsdsasdsdasddsdsadasd`)).toEqual(400);
-    while (time.timeFinish > requestTime()) {
+    while (time.timeFinish >= requestTime()) {
       continue;
     }
-    clear();
   });
 
   test('error 403: authorised user not member of channel', () => {
@@ -227,10 +215,9 @@ describe('/standup/send/v1 ', () => {
     const random = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const time = standupStart(globalOwnerId.token, channel.channelId, 3);
     expect(standupSend(random.token, channel.channelId, 'hello')).toEqual(403);
-    while (time.timeFinish > requestTime()) {
+    while (time.timeFinish >= requestTime()) {
       continue;
     }
-    clear();
   });
 
   test('error 403: invalid token', () => {
@@ -239,10 +226,9 @@ describe('/standup/send/v1 ', () => {
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     const time = standupStart(globalOwnerId.token, channel.channelId, 1);
     expect(standupSend(globalOwnerId.token + 'hi', channel.channelId, 'hello')).toEqual(403);
-    while (time.timeFinish > requestTime()) {
+    while (time.timeFinish >= requestTime()) {
       continue;
     }
-    clear();
   });
 
   test('success send empty string', () => {
@@ -251,9 +237,8 @@ describe('/standup/send/v1 ', () => {
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     const time = standupStart(globalOwnerId.token, channel.channelId, 3);
     expect(standupSend(globalOwnerId.token, channel.channelId, '')).toEqual({});
-    while (time.timeFinish > requestTime()) {
+    while (time.timeFinish >= requestTime()) {
       continue;
     }
-    clear();
   });
 });

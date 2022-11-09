@@ -2,7 +2,7 @@ import {
   authRegister, authLogout, channelsCreate, channelDetails,
   channelJoin, channelInvite, clear,
   channelMessages, channelLeave, channelAddOwner,
-  channelRemoveOwner
+  channelRemoveOwner, messageSend
 } from './global';
 
 clear();
@@ -351,12 +351,13 @@ describe('test block for channelMessagesV2', () => {
     expect(channelMessages(person2.token, channelId.channelId, 0)).toStrictEqual(403);
   });
 
-  test('testing for invalid input(start > amount)', () => {
+  test('testing for invalid channelId/input(start > amount)', () => {
     clear();
 
     const personId = authRegister('tony@mail.com', 'tonytony1', 'tony', 'yeung');
     const channelId = channelsCreate(personId.token, 'tonyschannel', true);
 
+    expect(channelMessages(personId.token, -1000, 0)).toStrictEqual(400);
     expect(channelMessages(personId.token, channelId.channelId, 1)).toStrictEqual(400);
   });
 
@@ -381,6 +382,22 @@ describe('test block for channelMessagesV2', () => {
       messages: [],
       start: 0,
       end: -1,
+    });
+  });
+
+  test('testing for valid input > 50 msgs', () => {
+    clear();
+
+    const personId = authRegister('tony@mail.com', 'tonytony1', 'tony', 'yeung');
+    const channelId = channelsCreate(personId.token, 'tonyschannel', true);
+
+    for (let i = 0; i < 51; i++) {
+      messageSend(personId.token, channelId.channelId, 'hi');
+    }
+    expect(channelMessages(personId.token, channelId.channelId, 0)).toStrictEqual({
+      messages: expect.any(Array<string>),
+      start: 0,
+      end: 50,
     });
   });
 });
