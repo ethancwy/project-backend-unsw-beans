@@ -1,7 +1,7 @@
 import {
   authRegister, authLogout, userProfile, clear,
   usersAll, userSetName, userSetEmail, userSetHandle, channelsCreate, channelJoin, dmCreate,
-  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmRemove, dmLeave
+  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave
 } from './global';
 
 clear();
@@ -317,14 +317,13 @@ describe('Error checking userSetHandleV1', () => {
 });
 
 describe('Testing userStatsV1', () => {
-  
   test('Successfully returning stats of user', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
     // Creating channels to test stats
     const channel1 = channelsCreate(member1.token, 'channel1', true);
-    const channel2 = channelsCreate(member1.token, 'channel2', false);
+    channelsCreate(member1.token, 'channel2', false);
     channelJoin(member2.token, channel1.channelId);
     // Creating dm to test stats
     const dm = dmCreate(member1.token, [member2.authUserId]);
@@ -335,17 +334,17 @@ describe('Testing userStatsV1', () => {
     // Testing user stats of member 1
     expect(userStats(member1.token)).toStrictEqual({
       channelsJoined: [
-        {numChannelsJoined: 0, timeStamp: expect.any(Number)},
-        {numChannelsJoined: 1, timeStamp: expect.any(Number)},
-        {numChannelsJoined: 2, timeStamp: expect.any(Number)},
+        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 1, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 2, timeStamp: expect.any(Number) },
       ],
       dmsJoined: [
-        {numDmsJoined: 0, timeStamp: expect.any(Number)},
-        {numDmsJoined: 1, timeStamp: expect.any(Number)},
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+        { numDmsJoined: 1, timeStamp: expect.any(Number) },
       ],
       messagesSent: [
-        {numMessagesSent: 0, timeStamp: expect.any(Number)},
-        {numMessagesSent: 1, timeStamp: expect.any(Number)},
+        { numMessagesSent: 0, timeStamp: expect.any(Number) },
+        { numMessagesSent: 1, timeStamp: expect.any(Number) },
       ],
       involvementRate: 4 / 5,
     });
@@ -353,16 +352,16 @@ describe('Testing userStatsV1', () => {
     // Testing user stats of member 2
     expect(userStats(member2.token)).toStrictEqual({
       channelsJoined: [
-        {numChannelsJoined: 0, timeStamp: expect.any(Number)},
-        {numChannelsJoined: 1, timeStamp: expect.any(Number)},
+        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 1, timeStamp: expect.any(Number) },
       ],
       dmsJoined: [
-        {numDmsJoined: 0, timeStamp: expect.any(Number)},
-        {numDmsJoined: 1, timeStamp: expect.any(Number)},
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+        { numDmsJoined: 1, timeStamp: expect.any(Number) },
       ],
       messagesSent: [
-        {numMessagesSent: 0, timeStamp: expect.any(Number)},
-        {numMessagesSent: 1, timeStamp: expect.any(Number)}
+        { numMessagesSent: 0, timeStamp: expect.any(Number) },
+        { numMessagesSent: 1, timeStamp: expect.any(Number) }
       ],
       involvementRate: 3 / 5,
     });
@@ -374,7 +373,7 @@ describe('Testing userStatsV1', () => {
     const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
     // Creating channels to test stats
     const channel1 = channelsCreate(member1.token, 'channel1', true);
-    const channel2 = channelsCreate(member1.token, 'channel2', false);
+    channelsCreate(member1.token, 'channel2', false);
     channelJoin(member2.token, channel1.channelId);
     // Creating dm to test stats
     const dm = dmCreate(member1.token, [member2.authUserId]);
@@ -387,18 +386,18 @@ describe('Testing userStatsV1', () => {
 
     expect(userStats(member2.token)).toStrictEqual({
       channelsJoined: [
-        {numChannelsJoined: 0, timeStamp: expect.any(Number)},
-        {numChannelsJoined: 1, timeStamp: expect.any(Number)},
-        {numChannelsJoined: 0, timeStamp: expect.any(Number)},
+        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 1, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
       ],
       dmsJoined: [
-        {numDmsJoined: 0, timeStamp: expect.any(Number)},
-        {numDmsJoined: 1, timeStamp: expect.any(Number)},
-        {numDmsJoined: 0, timeStamp: expect.any(Number)},
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+        { numDmsJoined: 1, timeStamp: expect.any(Number) },
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
       ],
       messagesSent: [
-        {numMessagesSent: 0, timeStamp: expect.any(Number)},
-        {numMessagesSent: 1, timeStamp: expect.any(Number)}
+        { numMessagesSent: 0, timeStamp: expect.any(Number) },
+        { numMessagesSent: 1, timeStamp: expect.any(Number) }
       ],
       involvementRate: 1 / 5,
     });
@@ -425,18 +424,18 @@ describe('Testing usersStatsV1', () => {
     channelsCreate(member1.token, 'channel1', true);
     channelsCreate(member1.token, 'channel2', false);
     // Creating dm to test stats
-    const dm = dmCreate(member1.token, [member2.authUserId]);
+    dmCreate(member1.token, [member2.authUserId]);
 
     // Testing user stats of member 1
     expect(usersStats(member1.token)).toStrictEqual({
       channelsExist: [
-        {numChannelsExist: 0, timeStamp: expect.any(Number)},
-        {numChannelsExist: 1, timeStamp: expect.any(Number)},
-        {numChannelsExist: 2, timeStamp: expect.any(Number)}],
+        { numChannelsExist: 0, timeStamp: expect.any(Number) },
+        { numChannelsExist: 1, timeStamp: expect.any(Number) },
+        { numChannelsExist: 2, timeStamp: expect.any(Number) }],
       dmsExist: [
-        {numDmsExist: 0, timeStamp: expect.any(Number)},
-        {numDmsExist: 1, timeStamp: expect.any(Number)}],
-      messagesExist: [{numMessagesExist: 0, timeStamp: expect.any(Number)}],
+        { numDmsExist: 0, timeStamp: expect.any(Number) },
+        { numDmsExist: 1, timeStamp: expect.any(Number) }],
+      messagesExist: [{ numMessagesExist: 0, timeStamp: expect.any(Number) }],
       utilizationRate: 1,
     });
   });
@@ -450,5 +449,11 @@ describe('Error checking usersStatsV1', () => {
     const invalidToken = member1.token + 'lolol';
     // invalid token
     expect(userStats(invalidToken)).toStrictEqual(403);
+  });
+});
+
+describe('Testing user/uploadphoto/v1', () => {
+  test('Uploading image', () => {
+    authRegister('foo@bar.com', 'password', 'James', 'Charles');
   });
 });

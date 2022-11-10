@@ -5,7 +5,6 @@ import {
 } from './global';
 import HTTPError from 'http-errors';
 
-
 /**
   * Given a channelId of a channel that the authorised user can join,
   * adds them to that channel.
@@ -99,7 +98,7 @@ function channelInviteV3(token: string, channelId: number, uId: number) {
         timeCounter: data.counter,
       });
       data.counter++;
-    
+
       setData(data);
       // edit userStats
       updateUserStats(uId, 'channels', 'add', 0);

@@ -70,9 +70,9 @@ function authRegisterV3(email: string, password: string, nameFirst: string, name
     isRemoved: false,
     tokens: [token],
     userStats: {
-      channelsJoined: [{numChannelsJoined: 0, timeStamp: 0}],
-      dmsJoined: [{numDmsJoined: 0, timeStamp: 0}],
-      messagesSent: [{numMessagesSent: 0, timeStamp: 0}],
+      channelsJoined: [{ numChannelsJoined: 0, timeStamp: 0 }],
+      dmsJoined: [{ numDmsJoined: 0, timeStamp: 0 }],
+      messagesSent: [{ numMessagesSent: 0, timeStamp: 0 }],
       involvementRate: 0,
     },
   });

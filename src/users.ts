@@ -5,8 +5,8 @@ import {
   isValidHandleLength, anotherUserHandle
 } from './global';
 import HTTPError from 'http-errors';
-import { arrayBuffer } from 'stream/consumers';
-import { channel } from 'diagnostics_channel';
+// import { arrayBuffer } from 'stream/consumers';
+// import { channel } from 'diagnostics_channel';
 
 /**
   * For a valid user, returns information about their user ID, email,
@@ -190,7 +190,7 @@ function userStatsV1(token) {
 
   // Calculating involvement
   // sum(numChannelsJoined, numDmsJoined, numMsgsSent) / sum(numChannels, numDms, numMsgs)
-  const denom =  data.channels.length + data.dms.length + data.workspaceStats.messagesExist.length - 1;
+  const denom = data.channels.length + data.dms.length + data.workspaceStats.messagesExist.length - 1;
   let involvement = 0;
   // Calculating involvement if denom != 0
   if (denom) {
@@ -203,7 +203,7 @@ function userStatsV1(token) {
     const chFinal = data.users[uId].userStats.channelsJoined[chLength].numChannelsJoined;
     const dmsFinal = data.users[uId].userStats.dmsJoined[dmsLength].numDmsJoined;
     const msgsFinal = data.users[uId].userStats.messagesSent[msgsLength].numMessagesSent;
-    
+
     const numer = chFinal + dmsFinal + msgsFinal;
     involvement = numer / denom;
   }
@@ -213,8 +213,13 @@ function userStatsV1(token) {
     involvement = 1;
   }
 
-  data.users[uId].userStats.involvementRate = involvement;
-  return data.users[uId].userStats;
+  const obj = {
+    channelsJoined: data.users[uId].userStats.channelsJoined,
+    dmsJoined: data.users[uId].userStats.dmsJoined,
+    messagesSent: data.users[uId].userStats.messagesSent,
+    involvementRate: involvement,
+  };
+  return obj;
 }
 
 function usersStatsV1 (token: string) {
@@ -231,8 +236,15 @@ function usersStatsV1 (token: string) {
   }
   // Caclulating utilisation rate
   // numUsersWhoHaveJoinedAtLeastOneChannelOrDm / numUsers
-  data.workspaceStats.utilizationRate = usersJ / numusers;
-  return data.workspaceStats;  
+  const util = usersJ / numusers;
+
+  const obj = {
+    channelsExist: data.workspaceStats.channelsExist,
+    dmsExist: data.workspaceStats.dmsExist,
+    messagesExist: data.workspaceStats.messagesExist,
+    utilizationRate: util,
+  };
+  return obj;
 }
 
 export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2, userStatsV1, usersStatsV1 };

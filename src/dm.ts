@@ -84,7 +84,7 @@ function dmCreateV2(token: string, uIds: number[]) {
     timeCounter: data.counter,
   });
   data.counter++;
-  
+
   setData(data);
   // Updating userStatus of all users
   for (const members of membersArray) {
@@ -172,7 +172,7 @@ function dmRemoveV2(token: string, dmId: number) {
   for (const i in data.dms[dmId].members) {
     data.dms[dmId].members.splice(parseInt(i), 1);
   }
-  
+
   setData(data);
   // Updating userStatus
   for (const members of copy) {

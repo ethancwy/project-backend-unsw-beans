@@ -1,6 +1,6 @@
 import { getData, setData } from './dataStore';
 import { getUserId, isValidToken, updateUserStats, updateWorkSpace } from './global';
-import HTTPError from 'http-errors';  
+import HTTPError from 'http-errors';
 
 /**
   *
@@ -16,7 +16,7 @@ import HTTPError from 'http-errors';
 */
 
 function channelsCreateV3(token: string, name: string, isPublic: boolean) {
-  let data = getData();
+  const data = getData();
 
   if (!isValidToken(token)) {
     throw HTTPError(403, 'Invalid token');
@@ -38,10 +38,10 @@ function channelsCreateV3(token: string, name: string, isPublic: boolean) {
     memberIds: [authUserId],
     channelmessages: [],
   });
-  
+
   setData(data);
   // Adding to channel creaters userStats
-  updateUserStats(authUserId, 'channels', 'add', 0); 
+  updateUserStats(authUserId, 'channels', 'add', 0);
   // Updating workspace
   updateWorkSpace('channels', 'add', 0);
   return { channelId: data.channels[data.channels.length - 1].channelId };

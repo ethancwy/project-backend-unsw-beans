@@ -14,10 +14,9 @@ function clearV1() {
     inviteDetails: [],
     reactDetails: [],
     workspaceStats: {
-      channelsExist: [{numChannelsExist: 0, timeStamp: 0}],
-      dmsExist: [{numDmsExist: 0, timeStamp: 0}],
-      messagesExist: [{numMessagesExist: 0, timeStamp: 0}],
-      utilizationRate: 0,
+      channelsExist: [{ numChannelsExist: 0, timeStamp: 0 }],
+      dmsExist: [{ numDmsExist: 0, timeStamp: 0 }],
+      messagesExist: [{ numMessagesExist: 0, timeStamp: 0 }],
     },
     counter: 0,
   };

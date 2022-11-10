@@ -1,9 +1,9 @@
-import { datatype, getData, MessageDetails, setData } from './dataStore';
+import { getData, MessageDetails, setData } from './dataStore';
 import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
 import { user as userType } from './dataStore';
-import { timeStamp } from 'console';
+// import { timeStamp } from 'console';
 const SERVER_URL = `${url}:${port}`;
 const requestTimeStamp = () => Math.floor((new Date()).getTime() / 1000);
 
@@ -391,7 +391,7 @@ export function isDmMember(uid: number, dmId: number) {
 // and function(ie add, remove)
 export function updateUserStats(uId: number, categ: string, func: string, time: number) {
   const data = getData();
-  
+
   if (categ === 'channels') {
     if (func === 'add') { // Joining a channel
       data.users[uId].userStats.channelsJoined.push({
@@ -424,7 +424,6 @@ export function updateUserStats(uId: number, categ: string, func: string, time: 
   }
 
   setData(data);
-  return;
 }
 
 export function updateWorkSpace(categ: string, func: string, time: number) {
@@ -462,7 +461,6 @@ export function updateWorkSpace(categ: string, func: string, time: number) {
   }
 
   setData(data);
-  return;
 }
 
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //

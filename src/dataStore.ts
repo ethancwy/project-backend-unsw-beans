@@ -1,5 +1,49 @@
-import { timeStamp } from 'console';
+// import { timeStamp } from 'console';
 import fs from 'fs';
+
+// Iter 3 userStats defined before use in type user
+export type ChannelsJoined = {
+  numChannelsJoined: number;
+  timeStamp: number;
+}
+export type DmsJoined = {
+  numDmsJoined: number;
+  timeStamp: number;
+}
+export type MessagesSent = {
+  numMessagesSent: number;
+  timeStamp: number;
+}
+
+export type ChannelsExist = {
+  numChannelsExist: number;
+  timeStamp: number;
+}
+
+export type DmsExist = {
+  numDmsExist: number;
+  timeStamp: number;
+}
+
+export type MessagesExist = {
+  numMessagesExist: number;
+  timeStamp: number;
+}
+
+export type workspaceStat = {
+  channelsExist: Array<ChannelsExist>;
+  dmsExist: Array<DmsExist>;
+  messagesExist: Array<MessagesExist>;
+  // ^ numUsersWhoHaveJoinedAtLeastOneChannelOrDm / numUsers
+}
+
+export type userStats = {
+  channelsJoined: Array<ChannelsJoined>;
+  dmsJoined: Array<DmsJoined>;
+  messagesSent: Array<MessagesSent>;
+  // ^ sum(numChannelsJoined, numDmsJoined, numMsgsSent) /
+  // sum(numChannels, numDms, numMsgs)
+}
 
 export type user = {
   uId: number;
@@ -62,50 +106,6 @@ export type MessageDetails = {
   tags: Array<number>;
 }
 //= =========ITERATION 3==========//
-export type ChannelsJoined = {
-  numChannelsJoined: number;
-  timeStamp: number;
-}
-export type DmsJoined = {
-  numDmsJoined: number;
-  timeStamp: number;
-}
-export type MessagesSent = {
-  numMessagesSent: number;
-  timeStamp: number;
-}
-
-export type userStats = {
-  channelsJoined: Array<ChannelsJoined>;
-  dmsJoined: Array<DmsJoined>;
-  messagesSent: Array<MessagesSent>;
-  involvementRate: number;
-  // ^ sum(numChannelsJoined, numDmsJoined, numMsgsSent) /
-  // sum(numChannels, numDms, numMsgs)
-}
-
-export type ChannelsExist = {
-  numChannelsExist: number;
-  timeStamp: number;
-}
-
-export type DmsExist = {
-  numDmsExist: number;
-  timeStamp: number;
-}
-
-export type MessagesExist = {
-  numMessagesExist: number;
-  timeStamp: number;
-}
-
-export type workspaceStat = {
-  channelsExist: Array<ChannelsExist>;
-  dmsExist: Array<DmsExist>;
-  messagesExist: Array<MessagesExist>;
-  utilizationRate: number;
-  // ^ numUsersWhoHaveJoinedAtLeastOneChannelOrDm / numUsers
-}
 
 export type Notifications = {
   channelId: number;
@@ -159,10 +159,9 @@ let data: datatype = {
   inviteDetails: [],
   reactDetails: [],
   workspaceStats: {
-    channelsExist: [{numChannelsExist: 0, timeStamp: 0}],
-    dmsExist: [{numDmsExist: 0, timeStamp: 0}],
-    messagesExist: [{numMessagesExist: 0, timeStamp: 0}],
-    utilizationRate: 0,
+    channelsExist: [{ numChannelsExist: 0, timeStamp: 0 }],
+    dmsExist: [{ numDmsExist: 0, timeStamp: 0 }],
+    messagesExist: [{ numMessagesExist: 0, timeStamp: 0 }],
   },
   counter: 0,
 };
