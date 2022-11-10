@@ -179,7 +179,7 @@ function userSetHandleV2(token: string, handleStr: string) {
   return {};
 }
 
-function userStatsV1(token) {
+function userStatsV1(token: string) {
   const data = getData();
   // invalid token
   if (!isValidToken(token)) {
