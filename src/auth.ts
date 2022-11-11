@@ -110,6 +110,85 @@ function authLogoutV2(token: string) {
   return {};
 }
 
+/**
+  * When a valid email that is registered to a user is passed in
+  * send them an email that contains a secret reset code 
+  * returns nothing if valid
+  *
+  * @param {String} email - User enters a valid email to a registered user
+  * 
+  * @returns {{}} - Returns nothing
+  * 
+*/
+
+function authPasswordRequestV1(email: string) {
+  const data = getData();
+  data.sessionIds = [];
+  for (const user of data.users) {
+    user.sessionIds = [];
+  }
+  setData(data);
+
+  //send password rest code to users email
+  const nodemailer = require('nodemailer');
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'T13ABoostResetCode@gmail.com',
+      pass: 'Bob100'
+    }
+  });
+
+  const regUser = getEmail(email);
+  const resetCode = `${genRandomStr()}${regUser.uId}`;
+
+  if (regUser != null) {
+    const mailOptions = {
+      from: '"T13ABOOST" <T13ABoostResetCode@gmail.com> ',
+      to: email,
+      subject: 'This is your new password reset code',
+      test: resetCode;
+    };
+    transporter.sendMail(mailOptions,function(info: any) {
+      console.log('Email send: ' + info.response);
+    });
+  }
+  return {};
+}
+
+/**
+  * Allows a user to reset their password when provided a valid 
+  * resetCode and newPassword string
+  * returns nothing if valid
+  *
+  * @param {String} resetCode - User enters a valid resetCode
+  * @param {String} newPassword - User enters a valid password
+  * 
+  * @returns {{}} - Returns nothing if valid
+  * @returns {{error: 'error'}} - on error
+*/
+
+function authPasswordResetV1(resetCode: string, newPassword: string) {
+  const data = getData();
+  const uId = parseInt(resetCode.slice(20));
+  const user = store.users.find((item: { uId: number; }) => item.uid === uId);
+
+  if (user === undefined) {
+    throw new Error(400, 'Invalid resetCode');
+  }
+  if (newPassword .length < 6) {
+    throw new Error(400, 'Password length must be 6 or greater');
+  }
+  user.password = newPassword;
+  setData(data);
+  return {};
+}
+function generateToken() {
+  const data = getData();
+  return String(data.sessionIds.length);
+}
+
 function generateToken() {
   const data = getData();
   return String(data.sessionIds.length);
@@ -168,5 +247,7 @@ function sameEmail(email: string) {
 export {
   authLoginV3,
   authRegisterV3,
-  authLogoutV2
+  authLogoutV2,
+  authPasswordRequestV1,
+  authPasswordResetV1
 };
