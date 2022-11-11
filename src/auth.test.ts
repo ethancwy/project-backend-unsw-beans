@@ -1,4 +1,4 @@
-import { authLogin, authRegister, authLogout, clear, channelsCreate } from './global';
+import { authLogin, authRegister, authLogout, clear, channelsCreate, } from './global';
 
 // =================================================== //
 //                                                     //
