@@ -58,6 +58,16 @@ app.post('/auth/login/v3', (req: Request, res: Response) => {
   return res.json(authLoginV3(email, password));
 });
 
+app.post('/auth/login/v3', (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  return res.json(authLoginV3(email, password));
+});
+
+app.post('/auth/passwordreset/request/v1', (req: Request, res: Response) => {
+  const { email } = req.body;
+  return res.json(authPasswordRequestV1(email));
+});
+
 app.post('/channels/create/v3', (req: Request, res: Response) => {
   const token = req.header('token');
   const { name, isPublic } = req.body;
