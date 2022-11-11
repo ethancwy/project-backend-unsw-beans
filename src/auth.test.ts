@@ -1,4 +1,4 @@
-import { authLogin, authRegister, authLogout, clear, channelsCreate, } from './global';
+import { authLogin, authRegister, authLogout, clear, channelsCreate, authPasswordReset, authPasswordRequest } from './global';
 
 // =================================================== //
 //                                                     //
@@ -230,7 +230,7 @@ describe('Testing for password request', () => {
   clear();
   test('Successful password reset request', () => {
     authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
-    expect(authPasasswordRequest('p.gmail.com')).toStrictEqual({});
+    expect(authPasswordRequest('p.gmail.com')).toStrictEqual({});
   });
 });
 
