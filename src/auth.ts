@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { validEmail, validName, isValidToken } from './global';
+import { validEmail, validName, isValidToken, hashOf } from './global';
 import HTTPError from 'http-errors';
 
 /**
@@ -18,10 +18,11 @@ function authLoginV3(email: string, password: string) {
 
   for (const user of data.users) {
     if (user.email === email) {
-      if (user.password === password && !user.isRemoved) {
+      if (user.password === hashOf(password) && !user.isRemoved) {
         const token = generateToken();
-        user.tokens.push(token);
-        data.sessionIds.push(token);
+        const hashedToken = hashOf(token);
+        user.tokens.push(hashedToken);
+        data.sessionIds.push(hashedToken);
         setData(data);
         return { token: token, authUserId: user.uId };
       }
@@ -57,18 +58,20 @@ function authRegisterV3(email: string, password: string, nameFirst: string, name
   const handleStr = validHandle(handle);
 
   const token = generateToken();
-  data.sessionIds.push(token);
+  const hashedToken = hashOf(token);
+  const hashedPass = hashOf(password);
+  data.sessionIds.push(hashedToken);
 
   data.users.push({
     uId: data.users.length,
     nameFirst: nameFirst,
     nameLast: nameLast,
     email: email,
-    password: password,
+    password: hashedPass,
     handleStr: handleStr,
     isGlobalOwner: false,
     isRemoved: false,
-    tokens: [token],
+    tokens: [hashedToken],
   });
 
   if (data.users.length === 1) {
@@ -95,17 +98,17 @@ function authLogoutV2(token: string) {
   if (!isValidToken(token)) {
     throw HTTPError(403, 'Invalid token');
   }
-
+  const hashedToken = hashOf(token);
   for (const user of data.users) {
     for (const index in user.tokens) {
-      if (user.tokens[index] === token) {
+      if (user.tokens[index] === hashedToken) {
         user.tokens.splice(parseInt(index), 1);
         break;
       }
     }
   }
 
-  data.sessionIds.splice(data.sessionIds.indexOf(token), 1);
+  data.sessionIds.splice(data.sessionIds.indexOf(hashedToken), 1);
   setData(data);
   return {};
 }
