@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { validEmail, validName, isValidToken, hashOf } from './global';
+import { user as userType } from './dataStore';
 import HTTPError from 'http-errors';
 
 /**
@@ -115,31 +116,37 @@ function authLogoutV2(token: string) {
 
 /**
   * When a valid email that is registered to a user is passed in
-  * send them an email that contains a secret reset code 
+  * send them an email that contains a secret reset code
   * returns nothing if valid
   *
   * @param {String} email - User enters a valid email to a registered user
-  * 
+  *
   * @returns {{}} - Returns nothing
-  * 
+  *
 */
 
 function authPasswordRequestV1(email: string) {
   const data = getData();
-  data.sessionIds = [];
-  for (const user of data.users) {
-    user.sessionIds = [];
+  const user = data.users.find((user: userType) => user.email === email);
+  const sessionToRemove = user.tokens;
+  user.tokens = [];
+  for (const session of sessionToRemove) {
+    for (const i in data.sessionIds) {
+      if (session === data.sessionIds[i]) {
+        data.sessionIds.splice(parseInt(i), 1);
+      }
+    }
   }
   setData(data);
 
-  //send password rest code to users email
+  // send password rest code to users email
   const nodemailer = require('nodemailer');
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: 'hotmail',
     auth: {
-      user: 'T13ABoostResetCode@gmail.com',
-      pass: 'Bob100'
+      user: 'T13ABOOST@outlook.com',
+      pass: 'Haois100%sexy'
     }
   });
 
@@ -148,12 +155,12 @@ function authPasswordRequestV1(email: string) {
 
   if (regUser != null) {
     const mailOptions = {
-      from: '"T13ABOOST" <T13ABoostResetCode@gmail.com> ',
+      from: '"T13ABOOST" <T13ABOOST@outlook.com> ',
       to: email,
       subject: 'This is your new password reset code',
-      test: resetCode,
+      text: resetCode,
     };
-    transporter.sendMail(mailOptions,function(info: any) {
+    transporter.sendMail(mailOptions, function(info: any) {
       console.log('Email send: ' + info.response);
     });
   }
@@ -161,13 +168,13 @@ function authPasswordRequestV1(email: string) {
 }
 
 /**
-  * Allows a user to reset their password when provided a valid 
+  * Allows a user to reset their password when provided a valid
   * resetCode and newPassword string
   * returns nothing if valid
   *
   * @param {String} resetCode - User enters a valid resetCode
   * @param {String} newPassword - User enters a valid password
-  * 
+  *
   * @returns {{}} - Returns nothing if valid
   * @returns {{error: 'error'}} - on error
 */
@@ -175,21 +182,17 @@ function authPasswordRequestV1(email: string) {
 function authPasswordResetV1(resetCode: string, newPassword: string) {
   const data = getData();
   const uId = parseInt(resetCode.slice(20));
-  const user = store.users.find((item: { uId: number; }) => item.uid === uId);
+  const user = data.users.find((item: { uId: number; }) => item.uId === uId);
 
   if (user === undefined) {
-    throw new Error(400, 'Invalid resetCode');
+    throw HTTPError(400, 'Invalid resetCode');
   }
-  if (newPassword .length < 6) {
-    throw new Error(400, 'Password length must be 6 or greater');
+  if (newPassword.length < 6) {
+    throw HTTPError(400, 'Password length must be 6 or greater');
   }
-  user.password = newPassword;
+  user.password = hashOf(newPassword);
   setData(data);
   return {};
-}
-function generateToken() {
-  const data = getData();
-  return String(data.sessionIds.length);
 }
 
 function generateToken() {
@@ -247,6 +250,26 @@ function sameEmail(email: string) {
   return false;
 }
 
+// When given an email address, check for email and return user object
+// return null if email is not being used by a user
+function getEmail(email: string) {
+  const data = getData();
+  for (const user of data.users) {
+    if (user.email === email) {
+      return user;
+    }
+  }
+  return null;
+}
+// Generates a random string with a length of 20
+function genRandomStr() {
+  const char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  let randStr = '';
+  for (let i = 0; i < 20; i++) {
+    randStr += char.charAt(Math.floor(Math.random() * char.length));
+  }
+  return randStr;
+}
 
 export {
   authLoginV3,

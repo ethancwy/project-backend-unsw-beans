@@ -38,32 +38,6 @@
       "tokens": [
         "519233890"
       ]
-    },
-    {
-      "uId": 1,
-      "nameFirst": "Willy",
-      "nameLast": "Wonka",
-      "email": "chocolate@bar.com",
-      "password": "g00dpassword",
-      "handleStr": "willywonka",
-      "isGlobalOwner": false,
-      "isRemoved": false,
-      "tokens": [
-        "1"
-      ]
-    },
-    {
-      "uId": 2,
-      "nameFirst": "Wil23ly",
-      "nameLast": "Won321ka",
-      "email": "chocolat123e@bar.com",
-      "password": "g00dpasswo213rd",
-      "handleStr": "willywonka0",
-      "isGlobalOwner": false,
-      "isRemoved": false,
-      "tokens": [
-        "2"
-      ]
     }
   ],
   "channels": [
@@ -83,15 +57,7 @@
           "messageId": 0,
           "uId": 0,
           "message": "hello!",
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-          "timeSent": 1668155620,
-=======
-          "timeSent": 1668222257,
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
-=======
-          "timeSent": 1668158159,
->>>>>>> Stashed changes
+          "timeSent": 1668230795,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -100,15 +66,7 @@
           "messageId": 1,
           "uId": 0,
           "message": "hello hello!",
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-          "timeSent": 1668155620,
-=======
-          "timeSent": 1668222257,
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
-=======
-          "timeSent": 1668158159,
->>>>>>> Stashed changes
+          "timeSent": 1668230795,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -117,15 +75,7 @@
           "messageId": 2,
           "uId": 0,
           "message": "byebye",
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-          "timeSent": 1668155620,
-=======
-          "timeSent": 1668222257,
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
-=======
-          "timeSent": 1668158159,
->>>>>>> Stashed changes
+          "timeSent": 1668230796,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -134,15 +84,7 @@
           "messageId": 3,
           "uId": 0,
           "message": "hel lo",
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-          "timeSent": 1668155620,
-=======
-          "timeSent": 1668222257,
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
-=======
-          "timeSent": 1668158159,
->>>>>>> Stashed changes
+          "timeSent": 1668230796,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -151,15 +93,7 @@
           "messageId": 4,
           "uId": 1,
           "message": "hello hello!",
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-          "timeSent": 1668155620,
-=======
-          "timeSent": 1668222257,
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
-=======
-          "timeSent": 1668158159,
->>>>>>> Stashed changes
+          "timeSent": 1668230796,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -168,15 +102,7 @@
           "messageId": 5,
           "uId": 1,
           "message": "hel lo",
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-          "timeSent": 1668155620,
-=======
-          "timeSent": 1668222258,
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
-=======
-          "timeSent": 1668158159,
->>>>>>> Stashed changes
+          "timeSent": 1668230796,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -220,15 +146,7 @@
           "messageId": 6,
           "uId": 0,
           "message": "hello!",
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-          "timeSent": 1668155620,
-=======
-          "timeSent": 1668222258,
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
-=======
-          "timeSent": 1668158159,
->>>>>>> Stashed changes
+          "timeSent": 1668230796,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -237,15 +155,7 @@
           "messageId": 7,
           "uId": 0,
           "message": "hello! hihi ",
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-          "timeSent": 1668155621,
-=======
-          "timeSent": 1668222258,
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
-=======
-          "timeSent": 1668158159,
->>>>>>> Stashed changes
+          "timeSent": 1668230796,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -254,15 +164,7 @@
           "messageId": 8,
           "uId": 0,
           "message": "bye",
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-          "timeSent": 1668155621,
-=======
-          "timeSent": 1668222258,
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
-=======
-          "timeSent": 1668158160,
->>>>>>> Stashed changes
+          "timeSent": 1668230796,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -271,15 +173,7 @@
           "messageId": 9,
           "uId": 1,
           "message": "hello!",
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-          "timeSent": 1668155621,
-=======
-          "timeSent": 1668222258,
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
-=======
-          "timeSent": 1668158160,
->>>>>>> Stashed changes
+          "timeSent": 1668230796,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -288,15 +182,7 @@
           "messageId": 10,
           "uId": 1,
           "message": "hello! hihi ",
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-          "timeSent": 1668155621,
-=======
-          "timeSent": 1668222258,
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
-=======
-          "timeSent": 1668158160,
->>>>>>> Stashed changes
+          "timeSent": 1668230796,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -305,15 +191,7 @@
           "messageId": 11,
           "uId": 1,
           "message": "bye",
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-          "timeSent": 1668155621,
-=======
-          "timeSent": 1668222258,
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
-=======
-          "timeSent": 1668158160,
->>>>>>> Stashed changes
+          "timeSent": 1668230796,
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -332,15 +210,9 @@
     }
   ],
   "sessionIds": [
-<<<<<<< HEAD
-    "0",
-    "1",
-    "2"
-=======
     "-1255773472",
     "-368269791",
     "519233890"
->>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
   ],
   "messageDetails": [
     {
