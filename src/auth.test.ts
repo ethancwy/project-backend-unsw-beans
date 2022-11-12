@@ -237,7 +237,7 @@ describe('Testing for password request', () => {
 describe('Testing for password reset', () => {
   clear();
   test('Successful password reset', () => {
-    const authUser = authRegister('p.file@gmail.com', "Bob100", "Peter", "File");
+    const authUser = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
     const token = authUser.token;
     expect(authLogout(token)).toStrictEqual({});
     const reset = authPasswordReset('resetcode12345', 'Bob123');
@@ -246,7 +246,7 @@ describe('Testing for password reset', () => {
 
   clear();
   test('Invalid reset code', () => {
-    const authUser = authRegister('p.file@gmail.com', "Bob100", "Peter", "File");
+    const authUser = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
     const token = authUser.token;
     expect(authLogout(token)).toStrictEqual({});
     const reset = authPasswordReset('invalidresetcode12345', 'Bob123');
@@ -255,7 +255,7 @@ describe('Testing for password reset', () => {
 
   clear();
   test('Invalid password length', () => {
-    const authUser = authRegister('p.file@gmail.com', "Bob100", "Peter", "File");
+    const authUser = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
     const token = authUser.token;
     expect(authLogout(token)).toStrictEqual({});
     const reset = authPasswordReset('invalidresetcode12345', 'Bob3');

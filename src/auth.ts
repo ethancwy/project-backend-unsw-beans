@@ -151,7 +151,7 @@ function authPasswordRequestV1(email: string) {
       from: '"T13ABOOST" <T13ABoostResetCode@gmail.com> ',
       to: email,
       subject: 'This is your new password reset code',
-      test: resetCode;
+      test: resetCode,
     };
     transporter.sendMail(mailOptions,function(info: any) {
       console.log('Email send: ' + info.response);
@@ -246,6 +246,7 @@ function sameEmail(email: string) {
   }
   return false;
 }
+
 
 export {
   authLoginV3,
