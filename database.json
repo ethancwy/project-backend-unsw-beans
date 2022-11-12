@@ -5,12 +5,38 @@
       "nameFirst": "James",
       "nameLast": "Charles",
       "email": "foo@bar.com",
-      "password": "password",
+      "password": "372730123",
       "handleStr": "jamescharles",
       "isGlobalOwner": true,
       "isRemoved": false,
       "tokens": [
-        "0"
+        "-1255773472"
+      ]
+    },
+    {
+      "uId": 1,
+      "nameFirst": "Willy",
+      "nameLast": "Wonka",
+      "email": "chocolate@bar.com",
+      "password": "-1311629592",
+      "handleStr": "willywonka",
+      "isGlobalOwner": false,
+      "isRemoved": false,
+      "tokens": [
+        "-368269791"
+      ]
+    },
+    {
+      "uId": 2,
+      "nameFirst": "Wil23ly",
+      "nameLast": "Won321ka",
+      "email": "chocolat123e@bar.com",
+      "password": "-1156253712",
+      "handleStr": "willywonka0",
+      "isGlobalOwner": false,
+      "isRemoved": false,
+      "tokens": [
+        "519233890"
       ]
     },
     {
@@ -57,7 +83,11 @@
           "messageId": 0,
           "uId": 0,
           "message": "hello!",
+<<<<<<< HEAD
           "timeSent": 1668155620,
+=======
+          "timeSent": 1668222257,
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -66,7 +96,11 @@
           "messageId": 1,
           "uId": 0,
           "message": "hello hello!",
+<<<<<<< HEAD
           "timeSent": 1668155620,
+=======
+          "timeSent": 1668222257,
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -75,7 +109,11 @@
           "messageId": 2,
           "uId": 0,
           "message": "byebye",
+<<<<<<< HEAD
           "timeSent": 1668155620,
+=======
+          "timeSent": 1668222257,
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -84,7 +122,11 @@
           "messageId": 3,
           "uId": 0,
           "message": "hel lo",
+<<<<<<< HEAD
           "timeSent": 1668155620,
+=======
+          "timeSent": 1668222257,
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -93,7 +135,11 @@
           "messageId": 4,
           "uId": 1,
           "message": "hello hello!",
+<<<<<<< HEAD
           "timeSent": 1668155620,
+=======
+          "timeSent": 1668222257,
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -102,7 +148,11 @@
           "messageId": 5,
           "uId": 1,
           "message": "hel lo",
+<<<<<<< HEAD
           "timeSent": 1668155620,
+=======
+          "timeSent": 1668222258,
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -146,7 +196,11 @@
           "messageId": 6,
           "uId": 0,
           "message": "hello!",
+<<<<<<< HEAD
           "timeSent": 1668155620,
+=======
+          "timeSent": 1668222258,
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -155,7 +209,11 @@
           "messageId": 7,
           "uId": 0,
           "message": "hello! hihi ",
+<<<<<<< HEAD
           "timeSent": 1668155621,
+=======
+          "timeSent": 1668222258,
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -164,7 +222,11 @@
           "messageId": 8,
           "uId": 0,
           "message": "bye",
+<<<<<<< HEAD
           "timeSent": 1668155621,
+=======
+          "timeSent": 1668222258,
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -173,7 +235,11 @@
           "messageId": 9,
           "uId": 1,
           "message": "hello!",
+<<<<<<< HEAD
           "timeSent": 1668155621,
+=======
+          "timeSent": 1668222258,
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -182,7 +248,11 @@
           "messageId": 10,
           "uId": 1,
           "message": "hello! hihi ",
+<<<<<<< HEAD
           "timeSent": 1668155621,
+=======
+          "timeSent": 1668222258,
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -191,7 +261,11 @@
           "messageId": 11,
           "uId": 1,
           "message": "bye",
+<<<<<<< HEAD
           "timeSent": 1668155621,
+=======
+          "timeSent": 1668222258,
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
           "reacts": [],
           "isPinned": false,
           "tags": []
@@ -210,9 +284,15 @@
     }
   ],
   "sessionIds": [
+<<<<<<< HEAD
     "0",
     "1",
     "2"
+=======
+    "-1255773472",
+    "-368269791",
+    "519233890"
+>>>>>>> e81cd03de0a9c774ec2c98b9a031778335007362
   ],
   "messageDetails": [
     {
