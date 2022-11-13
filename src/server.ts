@@ -318,6 +318,12 @@ app.get('/search/v1', (req: Request, res: Response) => {
   return res.json(searchV1(token, queryStr));
 });
 
+// app.post('/user/profile/uploadphoto/v1', (req: Request, res: Response) => {
+//   const token = req.header('token');
+//   const { xStart, yStart, xEnd, yEnd } = req.body;
+//   return res.json(userUploadPhotoV1(token, xStart, yStart, xEnd, yEnd));
+// });
+
 // handles errors nicely
 app.use(errorHandler());
 

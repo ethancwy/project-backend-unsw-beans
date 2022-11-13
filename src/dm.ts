@@ -167,6 +167,8 @@ function dmRemoveV2(token: string, dmId: number) {
     throw HTTPError(403, 'auth user not owner');
   }
 
+  const copy = [...data.dms[dmId].members];
+
   // remove dms
   data.dms.splice(dmId, 1);
 

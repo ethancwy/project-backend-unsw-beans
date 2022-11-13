@@ -452,8 +452,10 @@ describe('Error checking usersStatsV1', () => {
   });
 });
 
-describe('Testing user/uploadphoto/v1', () => {
-  test('Uploading image', () => {
-    authRegister('foo@bar.com', 'password', 'James', 'Charles');
-  });
-});
+// describe('Testing user/uploadphoto/v1', () => {
+//   test('Uploading image', () => {
+//     clear();
+//     const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+//     expect(userUploadPhoto(member.token,))
+//   });
+// });
