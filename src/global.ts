@@ -220,6 +220,15 @@ export function isGlobalOwner(authUserId: number) {
   return false;
 }
 
+// Helper function to get hashof string
+export function hashOf(str: string) {
+  const s = str + 'secret';
+  let h = 0;
+  for (let i = 0; i < s.length; i++) { h = Math.imul(31, h) + s.charCodeAt(i) | 0; }
+
+  return String(h);
+}
+
 // Helper function to pause time
 export function sleep(milliseconds: number) {
   const date = Date.now();
@@ -233,7 +242,8 @@ export function sleep(milliseconds: number) {
 export function isValidToken(token: string) {
   const data = getData();
 
-  if (data.sessionIds.includes(token)) {
+  const hashedToken = hashOf(token);
+  if (data.sessionIds.includes(hashedToken)) {
     const uId = getUserId(token);
     const user = data.users.find((user: userType) => user.uId === uId);
     if (!user.isRemoved) {
@@ -325,8 +335,9 @@ export function isOnlyOwner(uId: number, channelId: number) {
 export function getUserId(token: string) {
   const data = getData();
 
+  const hashedToken = hashOf(token);
   for (const user of data.users) {
-    if (user.tokens.includes(token)) {
+    if (user.tokens.includes(hashedToken)) {
       return user.uId;
     }
   }
@@ -349,9 +360,10 @@ export function validName(name: string) {
 export function anotherUserEmail(token: string, email: string) {
   const data = getData();
 
+  const hashedToken = hashOf(token);
   for (const user of data.users) {
     if (email === user.email) {
-      if (user.tokens.includes(token)) {
+      if (user.tokens.includes(hashedToken)) {
         // own email
         return false;
       }
@@ -376,9 +388,10 @@ export function isValidHandleLength(handleStr: string) {
 export function anotherUserHandle(token: string, handleStr: string) {
   const data = getData();
 
+  const hashedToken = hashOf(token);
   for (const user of data.users) {
     if (handleStr === user.handleStr) {
-      if (user.tokens.includes(token)) {
+      if (user.tokens.includes(hashedToken)) {
         // own handleStr
         return false;
       }
@@ -578,4 +591,10 @@ export function adminUserpermissionChange(token: string, uId: number, permission
 }
 export function search(token: string, queryStr: string) {
   return requestHelper('GET', '/search/v1', { queryStr }, token);
+}
+export function authPasswordRequest(email: string) {
+  return requestHelper('POST', '/auth/passwordreset/request/v1', { email });
+}
+export function authPasswordReset(resetCode: string, newPassword: string) {
+  return requestHelper('POST', '/auth/passwordreset/reset/v1', { resetCode, newPassword });
 }

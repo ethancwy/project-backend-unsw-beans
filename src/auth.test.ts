@@ -1,4 +1,4 @@
-import { authLogin, authRegister, authLogout, clear, channelsCreate } from './global';
+import { authLogin, authRegister, authLogout, clear, channelsCreate, authPasswordRequest, authPasswordReset } from './global';
 
 // =================================================== //
 //                                                     //
@@ -223,5 +223,43 @@ describe('Testing for auth/logout/v1', () => {
     expect(authLogout(user1.token)).toStrictEqual({});
     expect(authLogout(user1.token)).toStrictEqual(403);
     clear();
+  });
+});
+
+describe('Testing for password request', () => {
+  clear();
+  test('Successful password reset request', () => {
+    authRegister('putijak11.srey@gmail.com', 'Bob100', 'Peter', 'File');
+    expect(authPasswordRequest('putijak11.srey@gmail.com')).toStrictEqual({});
+  });
+});
+
+describe('Testing for password reset', () => {
+  /*
+  clear();
+  test('Successful password reset', () => {
+    const authUser = authRegister('p.file@gmail.com', "Bob100", "Peter", "File");
+    //const token = authUser.token;
+    //expect(authLogout(token)).toStrictEqual({});
+    const reset = authPasswordReset('resetcodeDFFDDDfDD2345', 'Bob123');
+    expect(reset).toStrictEqual({});
+  }); */
+
+  clear();
+  test('Invalid reset code', () => {
+    authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    // expect(authLogout(token)).toStrictEqual({});
+    authPasswordRequest('p.file@gmail.com');
+    const reset = authPasswordReset('invalidresetcode12345', 'Bob123');
+    expect(reset).toStrictEqual(400);
+  });
+
+  clear();
+  test('Invalid password length', () => {
+    authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
+    // expect(authLogout(token)).toStrictEqual({});
+    authPasswordRequest('p.file@gmail.com');
+    const reset = authPasswordReset('invalidresetcode12345', 'Bob3');
+    expect(reset).toStrictEqual(400);
   });
 });
