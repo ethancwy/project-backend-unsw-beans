@@ -1,9 +1,12 @@
-import { getData, MessageDetails, channel } from './dataStore';
+import { getData, MessageDetails, channel, setData } from './dataStore';
+
 import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
 import { user as userType } from './dataStore';
+// import { timeStamp } from 'console';
 const SERVER_URL = `${url}:${port}`;
+const requestTimeStamp = () => Math.floor((new Date()).getTime() / 1000);
 
 // const OK = 200;
 
@@ -428,6 +431,83 @@ export function isDmMember(uid: number, dmId: number) {
   return false;
 }
 
+// Updates userStats
+// Takes in uId of user to update, category(ie channel, dms, messages)
+// and function(ie add, remove)
+export function updateUserStats(uId: number, categ: string, func: string, time: number) {
+  const data = getData();
+
+  if (categ === 'channels') {
+    if (func === 'add') { // Joining a channel
+      data.users[uId].userStats.channelsJoined.push({
+        numChannelsJoined: data.users[uId].userStats.channelsJoined.length,
+        timeStamp: requestTimeStamp(),
+      });
+    } else { // Leaving a channel
+      data.users[uId].userStats.channelsJoined.push({
+        numChannelsJoined: data.users[uId].userStats.channelsJoined.length - 2,
+        timeStamp: requestTimeStamp(),
+      });
+    }
+  } else if (categ === 'dms') {
+    if (func === 'add') { // Joining a dm
+      data.users[uId].userStats.dmsJoined.push({
+        numDmsJoined: data.users[uId].userStats.dmsJoined.length,
+        timeStamp: requestTimeStamp(),
+      });
+    } else { // Leaving a dm
+      data.users[uId].userStats.dmsJoined.push({
+        numDmsJoined: data.users[uId].userStats.dmsJoined.length - 2,
+        timeStamp: requestTimeStamp(),
+      });
+    }
+  } else if (categ === 'msgs') { // Creating a message
+    data.users[uId].userStats.messagesSent.push({
+      numMessagesSent: data.users[uId].userStats.messagesSent.length,
+      timeStamp: time,
+    });
+  }
+
+  setData(data);
+}
+
+export function updateWorkSpace(categ: string, func: string, time: number) {
+  const data = getData();
+
+  if (categ === 'channels') {
+    if (func === 'add') {
+      data.workspaceStats.channelsExist.push({
+        numChannelsExist: data.workspaceStats.channelsExist.length,
+        timeStamp: requestTimeStamp(),
+      });
+    } else {
+      data.workspaceStats.channelsExist.push({
+        numChannelsExist: data.workspaceStats.channelsExist.length - 2,
+        timeStamp: requestTimeStamp(),
+      });
+    }
+  } else if (categ === 'dms') {
+    if (func === 'add') {
+      data.workspaceStats.dmsExist.push({
+        numDmsExist: data.workspaceStats.dmsExist.length,
+        timeStamp: requestTimeStamp(),
+      });
+    } else {
+      data.workspaceStats.dmsExist.push({
+        numDmsExist: data.workspaceStats.dmsExist.length - 2,
+        timeStamp: requestTimeStamp(),
+      });
+    }
+  } else if (categ === 'msgs') {
+    data.workspaceStats.messagesExist.push({
+      numMessagesExist: data.workspaceStats.messagesExist.length,
+      timeStamp: time,
+    });
+  }
+
+  setData(data);
+}
+
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //
 
 export function requestHelper(method: HttpVerb, path: string, payload: object, token?: string) {
@@ -569,6 +649,13 @@ export function userSetEmail(token: string, email: string) {
 }
 export function userSetHandle(token: string, handleStr: string) {
   return requestHelper('PUT', '/user/profile/sethandle/v2', { handleStr }, token);
+}
+// Iteration 3 user/users functions
+export function userStats(token: string) {
+  return requestHelper('GET', '/user/stats/v1', {}, token);
+}
+export function usersStats(token: string) {
+  return requestHelper('GET', '/users/stats/v1', {}, token);
 }
 // ============================ New Iteration 3 function wrappers ================================//
 export function getNotifications(token: string) {

@@ -1,10 +1,12 @@
 import { getData, setData } from './dataStore';
-import { isValidToken } from './global';
+import { getUserId, isValidToken } from './global';
 import {
   validName, validEmail, anotherUserEmail, alphanumeric,
   isValidHandleLength, anotherUserHandle, hashOf
 } from './global';
 import HTTPError from 'http-errors';
+// import { arrayBuffer } from 'stream/consumers';
+// import { channel } from 'diagnostics_channel';
 
 /**
   * For a valid user, returns information about their user ID, email,
@@ -177,4 +179,72 @@ function userSetHandleV2(token: string, handleStr: string) {
   return {};
 }
 
-export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2 };
+function userStatsV1(token: string) {
+  const data = getData();
+  // invalid token
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  }
+
+  const uId = getUserId(token);
+
+  // Calculating involvement
+  // sum(numChannelsJoined, numDmsJoined, numMsgsSent) / sum(numChannels, numDms, numMsgs)
+  const denom = data.channels.length + data.dms.length + data.workspaceStats.messagesExist.length - 1;
+  let involvement = 0;
+  // Calculating involvement if denom != 0
+  if (denom) {
+    // Finding number of involved channels, dms and msgs sent
+    // Finding length of each array in userStatus
+    const chLength = data.users[uId].userStats.channelsJoined.length - 1;
+    const dmsLength = data.users[uId].userStats.dmsJoined.length - 1;
+    const msgsLength = data.users[uId].userStats.messagesSent.length - 1;
+    // Finding value of latest element in each array in userStatus
+    const chFinal = data.users[uId].userStats.channelsJoined[chLength].numChannelsJoined;
+    const dmsFinal = data.users[uId].userStats.dmsJoined[dmsLength].numDmsJoined;
+    const msgsFinal = data.users[uId].userStats.messagesSent[msgsLength].numMessagesSent;
+
+    const numer = chFinal + dmsFinal + msgsFinal;
+    involvement = numer / denom;
+  }
+
+  // Setting involvement to 1 if greater than 1
+  if (involvement > 1) {
+    involvement = 1;
+  }
+
+  const obj = {
+    channelsJoined: data.users[uId].userStats.channelsJoined,
+    dmsJoined: data.users[uId].userStats.dmsJoined,
+    messagesSent: data.users[uId].userStats.messagesSent,
+    involvementRate: involvement,
+  };
+  return obj;
+}
+
+function usersStatsV1 (token: string) {
+  const data = getData();
+
+  // Finding utilisation rate
+  // Finding the number of users who have joined at least one channel or dm
+  const numusers = data.users.length;
+  let usersJ = 0;
+  for (const members of data.users) {
+    if (members.userStats.channelsJoined.length > 1 || members.userStats.dmsJoined.length > 1) {
+      usersJ++;
+    }
+  }
+  // Caclulating utilisation rate
+  // numUsersWhoHaveJoinedAtLeastOneChannelOrDm / numUsers
+  const util = usersJ / numusers;
+
+  const obj = {
+    channelsExist: data.workspaceStats.channelsExist,
+    dmsExist: data.workspaceStats.dmsExist,
+    messagesExist: data.workspaceStats.messagesExist,
+    utilizationRate: util,
+  };
+  return obj;
+}
+
+export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2, userStatsV1, usersStatsV1 };

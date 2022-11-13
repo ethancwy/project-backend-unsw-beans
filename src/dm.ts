@@ -1,5 +1,5 @@
 import { getData, setData, Reacts } from './dataStore';
-import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember } from './global';
+import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember, updateUserStats, updateWorkSpace } from './global';
 import HTTPError from 'http-errors';
 
 /**
@@ -84,7 +84,14 @@ function dmCreateV2(token: string, uIds: number[]) {
     timeCounter: data.counter,
   });
   data.counter++;
+
   setData(data);
+  // Updating userStatus of all users
+  for (const members of membersArray) {
+    updateUserStats(members, 'dms', 'add', 0);
+  }
+  // Updating workspace
+  updateWorkSpace('dms', 'add', 0);
   return { dmId: data.dms.length - 1 };
 }
 
@@ -164,6 +171,12 @@ function dmRemoveV2(token: string, dmId: number) {
   data.dms.splice(dmId, 1);
 
   setData(data);
+  // Updating userStatus
+  for (const members of copy) {
+    updateUserStats(members, 'dms', '', 0);
+  }
+  // Updating workspace
+  updateWorkSpace('dms', '', 0);
   return {};
 }
 
@@ -259,6 +272,8 @@ function dmLeaveV2(token: string, dmId: number) {
   }
 
   setData(data);
+  // Updating userStats
+  updateUserStats(userId, 'dms', '', 0);
   return {};
 }
 
