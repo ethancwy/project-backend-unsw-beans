@@ -2,7 +2,7 @@ import { getData, setData, reactions } from './dataStore';
 import {
   isValidToken, isValidChannel, isInChannel, getUserId,
   isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails,
-  isGlobalOwner, getTags, isInDm
+  isGlobalOwner, getTags, isInDm, updateUserStats, updateWorkSpace
 } from './global';
 import HTTPError from 'http-errors';
 const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
@@ -73,6 +73,10 @@ function messageSendV2(token: string, channelId: number, message: string) {
   });
   data.counter++;
   setData(data);
+  // Updating userStats
+  updateUserStats(uId, 'msgs', 'add', newMessage.timeSent);
+  // Updating workspace
+  updateWorkSpace('msgs', 'add', newMessage.timeSent);
   return { messageId: messageId };
 }
 
@@ -274,6 +278,10 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   });
   data.counter++;
   setData(data);
+  // Updating userStats
+  updateUserStats(uId, 'msgs', 'add', newMessage.timeSent);
+  // Updating workspace
+  updateWorkSpace('msgs', 'add', newMessage.timeSent);
   return { messageId: messageId };
 }
 
