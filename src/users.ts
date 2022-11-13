@@ -2,7 +2,7 @@ import { getData, setData } from './dataStore';
 import { isValidToken } from './global';
 import {
   validName, validEmail, anotherUserEmail, alphanumeric,
-  isValidHandleLength, anotherUserHandle
+  isValidHandleLength, anotherUserHandle, hashOf
 } from './global';
 import HTTPError from 'http-errors';
 
@@ -102,7 +102,7 @@ function userSetNameV2(token: string, nameFirst: string, nameLast: string) {
 
   // change nameFirst and nameLast
   for (const user of data.users) {
-    if (user.tokens.includes(token)) {
+    if (user.tokens.includes(hashOf(token))) {
       user.nameFirst = nameFirst;
       user.nameLast = nameLast;
       break;
@@ -134,7 +134,7 @@ function userSetEmailV2(token: string, email: string) {
 
   // change email
   for (const user of data.users) {
-    if (user.tokens.includes(token)) {
+    if (user.tokens.includes(hashOf(token))) {
       user.email = email;
       break;
     }
@@ -167,7 +167,7 @@ function userSetHandleV2(token: string, handleStr: string) {
 
   // change handle
   for (const user of data.users) {
-    if (user.tokens.includes(token)) {
+    if (user.tokens.includes(hashOf(token))) {
       user.handleStr = handleStr;
       break;
     }

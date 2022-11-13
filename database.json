@@ -1,9 +1,58 @@
 {
-  "users": [],
-  "channels": [],
+  "users": [
+    {
+      "uId": 0,
+      "nameFirst": "ethan",
+      "nameLast": "chew",
+      "email": "chewethan@gmail.com",
+      "password": "1813119765",
+      "handleStr": "ethanchew",
+      "isGlobalOwner": true,
+      "isRemoved": false,
+      "tokens": []
+    }
+  ],
+  "channels": [
+    {
+      "channelId": 0,
+      "name": "j",
+      "isPublic": true,
+      "ownerIds": [
+        0
+      ],
+      "memberIds": [
+        0
+      ],
+      "channelmessages": [
+        {
+          "messageId": 0,
+          "uId": 0,
+          "message": "ethanchew: aiyo",
+          "timeSent": 1668310645,
+          "reacts": [],
+          "isPinned": false,
+          "tags": []
+        }
+      ],
+      "standupDetails": {
+        "isActiveStandup": false,
+        "standupMessages": [],
+        "timeFinish": null
+      }
+    }
+  ],
   "dms": [],
   "sessionIds": [],
-  "messageDetails": [],
+  "messageDetails": [
+    {
+      "uId": 0,
+      "message": "ethanchew: aiyo",
+      "messageId": 0,
+      "isDm": false,
+      "listId": 0,
+      "tags": []
+    }
+  ],
   "inviteDetails": [],
   "reactDetails": [],
   "counter": 0
