@@ -138,20 +138,18 @@ export function getNotificationsV1(token: string) {
     throw HTTPError(403, 'Invalid token');
   }
 
-  // let arr = getInvitedNotif(token, getTaggedNotif(token));
   const arr = getReactNotif(token, getInvitedNotif(token, getTaggedNotif(token)));
-  // console.log(arr);
+
   // sort arr by latest notif coming first!
   arr.sort((a, b) => b.timeCounter - a.timeCounter);
   // delete not needed key for returning
-
   for (const i of arr) {
     delete i.timeCounter;
   }
 
   if (arr.length > 20) {
     return {
-      notifications: arr.slice(0, 19)
+      notifications: arr.slice(0, 20)
     };
   }
   return {

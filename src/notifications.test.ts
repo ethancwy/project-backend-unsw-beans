@@ -1,19 +1,15 @@
 import {
-  authRegister, channelsCreate, channelInvite, dmCreate,
-  clear, getNotifications, messageReact,
+  authRegister, channelsCreate, channelInvite,
+  dmCreate, clear, getNotifications, messageReact,
   messageSend, messageSendDm, channelLeave, dmLeave
 } from './global';
 
 const REACT = 1;
 
-// tagged: "{User’s handle} tagged you in {channel/DM name}: {first 20 characters of the message}"
-// reacted message: "{User’s handle} reacted to your message in {channel/DM name}"
-// added to a channel / DM: "{User’s handle} added you to {channel/DM name}"
-
 clear();
 // Tests for /notifications/get/v1
-describe('/notifications/get/v1 added to channel/dm', () => {
-  test('Returns multiple notifications in correct order (channel invite)', () => {
+describe('/notifications/get/v1 added to channel/dm and error checking', () => {
+  test('Returns multiple notifications in correct order (channel invite), and invalid token', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const channelOwner1 = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
@@ -46,6 +42,7 @@ describe('/notifications/get/v1 added to channel/dm', () => {
         },
       ]
     });
+    expect(getNotifications(globalOwnerId.token + 'ayo')).toStrictEqual(403);
   });
 
   test('Returns multiple notifications in correct order (dm invite)', () => {
@@ -324,6 +321,123 @@ describe('/notifications/get/v1 leave channel/dm and get tagged/reacted', () => 
           notificationMessage: 'willywonka added you to billybonka, jamescharles, willywonka'
         },
       ]
+    });
+  });
+});
+
+describe('Most recent 20 notifications', () => {
+  test('Returns 20 notifs using channelInvite', () => {
+    clear();
+    const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const channelOwner1 = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    // invite 21 times, expect 20 notifs
+    for (let i = 1; i <= 21; i++) {
+      const channel = channelsCreate(channelOwner1.token, String(i), true);
+      channelInvite(channelOwner1.token, channel.channelId, globalOwnerId.authUserId);
+    }
+    expect(getNotifications(globalOwnerId.token)).toStrictEqual({
+      notifications: [
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 21'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 20'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 19'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 18'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 17'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 16'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 15'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 14'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 13'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 12'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 11'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 10'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 9'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 8'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 7'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 6'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 5'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 4'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 3'
+        },
+        {
+          channelId: expect.any(Number),
+          dmId: -1,
+          notificationMessage: 'willywonka added you to 2'
+        }
+      ],
     });
   });
 });
