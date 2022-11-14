@@ -1,6 +1,6 @@
 import {
   authRegister, authLogout, userProfile, clear,
-  usersAll, userSetName, userSetEmail, userSetHandle
+  usersAll, userSetName, userSetEmail, userSetHandle, userUploadPhoto
 } from './global';
 
 clear();
@@ -314,3 +314,12 @@ describe('Error checking userSetHandleV1', () => {
     clear();
   });
 });
+
+//
+describe('Testing user/profile/uploadphoto/v1', () => {
+  test('Testing basic', () => {
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+
+    expect(userUploadPhoto()).
+  });
+}) 

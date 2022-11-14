@@ -14,7 +14,7 @@ import {
 } from './channel';
 import {
   userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2,
-  userSetHandleV2
+  userSetHandleV2, userUploadPhotoV1
 } from './users';
 import { dmCreateV2, dmDetailsV2, dmLeaveV2, dmListV2, dmRemoveV2, dmMessagesV2 } from './dm';
 import { getNotificationsV1 } from './notifications';
@@ -30,6 +30,8 @@ import { adminUserRemoveV1, adminUserpermissionChangeV1 } from './admin';
 
 // Set up web app
 const app = express();
+// Setting up for image
+app.use('/static', express.static('static'));
 // Use middleware that allows us to access the JSON body of requests
 app.use(json());
 // Use middleware that allows for access from other domains
@@ -164,6 +166,17 @@ app.put('/user/profile/sethandle/v2', (req: Request, res: Response) => {
   const { handleStr } = req.body;
   return res.json(userSetHandleV2(token, handleStr));
 });
+
+/*app.post('/user/profile/uploadphoto/v1', (req: Request, res: Response) => {
+  //const token = req.header('token');
+  //const { imgUrl, xStart, yStart, xEnd, yEnd } = req.body;
+  const { token, string } = req.body
+  return res.json(userUploadPhotoV1(token, string));
+});*/
+
+const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
+const A = new URL(baseURL);
+userUploadPhotoV1('sdfsdf', A, 0, 0, 100, 200);
 
 app.post('/dm/create/v2', (req: Request, res: Response) => {
   const token = req.header('token');

@@ -3,6 +3,9 @@ import validator from 'validator';
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
 import { user as userType } from './dataStore';
+import { token } from 'morgan';
+import internal from 'stream';
+import { Token } from 'typescript';
 const SERVER_URL = `${url}:${port}`;
 
 // const OK = 200;
@@ -569,6 +572,9 @@ export function userSetEmail(token: string, email: string) {
 }
 export function userSetHandle(token: string, handleStr: string) {
   return requestHelper('PUT', '/user/profile/sethandle/v2', { handleStr }, token);
+}
+export function userUploadPhoto(token: string, imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number) {
+  return requestHelper('POST', '/user/profile/uploadphoto/v1', { imgUrl, xStart, yStart, xEnd, yEnd }, token);
 }
 // ============================ New Iteration 3 function wrappers ================================//
 export function getNotifications(token: string) {
