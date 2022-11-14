@@ -15,9 +15,9 @@ describe('/standup/start/v1 ', () => {
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     const timeNow = requestTime();
-    const time = standupStart(globalOwnerId.token, channel.channelId, 2);
-    expect(time.timeFinish).toBeGreaterThanOrEqual(timeNow + 2);
-    expect(time.timeFinish).toBeLessThanOrEqual(timeNow + 3);
+    const time = standupStart(globalOwnerId.token, channel.channelId, 1);
+    expect(time.timeFinish).toBeGreaterThanOrEqual(timeNow + 1);
+    expect(time.timeFinish).toBeLessThanOrEqual(timeNow + 2);
     while (time.timeFinish >= requestTime()) {
       continue;
     }
@@ -137,7 +137,7 @@ describe('/standup/send/v1 ', () => {
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     const owner = userProfile(globalOwnerId.token, globalOwnerId.authUserId);
     const handle1 = owner.user.handleStr;
-    standupStart(globalOwnerId.token, channel.channelId, 3);
+    standupStart(globalOwnerId.token, channel.channelId, 1);
 
     const request = requestTime();
     expect(standupSend(globalOwnerId.token, channel.channelId, 'hellothere!')).toEqual({});
@@ -173,7 +173,7 @@ describe('/standup/send/v1 ', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
-    const time = standupStart(globalOwnerId.token, channel.channelId, 2);
+    const time = standupStart(globalOwnerId.token, channel.channelId, 1);
     expect(standupSend(globalOwnerId.token, channel.channelId + 1, 'hello')).toEqual(400);
     while (time.timeFinish >= requestTime()) {
       continue;
