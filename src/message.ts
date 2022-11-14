@@ -287,9 +287,32 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
 
 function messageShareV1(token: string, ogMessageId: number, message: string, channelId: number, dmId: number) {
   const data = getData();
+
+  if (dmId !== -1 && channelId !== -1) {
+    throw HTTPError(400, 'neither channelId nor dmId are -1');
+  }
+
   const uId = getUserId(token);
   if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
+  }
+
+  if (dmId === -1) {
+    if (!isValidChannel(channelId)) {
+      throw HTTPError(400, 'invalid channel');
+    }
+    // cannot share TO unjoined channel
+    if (!isInChannel(uId, channelId)) {
+      throw HTTPError(403, 'auth user not in shared message channel');
+    }
+  } else if (channelId === -1) {
+    if (!isDmValid(dmId)) {
+      throw HTTPError(400, 'invalid dm');
+    }
+    // cannot share TO unjoined dm
+    if (!isInDm(uId, dmId)) {
+      throw HTTPError(403, 'auth user not in shared message dm');
+    }
   }
 
   if (message.length > 1000) {
@@ -304,13 +327,15 @@ function messageShareV1(token: string, ogMessageId: number, message: string, cha
 
   let newMessage = '';
   if (!msg.isDm) {
+    // cannot share FROM unjoined channel
     if (!data.channels[msg.listIndex].memberIds.includes(uId)) {
-      throw HTTPError(400, 'auth user not in og message channel');
+      throw HTTPError(403, 'auth user not in og message channel');
     }
     newMessage += data.channels[msg.listIndex].channelmessages[msg.messageIndex].message;
   } else {
+    // cannot share FROM unjoined dm
     if (!data.dms[msg.listIndex].members.includes(uId)) {
-      throw HTTPError(400, 'auth user not in og message dm');
+      throw HTTPError(403, 'auth user not in og message dm');
     }
     newMessage += data.dms[msg.listIndex].messages[msg.messageIndex].message;
   }

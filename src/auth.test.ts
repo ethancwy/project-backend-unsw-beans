@@ -228,9 +228,10 @@ describe('Testing for auth/logout/v1', () => {
 
 describe('Testing for password request', () => {
   clear();
-  test('Successful password reset request', () => {
-    authRegister('putijak11.srey@gmail.com', 'Bob100', 'Peter', 'File');
+  test('Successful password reset request, logged out of all sessions', () => {
+    const user1 = authRegister('putijak11.srey@gmail.com', 'Bob100', 'Peter', 'File');
     expect(authPasswordRequest('putijak11.srey@gmail.com')).toStrictEqual({});
+    expect(channelsCreate(user1.token, 'test', true)).toStrictEqual(403)
   });
 });
 

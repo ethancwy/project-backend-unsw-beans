@@ -1,6 +1,6 @@
 import {
   messageSend, messageEdit, messageRemove, clear, dmCreate,
-  dmMessages, channelMessages, channelJoin
+  dmMessages, channelMessages, channelJoin,
 } from './global';
 import { authRegister, authLogout } from './global';
 import { channelsCreate } from './global';
@@ -407,15 +407,20 @@ describe('/message/share/v1 failes', () => {
     expect(messageShare(auth.token, messageId.messageId, '', 0, 0)).toStrictEqual(400);
   });
 
-  test('authuser not in ogmessage channel/dm', () => {
+  test('ogMessageId does not refer to valid message within channel/dm that user has joined', () => {
     clear();
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const member = authRegister('Nina10803@icloud.com', 'Nina011803', 'Ni111na', '11Yeh');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const channel2 = channelsCreate(member.token, 'Dog11 Channel', true);
+    channelJoin(member.token, channelId.channelId);
+    const dm = dmCreate(auth.token, [member.authUserId]);
+    // message sent to channelId.channelId
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
-    expect(messageShare(member.token, messageId.messageId, '', channel2.channelId, -1)).toStrictEqual(400);
-    expect(messageShare(auth.token, messageId.messageId, '', channel2.channelId, -1)).toStrictEqual(403);
+    // invalid ogMessageId for member of a valid channel
+    expect(messageShare(member.token, messageId.messageId + 1, '', channel2.channelId, -1)).toStrictEqual(400);
+    // invalid ogMessageId for valid dm and member of that dm
+    expect(messageShare(auth.token, messageId.messageId + 1, '', -1, dm.dmId)).toStrictEqual(400);
   });
 
   test('message length > 1000', () => {
@@ -430,14 +435,26 @@ describe('/message/share/v1 failes', () => {
     expect(messageShare(auth.token, messageId.messageId, longList.toString(), channelId.channelId, -1)).toStrictEqual(400);
   });
 
-  test('valid channel/dm but auth user not in channel/dm', () => {
+  test('valid channel/dm but auth user not in channel/dm that is being shared, but part of og', () => {
     clear();
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const member = authRegister('Nina10803@icloud.com', 'Nina011803', 'Ni111na', '11Yeh');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
-    const channel2 = channelsCreate(member.token, 'Dog11 Channel', true);
-    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
-    expect(messageShare(auth.token, messageId.messageId, 'substring message', channel2.channelId, -1)).toStrictEqual(403);
+    const channelId2 = channelsCreate(member.token, 'Dog Channel2', true);
+    const messageId = messageSend(member.token, channelId2.channelId, 'helloo');
+    // must be part of channel where messageId originated from
+
+    expect(messageShare(member.token, messageId.messageId, 'substring message', channelId.channelId, -1)).toStrictEqual(403);
+  });
+
+  test('valid channel/dm but auth user not in dm', () => {
+    clear();
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const member = authRegister('Nina10803@icloud.com', 'Nina011803', 'Ni111na', '11Yeh');
+    const member2 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', ' Tony', 'Yeung');
+    const dm1 = dmCreate(auth.token, [member.authUserId]);
+    const messageId = messageSendDm(auth.token, dm1.dmId, 'helloo');
+    expect(messageShare(member2.token, messageId.messageId, 'substring message', -1, dm1.dmId)).toStrictEqual(403);
   });
 });
 
@@ -448,6 +465,7 @@ describe('/message/share/v1 success', () => {
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const channel2 = channelsCreate(auth.token, 'Dog11 Channel', true);
+    channelJoin(auth.token, channel2.channelId);
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
     const dmId = dmCreate(auth.token, []);
     expect(messageShare(auth.token, messageId.messageId, 'substring message', channelId.channelId, -1)).toStrictEqual({ sharedMessageId: expect.any(Number) });
