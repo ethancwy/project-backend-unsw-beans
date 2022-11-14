@@ -234,8 +234,8 @@ describe('Testing for password request', () => {
     expect(channelsCreate(user1.token, 'test', true)).toStrictEqual(403);
   });
   test('Invalid email, but no error raised', () => {
-      clear();
-      expect(authPasswordRequest('putijak11.srey@gmail.com')).toStrictEqual({});
+    clear();
+    expect(authPasswordRequest('putijak11.srey@gmail.com')).toStrictEqual({});
   });
 });
 
