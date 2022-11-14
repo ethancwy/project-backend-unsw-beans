@@ -233,6 +233,10 @@ describe('Testing for password request', () => {
     expect(authPasswordRequest('putijak11.srey@gmail.com')).toStrictEqual({});
     expect(channelsCreate(user1.token, 'test', true)).toStrictEqual(403);
   });
+  test('Invalid email, but no error raised', () => {
+    clear();
+    expect(authPasswordRequest('putijak11.srey@gmail.com')).toStrictEqual({});
+  });
 });
 
 describe('Testing for password reset', () => {
@@ -263,4 +267,5 @@ describe('Testing for password reset', () => {
     const reset = authPasswordReset('invalidresetcode12345', 'Bob3');
     expect(reset).toStrictEqual(400);
   });
+  clear();
 });
