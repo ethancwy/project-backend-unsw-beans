@@ -391,6 +391,13 @@ describe('Error checking /message/remove/v1', () => {
 
 // Testing for message/share/v1 failed cases
 describe('/message/share/v1 failes', () => {
+  test('invalid token', () => {
+    const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
+    const channelId = channelsCreate(auth.token, 'Dog Channel', true);
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    expect(messageShare(auth.token + 'hi', messageId.messageId, '', channelId.channelId, -1)).toStrictEqual(403);
+  });
+
   test('both channelid and dmid are invalid', () => {
     clear();
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
