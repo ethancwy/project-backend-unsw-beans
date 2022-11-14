@@ -70,8 +70,7 @@ describe('/standup/active/v1 ', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
-    const timeFinish = standupStart(globalOwnerId.token, channel.channelId, 3);
-    // expect(timeFinish).toEqual({ timeFinish: expect.any(Number) });
+    const timeFinish = standupStart(globalOwnerId.token, channel.channelId, 2);
 
     expect(standupActive(globalOwnerId.token, channel.channelId)).toEqual({
       isActive: true,
@@ -144,7 +143,7 @@ describe('/standup/send/v1 ', () => {
     expect(standupSend(globalOwnerId.token, channel.channelId, 'hellothere!')).toEqual({});
     expect(standupSend(globalOwnerId.token, channel.channelId, 'bye!')).toEqual({});
 
-    while (requestTime() <= request + 3) {
+    while (requestTime() <= request + 1) {
       continue;
     }
 
@@ -210,7 +209,7 @@ describe('/standup/send/v1 ', () => {
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     const random = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
-    const time = standupStart(globalOwnerId.token, channel.channelId, 3);
+    const time = standupStart(globalOwnerId.token, channel.channelId, 1);
     expect(standupSend(random.token, channel.channelId, 'hello')).toEqual(403);
     while (time.timeFinish >= requestTime()) {
       continue;
@@ -232,7 +231,7 @@ describe('/standup/send/v1 ', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
-    const time = standupStart(globalOwnerId.token, channel.channelId, 3);
+    const time = standupStart(globalOwnerId.token, channel.channelId, 1);
     expect(standupSend(globalOwnerId.token, channel.channelId, '')).toEqual({});
     while (time.timeFinish >= requestTime()) {
       continue;

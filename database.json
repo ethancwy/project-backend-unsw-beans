@@ -352,5 +352,25 @@
     }
   ],
   "reactDetails": [],
-  "counter": 15
+  "workspaceStats": {
+    "channelsExist": [
+      {
+        "numChannelsExist": 0,
+        "timeStamp": 0
+      }
+    ],
+    "dmsExist": [
+      {
+        "numDmsExist": 0,
+        "timeStamp": 0
+      }
+    ],
+    "messagesExist": [
+      {
+        "numMessagesExist": 0,
+        "timeStamp": 0
+      }
+    ]
+  },
+  "counter": 0
 }
