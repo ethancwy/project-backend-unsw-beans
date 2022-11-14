@@ -86,22 +86,9 @@ describe('Testing channelDetailsV2 edge cases', () => {
     const channelOwnerPrivId = authRegister('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
     const channelIdPriv = channelsCreate(channelOwnerPrivId.token, 'Priv', false);
 
-    let fakeToken = channelOwnerPrivId.token + 'hi';
-    if (fakeToken === channelOwnerPrivId.token) {
-      fakeToken += 'bye';
-    }
+    const fakeToken = channelOwnerPrivId.token + 'hi';
 
     expect(channelDetails(fakeToken, channelIdPriv.channelId)).toEqual(403);
-  });
-
-  test('Testing logged out token', () => {
-    clear();
-    const channelOwnerPrivId = authRegister('pollos@hhm.com', 'g00dpassword54', 'Gus', 'Fring');
-    const channelIdPriv = channelsCreate(channelOwnerPrivId.token, 'Priv', false);
-
-    authLogout(channelOwnerPrivId.token);
-
-    expect(channelDetails(channelOwnerPrivId.token, channelIdPriv.channelId)).toEqual(403);
   });
 
   test('Testing when Id is valid but user is not a member of the channel', () => {
@@ -201,10 +188,8 @@ describe('Error checking channelJoinV2', () => {
     const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
 
     const memberId = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
-    let invalidMemberToken = memberId.token + 'hi';
-    if (invalidMemberToken === channelOwnerId.token) {
-      invalidMemberToken += 'bye';
-    }
+    const invalidMemberToken = memberId.token + channelOwnerId.token;
+
     const invalidChannelId = channelId.channelId + 1;
     expect(channelJoin(invalidMemberToken, channelId.channelId)).toStrictEqual(403); // invalid token
     expect(channelJoin(memberId.token, invalidChannelId)).toStrictEqual(400); // invalid channelId
@@ -277,7 +262,7 @@ describe('Testing channelInviteV2', () => {
     });
   });
 });
-//! to do
+
 describe('Error checking channelInviteV2', () => {
   test('Testing invalid token, channelId, and uId, and duplicate invite', () => {
     clear();
@@ -290,10 +275,7 @@ describe('Error checking channelInviteV2', () => {
       invalidMemberId++;
     }
 
-    let invalidToken = memberId.token + 'hi';
-    if (invalidToken === channelOwnerId.token) {
-      invalidToken += 'bye';
-    }
+    const invalidToken = memberId.token + channelOwnerId.token;
 
     const invalidChannelId = channelId.channelId + 1;
 
@@ -330,15 +312,13 @@ describe('Error checking channelInviteV2', () => {
 
 // channelMessages
 describe('test block for channelMessagesV2', () => {
-  test('invalid input(invalid user and channel)', () => {
+  test('invalid token', () => {
     clear();
 
     const personId = authRegister('ethanchew@mail.com', 'paswword123', 'ethan', 'chew');
     const channelId = channelsCreate(personId.token, 'achannel', true);
 
-    clear();
-
-    expect(channelMessages(personId.token, channelId.channelId, 0)).toStrictEqual(403);
+    expect(channelMessages(personId.token + 'hi', channelId.channelId, 0)).toStrictEqual(403);
   });
 
   test('invalid input(user not in channel)', () => {
@@ -443,25 +423,11 @@ describe('Error checking channelLeaveV1', () => {
     const nonMember = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
 
     const invalidChannelId = channelId.channelId + 1;
-    let invalidToken = channelOwnerId.token + 'hi';
-    if (invalidToken === nonMember.token) {
-      invalidToken += 'bye';
-    }
+    const invalidToken = channelOwnerId.token + nonMember.token;
+
     expect(channelLeave(channelOwnerId.token, invalidChannelId)).toStrictEqual(400); // invalid channel
     expect(channelLeave(invalidToken, channelId.channelId)).toStrictEqual(403); // invalid token
     expect(channelLeave(nonMember.token, channelId.channelId)).toStrictEqual(403); // nonMember
-  });
-
-  test('Invalid token(logged out)', () => {
-    clear();
-    const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
-
-    const member = authRegister('john@bar.com', 'decentpassword', 'John', 'Wick');
-    channelJoin(member.token, channelId.channelId);
-    authLogout(member.token);
-
-    expect(channelLeave(member.token, channelId.channelId)).toStrictEqual(403); // invalid token
   });
 });
 
@@ -582,13 +548,11 @@ describe('Error checking channelAddOwnerV1', () => {
     channelJoin(member.token, channel.channelId);
 
     const invalidChannel = channel.channelId + 1;
-    let invalidToken = channelOwner.token + 'hi';
-    if (invalidToken === member.token) {
-      invalidToken += 'bye';
-    }
-    let invalidUser = channelOwner.authUserId + 21;
+    const invalidToken = channelOwner.token + member.token;
+
+    let invalidUser = channelOwner.authUserId + 3;
     if (invalidUser === member.authUserId) {
-      invalidUser += 21;
+      invalidUser += 2;
     }
     // invalid channel
     expect(channelAddOwner(channelOwner.token, invalidChannel, member.authUserId)).toStrictEqual(400);
@@ -749,13 +713,11 @@ describe('Error checking channelRemoveOwnerV1', () => {
     channelAddOwner(channelOwner.token, channel.channelId, member.authUserId);
 
     const invalidChannel = channel.channelId + 1;
-    let invalidToken = channelOwner.token + 'hi';
-    if (invalidToken === member.token) {
-      invalidToken += 'bye';
-    }
-    let invalidUser = channelOwner.authUserId + 21;
+    const invalidToken = channelOwner.token + member.token;
+
+    let invalidUser = channelOwner.authUserId + 3;
     if (invalidUser === member.authUserId) {
-      invalidUser += 21;
+      invalidUser += 2;
     }
     // invalid channel
     expect(channelRemoveOwner(channelOwner.token, invalidChannel, member.authUserId)).toStrictEqual(400);

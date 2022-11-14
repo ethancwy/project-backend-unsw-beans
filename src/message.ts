@@ -23,7 +23,7 @@ const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 function messageSendV2(token: string, channelId: number, message: string) {
   const data = getData();
   const uId = getUserId(token);
-  if (!isValidToken) {
+  if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
   }
   if (!isValidChannel(channelId)) {
