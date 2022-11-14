@@ -212,18 +212,6 @@ describe('Testing for auth/logout/v1', () => {
     expect(authLogout(user.token)).toStrictEqual({});
     expect(authLogout(user.token)).toStrictEqual(403);
   });
-
-  test('Testing for invalid logout', () => {
-    clear();
-    const user = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
-    const user1 = authRegister('m.hunt@gmail.com', 'Bob100', 'Mike', 'Hunt');
-
-    expect(authLogout(user.token)).toStrictEqual({});
-    expect(authLogout(user.token)).toStrictEqual(403);
-    expect(authLogout(user1.token)).toStrictEqual({});
-    expect(authLogout(user1.token)).toStrictEqual(403);
-    clear();
-  });
 });
 
 describe('Testing for password request', () => {
@@ -232,6 +220,10 @@ describe('Testing for password request', () => {
     const user1 = authRegister('putijak11.srey@gmail.com', 'Bob100', 'Peter', 'File');
     expect(authPasswordRequest('putijak11.srey@gmail.com')).toStrictEqual({});
     expect(channelsCreate(user1.token, 'test', true)).toStrictEqual(403);
+  });
+  test('Invalid email, but no error raised', () => {
+    clear();
+    expect(authPasswordRequest('putijak11.srey@gmail.com')).toStrictEqual({});
   });
 });
 
