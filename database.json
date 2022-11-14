@@ -2,25 +2,19 @@
   "users": [
     {
       "uId": 0,
-      "nameFirst": "James",
-      "nameLast": "Charles",
-      "email": "foo@bar.com",
-      "password": "372730123",
-      "handleStr": "jamescharles",
+      "nameFirst": "Peter",
+      "nameLast": "File",
+      "email": "p.file@gmail.com",
+      "password": "-1618246164",
+      "handleStr": "peterfile",
       "isGlobalOwner": true,
       "isRemoved": false,
-      "tokens": [
-        "-1255773472"
-      ],
+      "tokens": [],
       "userStats": {
         "channelsJoined": [
           {
             "numChannelsJoined": 0,
             "timeStamp": 0
-          },
-          {
-            "numChannelsJoined": 1,
-            "timeStamp": 1668428439
           }
         ],
         "dmsJoined": [
@@ -39,29 +33,9 @@
       }
     }
   ],
-  "channels": [
-    {
-      "channelId": 0,
-      "name": "testingStandup",
-      "isPublic": true,
-      "ownerIds": [
-        0
-      ],
-      "memberIds": [
-        0
-      ],
-      "channelmessages": [],
-      "standupDetails": {
-        "isActiveStandup": false,
-        "standupMessages": [],
-        "timeFinish": null
-      }
-    }
-  ],
+  "channels": [],
   "dms": [],
-  "sessionIds": [
-    "-1255773472"
-  ],
+  "sessionIds": [],
   "messageDetails": [],
   "inviteDetails": [],
   "reactDetails": [],
@@ -70,10 +44,6 @@
       {
         "numChannelsExist": 0,
         "timeStamp": 0
-      },
-      {
-        "numChannelsExist": 1,
-        "timeStamp": 1668428439
       }
     ],
     "dmsExist": [

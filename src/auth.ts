@@ -134,6 +134,9 @@ function authLogoutV2(token: string) {
 function authPasswordRequestV1(email: string) {
   const data = getData();
   const user = data.users.find((user: userType) => user.email === email);
+  if (!user) {
+    return {};
+  }
   const sessionToRemove = user.tokens;
   user.tokens = [];
   for (const session of sessionToRemove) {
