@@ -162,9 +162,6 @@ describe('/standup/send/v1 ', () => {
       start: 0,
       end: -1
     });
-    while (finishTime.timeFinish >= requestTime()) {
-      continue;
-    }
   });
 
   test('error 400: no active standup running', () => {

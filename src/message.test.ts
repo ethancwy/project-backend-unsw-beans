@@ -189,15 +189,15 @@ describe('/message/edit/v1 success', () => {
     clear();
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
-    const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
-    const newMsg = messageEdit(auth.token, messageId.messageId, 'edited!');
+    const messageId = messageSend(auth.token, channelId.channelId, 'helloo@ninayeh');
+    const newMsg = messageEdit(auth.token, messageId.messageId, 'edited!@ninayeh');
     expect(newMsg).toStrictEqual({});
     expect(channelMessages(auth.token, channelId.channelId, 0)).toStrictEqual({
       messages: [
         {
           messageId: messageId.messageId,
           uId: auth.authUserId,
-          message: 'edited!',
+          message: 'edited!@ninayeh',
           timeSent: expect.any(Number),
           reacts: [],
           isPinned: false,
@@ -212,14 +212,14 @@ describe('/message/edit/v1 success', () => {
     clear();
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const dm = dmCreate(auth.token, []);
-    const messageId = messageSendDm(auth.token, dm.dmId, 'helloo');
-    expect(messageEdit(auth.token, messageId.messageId, 'edited!')).toStrictEqual({});
+    const messageId = messageSendDm(auth.token, dm.dmId, 'helloo@ninayeh');
+    expect(messageEdit(auth.token, messageId.messageId, 'edited!@ninayeh')).toStrictEqual({});
     expect(dmMessages(auth.token, dm.dmId, 0)).toStrictEqual({
       messages: [
         {
           messageId: messageId.messageId,
           uId: auth.authUserId,
-          message: 'edited!',
+          message: 'edited!@ninayeh',
           timeSent: expect.any(Number),
           reacts: [],
           isPinned: false,
@@ -239,8 +239,8 @@ describe('Testing errors for /message/edit/v1', () => {
     const channelId = channelsCreate(token, 'Waterrr', true);
     const messageId = messageSend(token, channelId.channelId, 'happy');
     const invalidMessage = [];
-    for (let i = 0; i < 1005; i++) {
-      invalidMessage.push('1');
+    while (invalidMessage.length < 1001) {
+      invalidMessage.push('1y389rh891hd89ho98jdsbsiajbkaibdsoianlasbdnsaiobaolb');
     }
     const check = messageEdit(token, messageId.messageId, invalidMessage.toString());
     expect(check).toStrictEqual(400);
@@ -280,11 +280,13 @@ describe('Testing errors for /message/edit/v1', () => {
     const channelId = channelsCreate(globalOwner.token, 'hk channel', true);
     const dmOwner = authRegister('Jackychan@gmail.com', 'passwordhehe', 'Jacky', 'Chan');
     const member = authRegister('Peter@gmail.com', 'drink1234', 'Peter', 'He');
+    const nonmember = authRegister('Peter@sadgmail.com', 'drink1234as', 'Peteras', 'Hesda');
 
     const dm = dmCreate(dmOwner.token, [globalOwner.authUserId, member.authUserId]);
     const messageId = messageSendDm(globalOwner.token, dm.dmId, 'great');
     const channelmessageId = messageSend(globalOwner.token, channelId.channelId, 'great');
     expect(messageEdit(member.token, messageId.messageId, 'edited!')).toStrictEqual(403);
+    expect(messageEdit(nonmember.token, messageId.messageId, 'edited!')).toStrictEqual(400);
     expect(messageEdit(member.token, channelmessageId.messageId, 'edited!')).toStrictEqual(400);
     channelJoin(member.token, channelId.channelId);
     expect(messageEdit(member.token, channelmessageId.messageId, 'edited!')).toStrictEqual(403);
@@ -396,6 +398,7 @@ describe('/message/share/v1 failes', () => {
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    expect(messageShare('lololtoken', messageId.messageId, '', -1, -1)).toStrictEqual(403);
     expect(messageShare(auth.token, messageId.messageId, '', -1, -1)).toStrictEqual(400);
   });
 
@@ -405,6 +408,7 @@ describe('/message/share/v1 failes', () => {
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
     expect(messageShare(auth.token, messageId.messageId, '', 0, 0)).toStrictEqual(400);
+    expect(messageShare(auth.token, -1000, '', channelId.channelId, -1)).toStrictEqual(400);
   });
 
   test('authuser not in ogmessage channel/dm', () => {
@@ -413,8 +417,12 @@ describe('/message/share/v1 failes', () => {
     const member = authRegister('Nina10803@icloud.com', 'Nina011803', 'Ni111na', '11Yeh');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const channel2 = channelsCreate(member.token, 'Dog11 Channel', true);
+    const dmId = dmCreate(auth.token, []);
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
+    const dmMsgId = messageSendDm(auth.token, dmId.dmId, 'helloo');
     expect(messageShare(member.token, messageId.messageId, '', channel2.channelId, -1)).toStrictEqual(400);
+    expect(messageShare(member.token, messageId.messageId, '', -1, dmId.dmId)).toStrictEqual(403);
+    expect(messageShare(member.token, dmMsgId.messageId, '', channelId.channelId, -1)).toStrictEqual(403);
     expect(messageShare(auth.token, messageId.messageId, '', channel2.channelId, -1)).toStrictEqual(403);
   });
 
@@ -423,11 +431,11 @@ describe('/message/share/v1 failes', () => {
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
-    const longList = [];
+    let longList = '';
     while (longList.length < 1005) {
-      longList.push('hahahahahahahahahahahahalol');
+      longList += 'hahahahahahahahahahahahalol';
     }
-    expect(messageShare(auth.token, messageId.messageId, longList.toString(), channelId.channelId, -1)).toStrictEqual(400);
+    expect(messageShare(auth.token, messageId.messageId, longList, channelId.channelId, -1)).toStrictEqual(400);
   });
 
   test('valid channel/dm but auth user not in channel/dm', () => {
@@ -651,9 +659,10 @@ describe('/message/sendlater fails', () => {
     const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
     const dm = dmCreate(member.token, [auth.authUserId]);
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
-    expect(messageSendlater('fake', channelId.channelId, 'hiiiiii', requestTime() + 1500)).toStrictEqual(403);
-    expect(messageSendlater(auth.token, channelId.channelId - 10, 'hiiiiii', requestTime() + 1500)).toStrictEqual(400);
-    expect(messageSendlaterdm(auth.token, dm.dmId - 10, 'hiiiiii', requestTime() + 1500)).toStrictEqual(400);
+    expect(messageSendlaterdm('fake', channelId.channelId, 'hiiiiii', requestTime() + 1)).toStrictEqual(403);
+    expect(messageSendlater('fake', channelId.channelId, 'hiiiiii', requestTime() + 1)).toStrictEqual(403);
+    expect(messageSendlater(auth.token, channelId.channelId - 10, 'hiiiiii', requestTime() + 1)).toStrictEqual(400);
+    expect(messageSendlaterdm(auth.token, dm.dmId - 10, 'hiiiiii', requestTime() + 1)).toStrictEqual(400);
   });
 
   test('user not in channel/dm', () => {
@@ -662,8 +671,8 @@ describe('/message/sendlater fails', () => {
     const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const dm = dmCreate(member.token, []);
-    expect(messageSendlater(member.token, channelId.channelId, 'hiiiiii', requestTime() + 1500)).toStrictEqual(403);
-    expect(messageSendlaterdm(auth.token, dm.dmId, 'hiiiiii', requestTime() + 1500)).toStrictEqual(403);
+    expect(messageSendlater(member.token, channelId.channelId, 'hiiiiii', requestTime() + 1)).toStrictEqual(403);
+    expect(messageSendlaterdm(auth.token, dm.dmId, 'hiiiiii', requestTime() + 1)).toStrictEqual(403);
   });
 
   test('invalid message length', () => {
@@ -673,13 +682,13 @@ describe('/message/sendlater fails', () => {
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const dm = dmCreate(member.token, []);
     let invalidMessage = '';
-    expect(messageSendlater(auth.token, channelId.channelId, invalidMessage, requestTime() + 1500)).toStrictEqual(400);
-    expect(messageSendlaterdm(member.token, dm.dmId, invalidMessage, requestTime() + 1500)).toStrictEqual(400);
+    expect(messageSendlater(auth.token, channelId.channelId, invalidMessage, requestTime() + 1)).toStrictEqual(400);
+    expect(messageSendlaterdm(member.token, dm.dmId, invalidMessage, requestTime() + 1)).toStrictEqual(400);
     while (invalidMessage.length < 1005) {
       invalidMessage += 'ethanchew';
     }
-    expect(messageSendlater(auth.token, channelId.channelId, invalidMessage, requestTime() + 1500)).toStrictEqual(400);
-    expect(messageSendlaterdm(member.token, dm.dmId, invalidMessage, requestTime() + 1500)).toStrictEqual(400);
+    expect(messageSendlater(auth.token, channelId.channelId, invalidMessage, requestTime() + 1)).toStrictEqual(400);
+    expect(messageSendlaterdm(member.token, dm.dmId, invalidMessage, requestTime() + 1)).toStrictEqual(400);
   });
 
   test('invalid time(time passed)', () => {
@@ -688,8 +697,8 @@ describe('/message/sendlater fails', () => {
     const member = authRegister('Nin11a0803@icloud.com', 'Nina080311', 'Nin1111', 'Yeherd');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const dm = dmCreate(member.token, []);
-    expect(messageSendlater(auth.token, channelId.channelId, 'invalidMessage', requestTime() - 5000)).toStrictEqual(400);
-    expect(messageSendlaterdm(member.token, dm.dmId, 'invalidMessage', requestTime() - 5000)).toStrictEqual(400);
+    expect(messageSendlater(auth.token, channelId.channelId, 'invalidMessage', requestTime() - 5)).toStrictEqual(400);
+    expect(messageSendlaterdm(member.token, dm.dmId, 'invalidMessage', requestTime() - 5)).toStrictEqual(400);
   });
 });
 
@@ -704,10 +713,28 @@ describe('/message/sendlater success', () => {
     const dm = dmCreate(member.token, []);
     messageSendDm(member.token, dm.dmId, 'helloo');
 
-    const msgChannel = messageSendlater(auth.token, channelId.channelId, 'invalidMessage', requestTime() + 5000);
-    const msgDm = messageSendlaterdm(member.token, dm.dmId, 'invalidMessage', requestTime() + 5000);
+    const timeSend = requestTime() + 2;
+    const msgChannel = messageSendlater(auth.token, channelId.channelId, 'invalidMessage', timeSend);
+    const msgDm = messageSendlaterdm(member.token, dm.dmId, 'invalidMessage', timeSend + 1);
     expect(msgChannel).toStrictEqual({ messageId: expect.any(Number) });
     expect(msgDm).toStrictEqual({ messageId: expect.any(Number) });
+    expect(channelMessages(auth.token, channelId.channelId, 0)).toStrictEqual({
+      messages: [
+        {
+          messageId: messageId.messageId,
+          uId: auth.authUserId,
+          message: 'helloo',
+          timeSent: expect.any(Number),
+          reacts: [],
+          isPinned: false,
+        }
+      ],
+      start: 0,
+      end: -1,
+    });
+    while (timeSend >= requestTime()) {
+      continue;
+    }
     expect(channelMessages(auth.token, channelId.channelId, 0)).toStrictEqual({
       messages: [
         {
@@ -731,4 +758,5 @@ describe('/message/sendlater success', () => {
       end: -1,
     });
   });
+  clear();
 });
