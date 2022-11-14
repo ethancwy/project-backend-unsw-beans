@@ -2,7 +2,7 @@ import { getData, setData, reactions } from './dataStore';
 import {
   isValidToken, isValidChannel, isInChannel, getUserId,
   isDmMember, isDmValid, getChannelIndex, getDmIndex, getMessageDetails,
-  isGlobalOwner, getTags, isInDm, updateUserStats, updateWorkSpace
+  isGlobalOwner, getTags, isInDm
 } from './global';
 import HTTPError from 'http-errors';
 const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
