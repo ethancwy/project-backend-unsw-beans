@@ -138,7 +138,7 @@ describe('/standup/send/v1 ', () => {
     const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
     const owner = userProfile(globalOwnerId.token, globalOwnerId.authUserId);
     const handle1 = owner.user.handleStr;
-    const finishTime = standupStart(globalOwnerId.token, channel.channelId, 3);
+    standupStart(globalOwnerId.token, channel.channelId, 3);
 
     const request = requestTime();
     expect(standupSend(globalOwnerId.token, channel.channelId, 'hellothere!')).toEqual({});

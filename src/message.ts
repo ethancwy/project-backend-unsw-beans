@@ -21,7 +21,6 @@ const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 */
 
 function messageSendV2(token: string, channelId: number, message: string) {
-  const data = getData();
   if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
   }
@@ -188,7 +187,6 @@ function messageRemoveV2(token: string, messageId: number) {
 */
 
 function messageSenddmV2(token: string, dmId: number, message: string) {
-  const data = getData();
   const uId = getUserId(token);
   if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
@@ -533,12 +531,12 @@ function sendMsg(token: string, channelId: number, dmId: number, message: string
   const data = getData();
   const authUserId = getUserId(token);
   let isDm = false;
-  
+
   const messageId = data.messageDetails.length;
   const react: reactions[] = [];
   const allTags = getTags(message);
   const tags: number[] = [];
-  
+
   const newMessage = {
     messageId: messageId,
     uId: authUserId,
@@ -548,22 +546,21 @@ function sendMsg(token: string, channelId: number, dmId: number, message: string
     isPinned: false,
     tags: tags,
   };
-  
+
   if (channelId === -1) {
     isDm = true;
     const dmIndex = getDmIndex(dmId);
-    
+
     for (const i in allTags) {
       if (isInDm(allTags[i], dmId)) {
         newMessage.tags.push(allTags[i]);
       }
     }
     data.dms[dmIndex].messages.push(newMessage);
-  }
-  else { // dmId === -1
+  } else { // dmId === -1
     isDm = false;
     const cIndex = getChannelIndex(channelId);
-    
+
     if (!data.channels[cIndex].standupDetails.isActiveStandup) {
       for (const i in allTags) {
         if (isInChannel(allTags[i], channelId)) {
@@ -573,7 +570,7 @@ function sendMsg(token: string, channelId: number, dmId: number, message: string
     }
     data.channels[cIndex].channelmessages.push(newMessage);
   }
-  
+
   data.messageDetails.push({
     uId: authUserId,
     message: message,
