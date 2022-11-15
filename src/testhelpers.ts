@@ -1,6 +1,5 @@
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
-// import { timeStamp } from 'console';
 const SERVER_URL = `${url}:${port}`;
 
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //

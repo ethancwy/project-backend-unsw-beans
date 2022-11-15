@@ -159,20 +159,18 @@ function authPasswordRequestV1(email: string) {
     }
   });
 
-  const regUser = getEmail(email);
-  const resetCode = `${genRandomStr()}${regUser.uId}`;
+  const resetCode = `${genRandomStr()}${user.uId}`;
 
-  if (regUser != null) {
-    const mailOptions = {
-      from: '"T13ABOOST" <T13ABOOST@outlook.com> ',
-      to: email,
-      subject: 'This is your new password reset code',
-      text: resetCode,
-    };
-    transporter.sendMail(mailOptions, function (info: any) {
-      console.log('Email send: ' + info.response);
-    });
-  }
+  const mailOptions = {
+    from: '"T13ABOOST" <T13ABOOST@outlook.com> ',
+    to: email,
+    subject: 'This is your new password reset code',
+    text: resetCode,
+  };
+  transporter.sendMail(mailOptions, function (info: any) {
+    console.log('Email send: ' + info.response);
+  });
+
   return {};
 }
 
@@ -193,11 +191,11 @@ function authPasswordResetV1(resetCode: string, newPassword: string) {
   const uId = parseInt(resetCode.slice(20));
   const user = data.users.find((item: { uId: number; }) => item.uId === uId);
 
-  if (user === undefined) {
-    throw HTTPError(400, 'Invalid resetCode');
-  }
   if (newPassword.length < 6) {
     throw HTTPError(400, 'Password length must be 6 or greater');
+  }
+  if (user === undefined) {
+    throw HTTPError(400, 'Invalid resetCode');
   }
   user.password = hashOf(newPassword);
   setData(data);
@@ -261,15 +259,15 @@ function sameEmail(email: string) {
 
 // When given an email address, check for email and return user object
 // return null if email is not being used by a user
-function getEmail(email: string) {
-  const data = getData();
-  for (const user of data.users) {
-    if (user.email === email) {
-      return user;
-    }
-  }
-  return null;
-}
+// function getEmail(email: string) {
+//   const data = getData();
+//   for (const user of data.users) {
+//     if (user.email === email) {
+//       return user;
+//     }
+//   }
+//   return null;
+// }
 // Generates a random string with a length of 20
 function genRandomStr() {
   const char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
