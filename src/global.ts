@@ -1,7 +1,6 @@
 import { getData, MessageDetails, channel, setData } from './dataStore';
 import validator from 'validator';
 import { user as userType } from './dataStore';
-const requestTimeStamp = () => Math.floor((new Date()).getTime() / 1000);
 
 // const OK = 200;
 
@@ -434,12 +433,12 @@ export function updateUserStats(uId: number, categ: string, func: string, time: 
     if (func === 'add') { // Joining a channel
       data.users[userIndex].userStats.channelsJoined.push({
         numChannelsJoined: data.users[userIndex].userStats.channelsJoined[lastIndex].numChannelsJoined + 1,
-        timeStamp: requestTimeStamp(),
+        timeStamp: time,
       });
     } else { // Leaving a channel
       data.users[userIndex].userStats.channelsJoined.push({
         numChannelsJoined: data.users[userIndex].userStats.channelsJoined[lastIndex].numChannelsJoined - 1,
-        timeStamp: requestTimeStamp(),
+        timeStamp: time,
       });
     }
   } else if (categ === 'dms') {
@@ -447,12 +446,12 @@ export function updateUserStats(uId: number, categ: string, func: string, time: 
     if (func === 'add') { // Joining a dm
       data.users[userIndex].userStats.dmsJoined.push({
         numDmsJoined: data.users[userIndex].userStats.dmsJoined[lastIndex].numDmsJoined + 1,
-        timeStamp: requestTimeStamp(),
+        timeStamp: time,
       });
     } else { // Leaving a dm
       data.users[userIndex].userStats.dmsJoined.push({
         numDmsJoined: data.users[userIndex].userStats.dmsJoined[lastIndex].numDmsJoined - 1,
-        timeStamp: requestTimeStamp(),
+        timeStamp: time,
       });
     }
   } else if (categ === 'msgs') { // Creating a message
@@ -474,12 +473,12 @@ export function updateWorkSpace(categ: string, func: string, time: number, num?:
     if (func === 'add') {
       data.workspaceStats.channelsExist.push({
         numChannelsExist: data.workspaceStats.channelsExist[lastIndex].numChannelsExist + 1,
-        timeStamp: requestTimeStamp(),
+        timeStamp: time,
       });
     } else {
       data.workspaceStats.channelsExist.push({
         numChannelsExist: data.workspaceStats.channelsExist[lastIndex].numChannelsExist + 1,
-        timeStamp: requestTimeStamp(),
+        timeStamp: time,
       });
     }
   } else if (categ === 'dms') {
@@ -487,12 +486,12 @@ export function updateWorkSpace(categ: string, func: string, time: number, num?:
     if (func === 'add') {
       data.workspaceStats.dmsExist.push({
         numDmsExist: data.workspaceStats.dmsExist[lastIndex].numDmsExist + 1,
-        timeStamp: requestTimeStamp(),
+        timeStamp: time,
       });
     } else {
       data.workspaceStats.dmsExist.push({
         numDmsExist: data.workspaceStats.dmsExist[lastIndex].numDmsExist - 1,
-        timeStamp: requestTimeStamp(),
+        timeStamp: time,
       });
     }
   } else if (categ === 'msgs') {

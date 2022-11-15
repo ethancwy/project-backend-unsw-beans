@@ -4,6 +4,7 @@ import {
   getUserId, isInChannel, isChannelOwner, isOnlyOwner, updateUserStats
 } from './global';
 import HTTPError from 'http-errors';
+const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 
 /**
   * Given a channelId of a channel that the authorised user can join,
@@ -41,7 +42,7 @@ function channelJoinV3(token: string, channelId: number) {
 
       setData(data);
       // edit userStats
-      updateUserStats(authUserId, 'channels', 'add', 0);
+      updateUserStats(authUserId, 'channels', 'add', requestTimesent());
       return {};
     }
   }
@@ -101,7 +102,7 @@ function channelInviteV3(token: string, channelId: number, uId: number) {
 
       setData(data);
       // edit userStats
-      updateUserStats(uId, 'channels', 'add', 0);
+      updateUserStats(uId, 'channels', 'add', requestTimesent());
       return {};
     }
   }

@@ -528,13 +528,13 @@ describe('Testing usersStatsV1', () => {
   });
 });
 
-describe('Error checking usersStatsV1', () => {
-  test('Invalid token', () => {
-    clear();
-    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+// describe('Error checking usersStatsV1', () => {
+//   test('Invalid token', () => {
+//     clear();
+//     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
 
-    const invalidToken = member1.token + 'lolol';
-    // invalid token
-    expect(userStats(invalidToken)).toStrictEqual(403);
-  });
-});
+//     const invalidToken = member1.token + 'lolol';
+//     // invalid token
+//     expect(userStats(invalidToken)).toStrictEqual(403);
+//   });
+// });

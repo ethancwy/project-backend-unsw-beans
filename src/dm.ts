@@ -88,12 +88,13 @@ function dmCreateV2(token: string, uIds: number[]) {
   data.counter++;
 
   setData(data);
+  const time = requestTimesent();
   // Updating userStatus of all users
   for (const members of membersArray) {
-    updateUserStats(members, 'dms', 'add', 0);
+    updateUserStats(members, 'dms', 'add', time);
   }
   // Updating workspace
-  updateWorkSpace('dms', 'add', 0);
+  updateWorkSpace('dms', 'add', time);
   return { dmId: data.dms.length - 1 };
 }
 
@@ -285,7 +286,7 @@ function dmLeaveV2(token: string, dmId: number) {
 
   setData(data);
   // Updating userStats
-  updateUserStats(userId, 'dms', '', 0);
+  updateUserStats(userId, 'dms', '', requestTimesent());
   return {};
 }
 
