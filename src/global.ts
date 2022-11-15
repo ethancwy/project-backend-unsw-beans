@@ -491,10 +491,19 @@ export function updateWorkSpace(categ: string, func: string, time: number) {
       });
     }
   } else if (categ === 'msgs') {
-    data.workspaceStats.messagesExist.push({
-      numMessagesExist: data.workspaceStats.messagesExist.length,
-      timeStamp: time,
-    });
+    if (func === 'remove') {  // removing a message
+      const lastIndex = data.workspaceStats.messagesExist.length - 1;
+      data.workspaceStats.messagesExist.push({
+        numMessagesExist: data.workspaceStats.messagesExist[lastIndex].numMessagesExist - 1,
+        timeStamp: time,
+      });
+    } else {
+      const lastIndex = data.workspaceStats.messagesExist.length - 1;
+      data.workspaceStats.messagesExist.push({
+        numMessagesExist: data.workspaceStats.messagesExist[lastIndex].numMessagesExist + 1,
+        timeStamp: time,
+      });
+    }
   }
 
   setData(data);
