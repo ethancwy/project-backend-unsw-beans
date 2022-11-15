@@ -30,7 +30,7 @@ function clearV1() {
 }
 
 function removeFiles() {
-  const directory = 'profilepics';
+  const directory = 'static/profilepics';
 
   fs.readdir(directory, (err: any, files: Array<any>) => {
     if (err) throw err;
