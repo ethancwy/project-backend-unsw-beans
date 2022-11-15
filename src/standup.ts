@@ -1,8 +1,10 @@
 import { getData, setData, message } from './dataStore';
 import {
-  getUserId, isValidToken, isInChannel, getChannel
+  getUserId, isValidToken, isInChannel, getChannel, updateUserStats,
+  updateWorkSpace
 } from './global';
 import { userProfileV3 } from './users';
+import { user as userType } from './dataStore';
 import HTTPError from 'http-errors';
 
 const requestTime = () => Math.floor((new Date()).getTime() / 1000);
@@ -138,8 +140,11 @@ export function standupSendV1(token: string, channelId: number, message: string)
 function sendMessagesToChannel(channelId: number, index: number, uId: number) {
   const data = getData();
   const standupChannel = data.channels[index].standupDetails;
+  let msgObj = null;
+  let msgsExist = false;
 
   if (standupChannel.standupMessages.length !== 0) {
+    msgsExist = true;
     let finalOutput = '';
     for (let i = 0; i < standupChannel.standupMessages.length - 1; i++) {
       finalOutput += (standupChannel.standupMessages[i] + '\n');
@@ -158,6 +163,9 @@ function sendMessagesToChannel(channelId: number, index: number, uId: number) {
       isPinned: false,
       tags: [],
     };
+
+    msgObj = newMessage;
+
     data.channels[index].channelmessages.push(newMessage);
     data.messageDetails.push({
       uId: uId,
@@ -173,5 +181,9 @@ function sendMessagesToChannel(channelId: number, index: number, uId: number) {
   standupChannel.standupMessages = [];
   standupChannel.timeFinish = null;
   setData(data);
+  if (msgsExist) {
+    updateUserStats(uId, 'msgs', 'add', msgObj.timeSent);
+    updateWorkSpace('msgs', 'add', msgObj.timeSent);
+  }
   return {};
 }

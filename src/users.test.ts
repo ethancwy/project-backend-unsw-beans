@@ -1,8 +1,11 @@
 import {
   authRegister, authLogout, userProfile, clear,
   usersAll, userSetName, userSetEmail, userSetHandle, channelsCreate, channelJoin, dmCreate,
-  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave, adminUserRemove
+  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave, adminUserRemove,
+  standupStart, standupSend
 } from './testhelpers';
+
+const requestTime = () => Math.floor((new Date()).getTime() / 1000);
 
 clear();
 describe('Testing userProfileV3', () => {
@@ -380,6 +383,38 @@ describe('Testing userStatsV1', () => {
       involvementRate: 3 / 5,
     });
   });
+
+  test('Test with standups', () => {
+    clear();
+    const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
+
+    standupStart(globalOwnerId.token, channel.channelId, 1);
+
+    const request = requestTime();
+    expect(standupSend(globalOwnerId.token, channel.channelId, 'hellothere!')).toEqual({});
+    expect(standupSend(globalOwnerId.token, channel.channelId, 'bye!')).toEqual({});
+
+    while (requestTime() <= request + 1) {
+      continue;
+    }
+
+    expect(userStats(globalOwnerId.token)).toStrictEqual({
+      channelsJoined: [
+        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 1, timeStamp: expect.any(Number) },
+      ],
+      dmsJoined: [
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+      ],
+      messagesSent: [
+        { numMessagesSent: 0, timeStamp: expect.any(Number) },
+        { numMessagesSent: 1, timeStamp: expect.any(Number) },
+      ],
+      involvementRate: 1,
+    });
+
+  })
 
   test('Testing user/stats with channelleave and dmremove/leave', () => {
     clear();

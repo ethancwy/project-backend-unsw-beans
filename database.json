@@ -2,14 +2,16 @@
   "users": [
     {
       "uId": 0,
-      "nameFirst": "Peter",
-      "nameLast": "File",
-      "email": "p.file@gmail.com",
-      "password": "-1618246164",
-      "handleStr": "peterfile",
+      "nameFirst": "James",
+      "nameLast": "Charles",
+      "email": "foo@bar.com",
+      "password": "372730123",
+      "handleStr": "jamescharles",
       "isGlobalOwner": true,
       "isRemoved": false,
-      "tokens": [],
+      "tokens": [
+        "-1255773472"
+      ],
       "userStats": {
         "channelsJoined": [
           {
@@ -35,7 +37,9 @@
   ],
   "channels": [],
   "dms": [],
-  "sessionIds": [],
+  "sessionIds": [
+    "-1255773472"
+  ],
   "messageDetails": [],
   "inviteDetails": [],
   "reactDetails": [],

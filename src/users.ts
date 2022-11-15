@@ -4,7 +4,6 @@ import {
   validName, validEmail, anotherUserEmail, alphanumeric,
   isValidHandleLength, anotherUserHandle, hashOf
 } from './global';
-import { user as userType } from './dataStore';
 import HTTPError from 'http-errors';
 // import { arrayBuffer } from 'stream/consumers';
 // import { channel } from 'diagnostics_channel';
