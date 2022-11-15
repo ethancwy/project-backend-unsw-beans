@@ -31,7 +31,6 @@ import { adminUserRemoveV1, adminUserpermissionChangeV1 } from './admin';
 // Set up web app
 const app = express();
 app.use('/static', express.static('static'));
-app.use('/profilepics', express.static('profilepics'));
 // Use middleware that allows us to access the JSON body of requests
 app.use(json());
 // Use middleware that allows for access from other domains

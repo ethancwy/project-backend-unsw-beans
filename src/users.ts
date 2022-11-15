@@ -307,9 +307,9 @@ async function crop(xStart: number, yStart: number, xEnd: number, yEnd: number, 
   const randostr = generateString(20);
   // Cropping image and saving it to static folder
   image.crop(xStart, yStart, xEnd, yEnd)
-    .write(`static/profilepics/${randostr}.jpg`);
+    .write(`static/${randostr}.jpg`);
   // Assigining users .profileImgUrl to the url generated
-  data.users[uId].profileImgUrl = `https://localhost:${port}/profilepics/${randostr}.jpg`;
+  data.users[uId].profileImgUrl = `https://localhost:${port}/static/${randostr}.jpg`;
   setData(data);
 }
 

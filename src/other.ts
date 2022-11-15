@@ -30,15 +30,19 @@ function clearV1() {
 }
 
 function removeFiles() {
-  const directory = 'profilepics';
+  const directory = 'static';
 
   fs.readdir(directory, (err: any, files: Array<any>) => {
     if (err) throw err;
 
     for (const file of files) {
-      fs.unlink(path.join(directory, file), (err: any) => {
-        if (err) throw err;
-      });
+      if (file === 'default') {
+        
+      } else {
+        fs.unlink(path.join(directory, file), (err: any) => {
+          if (err) throw err;
+        });
+      }
     }
   });
 }
