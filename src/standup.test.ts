@@ -2,7 +2,7 @@ import {
   authRegister, channelsCreate,
   clear, standupStart,
   channelMessages, userProfile, standupActive, standupSend
-} from './global';
+} from './testhelpers';
 
 const requestTime = () => Math.floor((new Date()).getTime() / 1000);
 

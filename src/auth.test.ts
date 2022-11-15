@@ -1,4 +1,4 @@
-import { authLogin, authRegister, authLogout, clear, channelsCreate, authPasswordRequest, authPasswordReset } from './global';
+import { authLogin, authRegister, authLogout, clear, channelsCreate, authPasswordRequest, authPasswordReset } from './testhelpers';
 
 // =================================================== //
 //                                                     //

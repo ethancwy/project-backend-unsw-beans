@@ -3,7 +3,7 @@ import {
   channelJoin, channelInvite, clear,
   channelMessages, channelLeave, channelAddOwner,
   channelRemoveOwner, messageSend
-} from './global';
+} from './testhelpers';
 
 clear();
 

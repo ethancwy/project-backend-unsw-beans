@@ -2,7 +2,7 @@ import {
   authRegister, authLogout, userProfile, clear,
   usersAll, userSetName, userSetEmail, userSetHandle, channelsCreate, channelJoin, dmCreate,
   userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave
-} from './global';
+} from './testhelpers';
 
 clear();
 describe('Testing userProfileV3', () => {

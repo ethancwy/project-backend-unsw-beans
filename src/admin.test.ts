@@ -3,7 +3,7 @@ import {
   clear, channelMessages, dmMessages,
   adminUserRemove, messageSend, channelInvite,
   adminUserpermissionChange, messageSendDm
-} from './global';
+} from './testhelpers';
 
 // test failed cases for adminuserremove
 describe('/admin/user/remove/v1 failed cases', () => {
