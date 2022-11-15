@@ -2,7 +2,7 @@ import {
   authRegister, channelsCreate, channelInvite,
   dmCreate, clear, getNotifications, messageReact,
   messageSend, messageSendDm, channelLeave, dmLeave
-} from './global';
+} from './testhelpers';
 
 const REACT = 1;
 
@@ -67,47 +67,6 @@ describe('/notifications/get/v1 added to channel/dm and error checking', () => {
           channelId: -1,
           dmId: dm2.dmId,
           notificationMessage: 'billybonka added you to billybonka, jamescharles'
-        },
-        {
-          channelId: -1,
-          dmId: dm1.dmId,
-          notificationMessage: 'willywonka added you to jamescharles, willywonka'
-        },
-      ]
-    });
-  });
-
-  test('Returns multiple notifications in correct order (channel AND dm invite)', () => {
-    // dm, channel, dm, channel
-    clear();
-    const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-    const tester1 = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
-    const tester2 = authRegister('fruit@bar.com', 'okpassword', 'Billy', 'Bonka');
-
-    const dm1 = dmCreate(tester1.token, [globalOwnerId.authUserId]);
-    const channel1 = channelsCreate(tester1.token, 'testingNotifs1', true);
-    channelInvite(tester1.token, channel1.channelId, globalOwnerId.authUserId);
-
-    const dm2 = dmCreate(tester2.token, [globalOwnerId.authUserId]);
-    const channel2 = channelsCreate(tester2.token, 'testingNotifs2', false);
-    channelInvite(tester2.token, channel2.channelId, globalOwnerId.authUserId);
-
-    expect(getNotifications(globalOwnerId.token)).toStrictEqual({
-      notifications: [
-        {
-          channelId: channel2.channelId,
-          dmId: -1,
-          notificationMessage: 'billybonka added you to testingNotifs2'
-        },
-        {
-          channelId: -1,
-          dmId: dm2.dmId,
-          notificationMessage: 'billybonka added you to billybonka, jamescharles'
-        },
-        {
-          channelId: channel1.channelId,
-          dmId: -1,
-          notificationMessage: 'willywonka added you to testingNotifs1'
         },
         {
           channelId: -1,
@@ -335,6 +294,7 @@ describe('Most recent 20 notifications', () => {
       const channel = channelsCreate(channelOwner1.token, String(i), true);
       channelInvite(channelOwner1.token, channel.channelId, globalOwnerId.authUserId);
     }
+
     expect(getNotifications(globalOwnerId.token)).toStrictEqual({
       notifications: [
         {

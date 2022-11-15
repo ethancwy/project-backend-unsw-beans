@@ -1,4 +1,4 @@
-import { authLogin, authRegister, authLogout, clear, channelsCreate, authPasswordRequest, authPasswordReset } from './global';
+import { authLogin, authRegister, authLogout, clear, channelsCreate, authPasswordRequest, authPasswordReset } from './testhelpers';
 
 // =================================================== //
 //                                                     //
@@ -211,18 +211,6 @@ describe('Testing for auth/logout/v1', () => {
 
     expect(authLogout(user.token)).toStrictEqual({});
     expect(authLogout(user.token)).toStrictEqual(403);
-  });
-
-  test('Testing for invalid logout', () => {
-    clear();
-    const user = authRegister('p.file@gmail.com', 'Bob100', 'Peter', 'File');
-    const user1 = authRegister('m.hunt@gmail.com', 'Bob100', 'Mike', 'Hunt');
-
-    expect(authLogout(user.token)).toStrictEqual({});
-    expect(authLogout(user.token)).toStrictEqual(403);
-    expect(authLogout(user1.token)).toStrictEqual({});
-    expect(authLogout(user1.token)).toStrictEqual(403);
-    clear();
   });
 });
 

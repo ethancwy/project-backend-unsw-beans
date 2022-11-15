@@ -4,6 +4,7 @@ import {
   validName, validEmail, anotherUserEmail, alphanumeric,
   isValidHandleLength, anotherUserHandle, hashOf
 } from './global';
+import { user as userType } from './dataStore';
 import HTTPError from 'http-errors';
 import { port } from './config.json';
 import request from 'sync-request';
@@ -190,6 +191,7 @@ function userStatsV1(token: string) {
   }
 
   const uId = getUserId(token);
+  const userIndex = data.users.findIndex((userobj: userType) => userobj.uId === uId);
 
   // Calculating involvement
   // sum(numChannelsJoined, numDmsJoined, numMsgsSent) / sum(numChannels, numDms, numMsgs)
@@ -199,13 +201,13 @@ function userStatsV1(token: string) {
   if (denom) {
     // Finding number of involved channels, dms and msgs sent
     // Finding length of each array in userStatus
-    const chLength = data.users[uId].userStats.channelsJoined.length - 1;
-    const dmsLength = data.users[uId].userStats.dmsJoined.length - 1;
-    const msgsLength = data.users[uId].userStats.messagesSent.length - 1;
+    const chLength = data.users[userIndex].userStats.channelsJoined.length - 1;
+    const dmsLength = data.users[userIndex].userStats.dmsJoined.length - 1;
+    const msgsLength = data.users[userIndex].userStats.messagesSent.length - 1;
     // Finding value of latest element in each array in userStatus
-    const chFinal = data.users[uId].userStats.channelsJoined[chLength].numChannelsJoined;
-    const dmsFinal = data.users[uId].userStats.dmsJoined[dmsLength].numDmsJoined;
-    const msgsFinal = data.users[uId].userStats.messagesSent[msgsLength].numMessagesSent;
+    const chFinal = data.users[userIndex].userStats.channelsJoined[chLength].numChannelsJoined;
+    const dmsFinal = data.users[userIndex].userStats.dmsJoined[dmsLength].numDmsJoined;
+    const msgsFinal = data.users[userIndex].userStats.messagesSent[msgsLength].numMessagesSent;
 
     const numer = chFinal + dmsFinal + msgsFinal;
     involvement = numer / denom;
@@ -217,15 +219,15 @@ function userStatsV1(token: string) {
   }
 
   const obj = {
-    channelsJoined: data.users[uId].userStats.channelsJoined,
-    dmsJoined: data.users[uId].userStats.dmsJoined,
-    messagesSent: data.users[uId].userStats.messagesSent,
+    channelsJoined: data.users[userIndex].userStats.channelsJoined,
+    dmsJoined: data.users[userIndex].userStats.dmsJoined,
+    messagesSent: data.users[userIndex].userStats.messagesSent,
     involvementRate: involvement,
   };
   return obj;
 }
 
-function usersStatsV1 (token: string) {
+function usersStatsV1(token: string) {
   const data = getData();
 
   // Finding utilisation rate

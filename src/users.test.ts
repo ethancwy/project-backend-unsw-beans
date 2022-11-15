@@ -1,8 +1,9 @@
 import {
-  authRegister, authLogout, userProfile, clear,
+  authRegister, authLogout, userProfile, clear, dmRemove, messageRemove, messageEdit,
   usersAll, userSetName, userSetEmail, userSetHandle, channelsCreate, channelJoin, dmCreate,
-  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave, userUploadPhoto
-} from './global';
+  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave, adminUserRemove,
+  userUploadPhoto
+} from './testhelpers';
 
 clear();
 describe('Testing userProfileV3', () => {
@@ -55,7 +56,7 @@ describe('Error checking userProfileV3', () => {
 });
 
 describe('Testing usersAllV1', () => {
-  test('Returns list of all users and their details', () => {
+  test('Returns list of all users and their details, and test admin remove', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
@@ -74,6 +75,20 @@ describe('Testing usersAllV1', () => {
           email: 'chicken@bar.com',
           nameFirst: 'Ronald',
           nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        },
+      ],
+    });
+
+    adminUserRemove(member1.token, member2.authUserId);
+
+    expect(usersAll(member1.token)).toStrictEqual({
+      users: [
+        {
+          uId: member1.authUserId,
+          email: 'foo@bar.com',
+          nameFirst: 'James',
+          nameLast: 'Charles',
           handleStr: expect.any(String),
         },
       ],
@@ -203,10 +218,9 @@ describe('Testing userSetEmailV1', () => {
   test('Successfully updating two emails', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-    const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
 
     expect(userSetEmail(member1.token, 'aintnofoo@bar.com')).toStrictEqual({});
-    expect(userSetEmail(member2.token, 'fish@bar.com')).toStrictEqual({});
+
     expect(usersAll(member1.token)).toStrictEqual({
       users: [
         {
@@ -214,13 +228,6 @@ describe('Testing userSetEmailV1', () => {
           email: 'aintnofoo@bar.com',
           nameFirst: 'James',
           nameLast: 'Charles',
-          handleStr: expect.any(String),
-        },
-        {
-          uId: member2.authUserId,
-          email: 'fish@bar.com',
-          nameFirst: 'Ronald',
-          nameLast: 'Mcdonald',
           handleStr: expect.any(String),
         },
       ],
@@ -367,6 +374,37 @@ describe('Testing userStatsV1', () => {
     });
   });
 
+  // test('Test with standups', () => {
+  //   clear();
+  //   const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+  //   const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
+
+  //   standupStart(globalOwnerId.token, channel.channelId, 1);
+
+  //   const request = requestTime();
+  //   expect(standupSend(globalOwnerId.token, channel.channelId, 'hellothere!')).toEqual({});
+  //   expect(standupSend(globalOwnerId.token, channel.channelId, 'bye!')).toEqual({});
+
+  //   while (requestTime() <= request + 1) {
+  //     continue;
+  //   }
+
+  //   expect(userStats(globalOwnerId.token)).toStrictEqual({
+  //     channelsJoined: [
+  //       { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+  //       { numChannelsJoined: 1, timeStamp: expect.any(Number) },
+  //     ],
+  //     dmsJoined: [
+  //       { numDmsJoined: 0, timeStamp: expect.any(Number) },
+  //     ],
+  //     messagesSent: [
+  //       { numMessagesSent: 0, timeStamp: expect.any(Number) },
+  //       { numMessagesSent: 1, timeStamp: expect.any(Number) },
+  //     ],
+  //     involvementRate: 1,
+  //   });
+  // });
+
   test('Testing user/stats with channelleave and dmremove/leave', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
@@ -416,15 +454,15 @@ describe('Error checking userStatsV1', () => {
 });
 
 describe('Testing usersStatsV1', () => {
-  test('Successfully returning stats of workspace', () => {
+  test('Successfully returning stats of workspace, and removing messages/dms', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
     // Creating channels to test stats
-    channelsCreate(member1.token, 'channel1', true);
+    const channel1 = channelsCreate(member1.token, 'channel1', true);
     channelsCreate(member1.token, 'channel2', false);
     // Creating dm to test stats
-    dmCreate(member1.token, [member2.authUserId]);
+    const dm = dmCreate(member1.token, [member2.authUserId]);
 
     // Testing user stats of member 1
     expect(usersStats(member1.token)).toStrictEqual({
@@ -438,17 +476,56 @@ describe('Testing usersStatsV1', () => {
       messagesExist: [{ numMessagesExist: 0, timeStamp: expect.any(Number) }],
       utilizationRate: 1,
     });
-  });
-});
 
-describe('Error checking usersStatsV1', () => {
-  test('Invalid token', () => {
-    clear();
-    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    // messageSendDm, DmRemove tracked
+    messageSendDm(member1.token, dm.dmId, 'hello1');
+    messageSendDm(member1.token, dm.dmId, 'hello2');
+    dmRemove(member1.token, dm.dmId);
 
-    const invalidToken = member1.token + 'lolol';
-    // invalid token
-    expect(userStats(invalidToken)).toStrictEqual(403);
+    expect(usersStats(member1.token)).toStrictEqual({
+      channelsExist: [
+        { numChannelsExist: 0, timeStamp: expect.any(Number) },
+        { numChannelsExist: 1, timeStamp: expect.any(Number) },
+        { numChannelsExist: 2, timeStamp: expect.any(Number) }],
+      dmsExist: [
+        { numDmsExist: 0, timeStamp: expect.any(Number) },
+        { numDmsExist: 1, timeStamp: expect.any(Number) },
+        { numDmsExist: 0, timeStamp: expect.any(Number) }],
+      messagesExist: [
+        { numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 2, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) }],
+      utilizationRate: 1,
+    });
+
+    // message removed tracked
+    const msg = messageSend(member1.token, channel1.channelId, 'hello');
+    messageRemove(member1.token, msg.messageId);
+    const stats = usersStats(member1.token);
+    expect(stats.messagesExist).toStrictEqual(
+      [{ numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 2, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) }]
+    );
+
+    // message edited to removed tracked
+    const msg2 = messageSend(member1.token, channel1.channelId, 'hello');
+    messageEdit(member1.token, msg2.messageId, '');
+    const stats2 = usersStats(member1.token);
+    expect(stats2.messagesExist).toStrictEqual(
+      [{ numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 2, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) }]
+    );
   });
 });
 

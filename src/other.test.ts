@@ -1,8 +1,8 @@
-import { authLogin, authLogout, clear, search } from './global';
+import { authLogin, authLogout, clear, search } from './testhelpers';
 import {
   authRegister, channelsCreate, channelInvite, dmCreate,
   messageSend, messageSendDm
-} from './global';
+} from './testhelpers';
 import { reactions } from './dataStore';
 
 clear();

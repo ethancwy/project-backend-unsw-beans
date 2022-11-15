@@ -1,7 +1,7 @@
 import { getData, setData } from './dataStore';
 import { getUserId, isValidToken, updateUserStats, updateWorkSpace } from './global';
 import HTTPError from 'http-errors';
-
+const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 /**
   *
   * Creates a new channel with the given name, that is either a public or
@@ -46,9 +46,9 @@ function channelsCreateV3(token: string, name: string, isPublic: boolean) {
 
   setData(data);
   // Adding to channel creaters userStats
-  updateUserStats(authUserId, 'channels', 'add', 0);
+  updateUserStats(authUserId, 'channels', 'add', requestTimesent());
   // Updating workspace
-  updateWorkSpace('channels', 'add', 0);
+  updateWorkSpace('channels', 'add', requestTimesent());
   return { channelId: data.channels[data.channels.length - 1].channelId };
 }
 

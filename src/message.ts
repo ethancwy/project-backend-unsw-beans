@@ -144,6 +144,7 @@ function messageRemoveV2(token: string, messageId: number) {
     if (!data.channels[msg.listIndex].memberIds.includes(authUserId)) {
       throw HTTPError(400, 'user not in channel');
     }
+    // if not owner, msg not sent by authuser, not global owner
     if (!data.channels[msg.listIndex].ownerIds.includes(authUserId) && msg.uId !== authUserId && !isGlobalOwner(authUserId)) {
       throw HTTPError(403, 'user does not have permission to delete');
     }
@@ -151,7 +152,7 @@ function messageRemoveV2(token: string, messageId: number) {
   } else {
     // check is user is in dm and has perms
     if (!data.dms[msg.listIndex].members.includes(authUserId)) {
-      throw HTTPError(400, 'user not in channel');
+      throw HTTPError(400, 'user not in dm');
     }
     if (data.dms[msg.listIndex].owner !== authUserId && msg.uId !== authUserId) {
       throw HTTPError(403, 'user does not have permission to delete');
@@ -168,6 +169,8 @@ function messageRemoveV2(token: string, messageId: number) {
   data.messageDetails.splice(index, 1);
 
   setData(data);
+
+  updateWorkSpace('msgs', 'remove', requestTimesent(), 1);
   return {};
 }
 
