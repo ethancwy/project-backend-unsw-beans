@@ -10,6 +10,7 @@ import { port } from './config.json';
 import request from 'sync-request';
 import fs from 'fs';
 const Jimp = require('jimp') ;
+const sizeOf = require('image-size');
 
 /**
   * For a valid user, returns information about their user ID, email,
@@ -251,8 +252,8 @@ function usersStatsV1 (token: string) {
 }
 
 function userUploadPhotoV1(token: string, imgUrl: URL, xStart: number, yStart: number, xEnd: number, yEnd: number) {
-  // Error throwing
-  // Invalid token
+  //Error throwing
+  //Invalid token
   if (!isValidToken(token)) {
     throw HTTPError(403, 'Invalid token');
   }
@@ -260,13 +261,6 @@ function userUploadPhotoV1(token: string, imgUrl: URL, xStart: number, yStart: n
   if (!(/\.jpg$/.test(`${imgUrl}`))) {
     throw HTTPError(400, 'File is not a jpg file');
   }
-  // Calls getDim function for more error testing
-  //let num = appDim(imgUrl, xStart, yStart, xEnd, yEnd);
-  //num.try(
-  //  console.log(2);
-  //).catch(
-  //  console.log(3);
-  //)
 
   // Getting the image
   const ogImg = request(
@@ -283,21 +277,19 @@ function userUploadPhotoV1(token: string, imgUrl: URL, xStart: number, yStart: n
   const body = ogImg.getBody();
   fs.writeFileSync('static/img.jpg', body, { flag: 'w' });
 
+  const dimensions = sizeOf('static/img.jpg');
+  //console.log(dimensions.width, dimensions.height);
+  if (xStart > dimensions.width || xEnd > dimensions.width || yStart > dimensions.width || yEnd > dimensions.width
+    || xStart < 0 || xEnd < 0 || yStart < 0 || yEnd < 0) {
+      throw HTTPError(400, 'Inavlid crop dimensions');
+  }
+
   // Getting the uId for later use when storing data
   const uId = getUserId(token);
   crop(xStart, yStart, xEnd, yEnd, uId);
 
   return {};  
 }
-
-//async function appDim(url: URL, xStart: number, yStart: number, xEnd: number, yEnd: number) {
-//  const {width, height} = await getImageSize(`${url}`);
-//  // Crop inputs aren't within dimensions
-//  if (xStart > width || yStart > height || xEnd > width || yEnd > height) {
-//    return false;  
-//  }
-//  return true;
-//}
 
 // Generate random string
 function generateString(length) {
