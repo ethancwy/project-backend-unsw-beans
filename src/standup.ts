@@ -4,7 +4,6 @@ import {
   updateWorkSpace
 } from './global';
 import { userProfileV3 } from './users';
-import { user as userType } from './dataStore';
 import HTTPError from 'http-errors';
 
 const requestTime = () => Math.floor((new Date()).getTime() / 1000);

@@ -413,8 +413,7 @@ describe('Testing userStatsV1', () => {
       ],
       involvementRate: 1,
     });
-
-  })
+  });
 
   test('Testing user/stats with channelleave and dmremove/leave', () => {
     clear();
