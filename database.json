@@ -34,48 +34,12 @@
         "involvementRate": 0
       },
       "profileImgUrl": "http://localhost/[object Object]/static/default.jpg"
-    },
-    {
-      "uId": 1,
-      "nameFirst": "Willy",
-      "nameLast": "Wonka",
-      "email": "chocolate@bar.com",
-      "password": "-1311629592",
-      "handleStr": "willywonka",
-      "isGlobalOwner": false,
-      "isRemoved": false,
-      "tokens": [
-        "-368269791"
-      ],
-      "userStats": {
-        "channelsJoined": [
-          {
-            "numChannelsJoined": 0,
-            "timeStamp": 0
-          }
-        ],
-        "dmsJoined": [
-          {
-            "numDmsJoined": 0,
-            "timeStamp": 0
-          }
-        ],
-        "messagesSent": [
-          {
-            "numMessagesSent": 0,
-            "timeStamp": 0
-          }
-        ],
-        "involvementRate": 0
-      },
-      "profileImgUrl": "http://localhost/[object Object]/static/default.jpg"
     }
   ],
   "channels": [],
   "dms": [],
   "sessionIds": [
-    "-1255773472",
-    "-368269791"
+    "-1255773472"
   ],
   "messageDetails": [],
   "inviteDetails": [],

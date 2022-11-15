@@ -178,13 +178,13 @@ app.get('/users/stats/v1', (req: Request, res: Response) => {
 app.post('/user/profile/uploadphoto/v1', (req: Request, res: Response) => {
   const token = req.header('token');
   const { imgUrl, xStart, yStart, xEnd, yEnd } = req.body;
+
   return res.json(userUploadPhotoV1(token, imgUrl, xStart, yStart, xEnd, yEnd));
 });
 
-//const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
-//const A = new URL(baseURL);
-//userUploadPhotoV1('sdfsdf', A, 0, 0, 100, 200);
-
+// const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
+// const A = new URL(baseURL);
+// userUploadPhotoV1('sdfsdf', A, 0, 0, 100, 200);
 
 app.post('/dm/create/v2', (req: Request, res: Response) => {
   const token = req.header('token');
@@ -282,7 +282,7 @@ app.post('/message/unpin/v1', (req: Request, res: Response) => {
 });
 
 app.post('/message/sendlater/v1', (req: Request, res: Response) => {
-  const token = req.header('token');  
+  const token = req.header('token');
   const { channelId, message, timeSent } = req.body;
   return res.json(messageSendlaterV1(token, channelId, message, timeSent));
 });

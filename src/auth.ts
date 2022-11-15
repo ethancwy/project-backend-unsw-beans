@@ -2,7 +2,7 @@ import { getData, setData } from './dataStore';
 import { validEmail, validName, isValidToken, hashOf } from './global';
 import { user as userType } from './dataStore';
 import HTTPError from 'http-errors';
-import port from './config.json'
+import port from './config.json';
 
 /**
 * Allows user to login with email and password that they have registered
