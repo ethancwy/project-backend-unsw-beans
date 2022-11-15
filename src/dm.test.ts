@@ -1,7 +1,7 @@
 import {
   authRegister, dmCreate, clear, dmList, dmRemove,
   dmDetails, dmLeave, dmMessages,
-} from './global';
+} from './testhelpers';
 
 clear();
 // Tests for dm/create/v1

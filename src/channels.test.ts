@@ -1,6 +1,6 @@
-import { authRegister, authLogout } from './global';
-import { channelsCreate, channelsList, channelsListAll, channelLeave } from './global';
-import { clear } from './global';
+import { authRegister, authLogout } from './testhelpers';
+import { channelsCreate, channelsList, channelsListAll, channelLeave } from './testhelpers';
+import { clear } from './testhelpers';
 
 clear();
 

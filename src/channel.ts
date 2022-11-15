@@ -410,7 +410,7 @@ function channelRemoveOwnerV2(token: string, channelId: number, uId: number) {
     throw HTTPError(400, 'Cannot remove only owner in channel');
   }
 
-  // authUserId no owner perms
+  // authUserId no owner perms (not global owner and not channel owner)
   if (!isGlobalOwner(authUserId) && !isChannelOwner(authUserId, channelId)) {
     throw HTTPError(403, 'No owner permissions');
   }

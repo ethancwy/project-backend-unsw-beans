@@ -1,13 +1,13 @@
 import {
   messageSend, messageEdit, messageRemove, clear, dmCreate,
   dmMessages, channelMessages, channelJoin
-} from './global';
-import { authRegister, authLogout } from './global';
-import { channelsCreate } from './global';
-import { messageSendDm, messageShare } from './global';
-import { messageReact, messageUnreact } from './global';
-import { messagePin, messageUnpin } from './global';
-import { messageSendlater, messageSendlaterdm } from './global';
+} from './testhelpers';
+import { authRegister, authLogout } from './testhelpers';
+import { channelsCreate } from './testhelpers';
+import { messageSendDm, messageShare } from './testhelpers';
+import { messageReact, messageUnreact } from './testhelpers';
+import { messagePin, messageUnpin } from './testhelpers';
+import { messageSendlater, messageSendlaterdm } from './testhelpers';
 const requestTime = () => Math.floor((new Date()).getTime() / 1000);
 
 clear();
