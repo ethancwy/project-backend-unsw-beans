@@ -286,7 +286,7 @@ function userUploadPhotoV1(token: string, imgUrl: URL, xStart: number, yStart: n
 }
 
 // Generate random string
-function generateString(length) {
+function generateString(length: number) {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const charactersLength = characters.length;
@@ -297,7 +297,7 @@ function generateString(length) {
   return result;
 }
 
-async function crop(xStart, yStart, xEnd, yEnd, uId) { // Function name is same as of file name
+async function crop(xStart: number, yStart: number, xEnd: number, yEnd: number, uId: number) { // Function name is same as of file name
   const data = getData();
   // Reading Image
   const image = await Jimp.read('static/img.jpg');
