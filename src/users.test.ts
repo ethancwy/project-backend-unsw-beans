@@ -1,7 +1,7 @@
 import {
   authRegister, authLogout, userProfile, clear,
   usersAll, userSetName, userSetEmail, userSetHandle, channelsCreate, channelJoin, dmCreate,
-  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave
+  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave, userUploadPhoto
 } from './global';
 
 clear();
@@ -452,10 +452,57 @@ describe('Error checking usersStatsV1', () => {
   });
 });
 
-// describe('Testing user/uploadphoto/v1', () => {
-//   test('Uploading image', () => {
-//     clear();
-//     const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-//     expect(userUploadPhoto(member.token,))
-//   });
-// });
+// Testing user/profile/uploadphoto
+describe('Testing user/profile/uploadphoto/v1', () => {
+  test('Testing basic', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
+    const A = new URL(baseURL);
+
+    expect(userUploadPhoto(member1.token, A, 0, 0, 100, 200)).toStrictEqual({});
+  });
+}); 
+
+describe('Testing errors for user/profile/uploadphoto/v1', () => {
+  test('Invalid token', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const fakeToken = member1.token + 'yup';
+    const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
+    const A = new URL(baseURL);
+    
+    expect(userUploadPhoto(fakeToken, A, 0, 0, 100, 200)).toStrictEqual(403);
+  });
+
+  test('File not a jpg', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.png';
+    const A = new URL(baseURL);
+
+    expect(userUploadPhoto(member1.token, A, 0, 0, 100, 200)).toStrictEqual(400);
+  });  
+
+  //test('Cropping is not within appropriate dimensions', () => {
+  //  clear();
+  //  const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+  //  const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
+  //  const A = new URL(baseURL);
+//
+  //  //expect(userUploadPhoto(member1.token, A, 0, 0, 100, 200)).toStrictEqual(400);
+  //  expect(userUploadPhoto(member1.token, A, 0, 1000, 100, 200)).toStrictEqual(400);
+  //  expect(userUploadPhoto(member1.token, A, 0, 0, 1000, 200)).toStrictEqual(400);
+  //  expect(userUploadPhoto(member1.token, A, 0, 0, 100, 2000)).toStrictEqual(400);
+  //});    
+
+  //test('Error when retrieving image', () => {
+  //  clear();
+  //  const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+  //  const baseURL = 'http://www.traveller.com.au/image.related.articleLeadwide.620x349.h1pq27.png/15961724.jpg';
+  //  const A = new URL(baseURL);
+//
+  //  expect(userUploadPhoto(member1.token, A, 1000, 0, 100, 200)).toStrictEqual(400);
+  //});   
+}); 
+
