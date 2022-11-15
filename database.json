@@ -32,7 +32,8 @@
           }
         ],
         "involvementRate": 0
-      }
+      },
+      "profileImgUrl": "http://localhost/[object Object]/static/default.jpg"
     },
     {
       "uId": 1,
@@ -51,10 +52,6 @@
           {
             "numChannelsJoined": 0,
             "timeStamp": 0
-          },
-          {
-            "numChannelsJoined": 1,
-            "timeStamp": 1668509099
           }
         ],
         "dmsJoined": [
@@ -70,28 +67,11 @@
           }
         ],
         "involvementRate": 0
-      }
+      },
+      "profileImgUrl": "http://localhost/[object Object]/static/default.jpg"
     }
   ],
-  "channels": [
-    {
-      "channelId": 0,
-      "name": "testingTagging",
-      "isPublic": true,
-      "ownerIds": [
-        1
-      ],
-      "memberIds": [
-        1
-      ],
-      "channelmessages": [],
-      "standupDetails": {
-        "isActiveStandup": false,
-        "standupMessages": [],
-        "timeFinish": null
-      }
-    }
-  ],
+  "channels": [],
   "dms": [],
   "sessionIds": [
     "-1255773472",
@@ -105,10 +85,6 @@
       {
         "numChannelsExist": 0,
         "timeStamp": 0
-      },
-      {
-        "numChannelsExist": 1,
-        "timeStamp": 1668509099
       }
     ],
     "dmsExist": [
