@@ -170,7 +170,7 @@ function messageRemoveV2(token: string, messageId: number) {
 
   setData(data);
 
-  updateWorkSpace('msgs', 'remove', requestTimesent());
+  updateWorkSpace('msgs', 'remove', requestTimesent(), 1);
   return {};
 }
 

@@ -453,13 +453,13 @@ describe('Error checking userStatsV1', () => {
 });
 
 describe('Testing usersStatsV1', () => {
-  test('Successfully returning stats of workspace', () => {
+  test('Successfully returning stats of workspace, and removing messages/dms', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
     // Creating channels to test stats
     const channel1 = channelsCreate(member1.token, 'channel1', true);
-    const channel2 = channelsCreate(member1.token, 'channel2', false);
+    channelsCreate(member1.token, 'channel2', false);
     // Creating dm to test stats
     const dm = dmCreate(member1.token, [member2.authUserId]);
 
@@ -476,7 +476,9 @@ describe('Testing usersStatsV1', () => {
       utilizationRate: 1,
     });
 
-    // DmRemove tracked
+    // messageSendDm, DmRemove tracked
+    messageSendDm(member1.token, dm.dmId, 'hello1');
+    messageSendDm(member1.token, dm.dmId, 'hello2');
     dmRemove(member1.token, dm.dmId);
 
     expect(usersStats(member1.token)).toStrictEqual({
@@ -488,7 +490,11 @@ describe('Testing usersStatsV1', () => {
         { numDmsExist: 0, timeStamp: expect.any(Number) },
         { numDmsExist: 1, timeStamp: expect.any(Number) },
         { numDmsExist: 0, timeStamp: expect.any(Number) }],
-      messagesExist: [{ numMessagesExist: 0, timeStamp: expect.any(Number) }],
+      messagesExist: [
+        { numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 2, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) }],
       utilizationRate: 1,
     });
 
@@ -498,8 +504,11 @@ describe('Testing usersStatsV1', () => {
     const stats = usersStats(member1.token);
     expect(stats.messagesExist).toStrictEqual(
       [{ numMessagesExist: 0, timeStamp: expect.any(Number) },
-      { numMessagesExist: 1, timeStamp: expect.any(Number) },
-      { numMessagesExist: 0, timeStamp: expect.any(Number) }],
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 2, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) }]
     );
 
     // message edited to removed tracked
@@ -508,12 +517,14 @@ describe('Testing usersStatsV1', () => {
     const stats2 = usersStats(member1.token);
     expect(stats2.messagesExist).toStrictEqual(
       [{ numMessagesExist: 0, timeStamp: expect.any(Number) },
-      { numMessagesExist: 1, timeStamp: expect.any(Number) },
-      { numMessagesExist: 0, timeStamp: expect.any(Number) },
-      { numMessagesExist: 1, timeStamp: expect.any(Number) },
-      { numMessagesExist: 0, timeStamp: expect.any(Number) }],
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 2, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) }]
     );
-
   });
 });
 

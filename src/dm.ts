@@ -1,7 +1,9 @@
 import { getData, setData, Reacts } from './dataStore';
-import { isValidToken, isValidUser, getUserId, isDmValid, isDmMember, updateUserStats, updateWorkSpace } from './global';
+import {
+  isValidToken, isValidUser, getUserId, isDmValid, isDmMember, updateUserStats, updateWorkSpace
+} from './global';
 import HTTPError from 'http-errors';
-
+const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 /**
   * uIds contains the user(s) that this DM is directed to, and will not include
   * the creator. The creator is the owner of the DM. name should be automatically
@@ -167,6 +169,8 @@ function dmRemoveV2(token: string, dmId: number) {
     throw HTTPError(403, 'auth user not owner');
   }
 
+  const length = data.dms[dmId].messages.length;
+
   const copy = [...data.dms[dmId].members];
 
   // remove dms
@@ -178,7 +182,13 @@ function dmRemoveV2(token: string, dmId: number) {
     updateUserStats(members, 'dms', '', 0);
   }
   // Updating workspace
-  updateWorkSpace('dms', '', 0);
+
+  // const index = getDmIndex(dmId);
+  if (length > 0) {
+    updateWorkSpace('msgs', 'remove', requestTimesent(), length);
+  }
+
+  updateWorkSpace('dms', '', requestTimesent());
   return {};
 }
 
