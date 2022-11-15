@@ -1,8 +1,7 @@
 import {
   authRegister, authLogout, userProfile, clear,
   usersAll, userSetName, userSetEmail, userSetHandle, channelsCreate, channelJoin, dmCreate,
-  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave, adminUserRemove,
-  standupStart, standupSend
+  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave, adminUserRemove
 } from './testhelpers';
 
 const requestTime = () => Math.floor((new Date()).getTime() / 1000);
