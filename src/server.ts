@@ -30,6 +30,7 @@ import { adminUserRemoveV1, adminUserpermissionChangeV1 } from './admin';
 
 // Set up web app
 const app = express();
+app.use('/static', express.static('static'));
 // Use middleware that allows us to access the JSON body of requests
 app.use(json());
 // Use middleware that allows for access from other domains
@@ -178,7 +179,6 @@ app.get('/users/stats/v1', (req: Request, res: Response) => {
 app.post('/user/profile/uploadphoto/v1', (req: Request, res: Response) => {
   const token = req.header('token');
   const { imgUrl, xStart, yStart, xEnd, yEnd } = req.body;
-
   return res.json(userUploadPhotoV1(token, imgUrl, xStart, yStart, xEnd, yEnd));
 });
 
