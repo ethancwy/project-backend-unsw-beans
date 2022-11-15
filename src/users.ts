@@ -1,10 +1,33 @@
 import { getData, setData } from './dataStore';
-import { isValidToken } from './global';
+import { getUserId, isValidToken } from './global';
 import {
   validName, validEmail, anotherUserEmail, alphanumeric,
   isValidHandleLength, anotherUserHandle, hashOf
 } from './global';
 import HTTPError from 'http-errors';
+import request from 'sync-request';
+import fs from 'fs';
+import getImageSize from 'image-size-from-url';
+import config from './config.json';
+const PORT: number = parseInt(process.env.PORT || config.port);
+
+const Jimp = require('jimp') ;
+
+async function crop(xStart, yStart, xEnd, yEnd, uId) { // Function name is same as of file name
+  const data = getData();
+  // Reading Image
+  const image = await Jimp.read
+  ('static/img.jpg');
+  // Generating random string for url
+  const randostr = generateString(20);
+  // Cropping image and saving it to static folder
+  image.crop(xStart, yStart, xEnd, yEnd)
+  .write(`static/${randostr}.jpg`);
+  // Assigining users .profileImgUrl to the url generated
+  data.users[uId].profileImgUrl = `https://localhost:${PORT}/static/${randostr}.jpg`;
+  setData(data);
+  return;
+}
 
 /**
   * For a valid user, returns information about their user ID, email,
@@ -177,4 +200,60 @@ function userSetHandleV2(token: string, handleStr: string) {
   return {};
 }
 
-export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2 };
+async function getDim(url: URL, xStart: number, yStart: number, xEnd: number, yEnd: number) {
+  const {width, height} = await getImageSize(`${url}`);
+  // Crop inputs aren't within dimensions
+  if (xStart > width || yStart > height || xEnd > width || yEnd > height) {
+    throw HTTPError(400, 'Invalid crop sizes');
+  }
+  return;
+}
+
+// Generate random string
+function generateString(length) {
+  let result = '';
+  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+  return result;
+}
+
+function userUploadPhotoV1(token: string, imgUrl: URL, xStart: number, yStart: number, xEnd: number, yEnd: number) {
+  // Error throwing
+  // Invalid token
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  }
+  //  File is not a .jpg file
+  if (!(/\.jpg$/.test(`${imgUrl}`))) {
+    throw HTTPError(400, 'File is not a jpg file');
+  }
+  // Calls getDim function for more error testing
+  const size = getDim(imgUrl, xStart, yStart, xEnd, yEnd);
+  
+  // Getting the image
+  const ogImg = request(
+    'GET',
+    `${imgUrl}`
+  );
+
+  // Returning error if status not 200
+  //if (ogImg.statusCode !== 200) {
+  //  throw HTTPError(400, 'Error when retrieving image');
+  //}
+
+  // Saving image in static folder
+  const body = ogImg.getBody();
+  fs.writeFileSync('static/img.jpg', body, { flag: 'w' });
+
+  // Getting the uId for later use when storing data
+  const uId = getUserId(token);
+  crop(xStart, yStart, xEnd, yEnd, uId);
+
+  return {};  
+}
+
+export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2, userUploadPhotoV1 };
