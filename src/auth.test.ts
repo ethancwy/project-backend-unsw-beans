@@ -255,4 +255,5 @@ describe('Testing for password reset', () => {
     const reset = authPasswordReset('invalidresetcode12345', 'Bob3');
     expect(reset).toStrictEqual(400);
   });
+  clear();
 });

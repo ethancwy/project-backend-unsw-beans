@@ -21,11 +21,10 @@ const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
 */
 
 function messageSendV2(token: string, channelId: number, message: string) {
-  const data = getData();
-  const uId = getUserId(token);
   if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
   }
+  const uId = getUserId(token);
   if (!isValidChannel(channelId)) {
     throw HTTPError(400, 'invalid channel id');
   }
@@ -38,46 +37,7 @@ function messageSendV2(token: string, channelId: number, message: string) {
     throw HTTPError(403, 'auth user not in channel');
   }
 
-  const cIndex = getChannelIndex(channelId);
-  const messageId = data.messageDetails.length;
-  const react: reactions[] = [];
-  const allTags = getTags(message);
-  const tags: number[] = [];
-
-  if (!data.channels[cIndex].standupDetails.isActiveStandup) {
-    for (const i in allTags) {
-      if (isInChannel(allTags[i], channelId)) {
-        tags.push(allTags[i]);
-      }
-    }
-  }
-
-  const newMessage = {
-    messageId: messageId,
-    uId: uId,
-    message: message,
-    timeSent: requestTimesent(),
-    reacts: react,
-    isPinned: false,
-    tags: tags,
-  };
-  data.channels[cIndex].channelmessages.push(newMessage);
-  data.messageDetails.push({
-    uId: uId,
-    message: message,
-    messageId: messageId,
-    isDm: false,
-    listId: channelId,
-    tags: tags,
-    timeCounter: data.counter,
-  });
-  data.counter++;
-  setData(data);
-  // Updating userStats
-  updateUserStats(uId, 'msgs', 'add', newMessage.timeSent);
-  // Updating workspace
-  updateWorkSpace('msgs', 'add', newMessage.timeSent);
-  return { messageId: messageId };
+  return sendMsg(token, channelId, -1, message);
 }
 
 /**
@@ -118,7 +78,7 @@ function messageEditV2(token: string, messageId: number, message: string) {
     }
     // check if user has perms
     if (!data.channels[msg.listIndex].ownerIds.includes(authUserId) && msg.uId !== authUserId && !isGlobalOwner(authUserId)) {
-      throw HTTPError(403, 'auth user in channel but dosen');
+      throw HTTPError(403, 'auth user in channel but dosent have perms');
     }
     if (message.length > 1000) {
       throw HTTPError(400, 'invalid message length');
@@ -133,7 +93,7 @@ function messageEditV2(token: string, messageId: number, message: string) {
   } else {
     // check is user is in dm and has perms
     if (!data.dms[msg.listIndex].members.includes(authUserId)) {
-      throw HTTPError(400, 'invalid auth user id');
+      throw HTTPError(400, 'auth user not in dm');
     }
     if (data.dms[msg.listIndex].owner !== authUserId && msg.uId !== authUserId) {
       throw HTTPError(403, 'auth user does not have permission');
@@ -227,7 +187,6 @@ function messageRemoveV2(token: string, messageId: number) {
 */
 
 function messageSenddmV2(token: string, dmId: number, message: string) {
-  const data = getData();
   const uId = getUserId(token);
   if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
@@ -245,44 +204,7 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
     throw HTTPError(400, 'invalid message length');
   }
 
-  const dmIndex = getDmIndex(dmId);
-  const messageId = data.messageDetails.length;
-  const react: reactions[] = [];
-  const allTags = getTags(message);
-  const tags: number[] = [];
-
-  for (const i in allTags) {
-    if (isInDm(allTags[i], dmId)) {
-      tags.push(allTags[i]);
-    }
-  }
-
-  const newMessage = {
-    messageId: messageId,
-    uId: uId,
-    message: message,
-    timeSent: requestTimesent(),
-    reacts: react,
-    isPinned: false,
-    tags: tags,
-  };
-  data.dms[dmIndex].messages.push(newMessage);
-  data.messageDetails.push({
-    messageId: messageId,
-    message: message,
-    isDm: true,
-    listId: dmId,
-    uId: uId,
-    tags: tags,
-    timeCounter: data.counter,
-  });
-  data.counter++;
-  setData(data);
-  // Updating userStats
-  updateUserStats(uId, 'msgs', 'add', newMessage.timeSent);
-  // Updating workspace
-  updateWorkSpace('msgs', 'add', newMessage.timeSent);
-  return { messageId: messageId };
+  return sendMsg(token, -1, dmId, message);
 }
 
 function messageShareV1(token: string, ogMessageId: number, message: string, channelId: number, dmId: number) {
@@ -290,6 +212,18 @@ function messageShareV1(token: string, ogMessageId: number, message: string, cha
   const uId = getUserId(token);
   if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
+  }
+
+  if (channelId !== -1 && dmId === -1) {
+    if (isValidChannel(channelId) && !isInChannel(uId, channelId)) {
+      throw HTTPError(403, 'auth user not in channel');
+    }
+  } else if (dmId !== -1 && channelId === -1) {
+    if (isDmValid(dmId) && !isInDm(uId, dmId)) {
+      throw HTTPError(403, 'auth user not in dm');
+    }
+  } else {
+    throw HTTPError(400, 'channel/dm not specified');
   }
 
   if (message.length > 1000) {
@@ -320,13 +254,7 @@ function messageShareV1(token: string, ogMessageId: number, message: string, cha
   newMessage += '```';
   let sharedMessageId = 0;
 
-  if (dmId === -1) {
-    sharedMessageId = messageSendV2(token, channelId, newMessage).messageId;
-  } else if (channelId === -1) {
-    sharedMessageId = messageSenddmV2(token, dmId, newMessage).messageId;
-  } else {
-    throw HTTPError(400, 'channel/dm not specified');
-  }
+  sharedMessageId = sendMsg(token, channelId, dmId, newMessage).messageId;
 
   return { sharedMessageId: sharedMessageId };
 }
@@ -546,11 +474,8 @@ function messageUnpinV1(token: string, messageId: number) {
   }
 }
 
-function timeout() {
-  console.log('pausing');
-}
-
 function messageSendlaterV1(token: string, channelId: number, message: string, timeSent: number) {
+  const data = getData();
   if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
   }
@@ -564,14 +489,19 @@ function messageSendlaterV1(token: string, channelId: number, message: string, t
     throw HTTPError(403, 'auth user not in channel');
   }
 
+  if (message.length < 1 || message.length > 1000) {
+    throw HTTPError(400, 'invalid message length');
+  }
+
   if (timeSent < requestTimesent()) {
     throw HTTPError(400, 'time invalid');
   }
-  setTimeout(timeout, timeSent - requestTimesent());
-  return messageSendV2(token, channelId, message);
+  setTimeout(() => sendMsg(token, channelId, -1, message), (timeSent - requestTimesent()) * 1000);
+  return { messageId: data.messageDetails.length };
 }
 
 function messageSendlaterdmV1(token: string, dmId: number, message: string, timeSent: number) {
+  const data = getData();
   if (!isValidToken(token)) {
     throw HTTPError(403, 'invalid auth user id');
   }
@@ -585,11 +515,79 @@ function messageSendlaterdmV1(token: string, dmId: number, message: string, time
     throw HTTPError(403, 'auth user not in channel');
   }
 
+  if (message.length < 1 || message.length > 1000) {
+    throw HTTPError(400, 'invalid message length');
+  }
+
   if (timeSent < requestTimesent()) {
     throw HTTPError(400, 'time invalid');
   }
-  setTimeout(timeout, timeSent - requestTimesent());
-  return messageSenddmV2(token, dmId, message);
+  setTimeout(() => sendMsg(token, -1, dmId, message), (timeSent - requestTimesent()) * 1000);
+  return { messageId: data.messageDetails.length };
+}
+
+// helper function to send msg without error checking
+function sendMsg(token: string, channelId: number, dmId: number, message: string) {
+  const data = getData();
+  const authUserId = getUserId(token);
+  let isDm = false;
+
+  const messageId = data.messageDetails.length;
+  const react: reactions[] = [];
+  const allTags = getTags(message);
+  const tags: number[] = [];
+
+  const newMessage = {
+    messageId: messageId,
+    uId: authUserId,
+    message: message,
+    timeSent: requestTimesent(),
+    reacts: react,
+    isPinned: false,
+    tags: tags,
+  };
+
+  if (channelId === -1) {
+    isDm = true;
+    const dmIndex = getDmIndex(dmId);
+
+    for (const i in allTags) {
+      if (isInDm(allTags[i], dmId)) {
+        newMessage.tags.push(allTags[i]);
+      }
+    }
+    data.dms[dmIndex].messages.push(newMessage);
+  } else { // dmId === -1
+    isDm = false;
+    const cIndex = getChannelIndex(channelId);
+
+    if (!data.channels[cIndex].standupDetails.isActiveStandup) {
+      for (const i in allTags) {
+        if (isInChannel(allTags[i], channelId)) {
+          newMessage.tags.push(allTags[i]);
+        }
+      }
+    }
+    data.channels[cIndex].channelmessages.push(newMessage);
+  }
+
+  data.messageDetails.push({
+    uId: authUserId,
+    message: message,
+    messageId: messageId,
+    isDm: isDm,
+    listId: (isDm) ? dmId : channelId,
+    tags: newMessage.tags,
+    timeCounter: data.counter,
+  });
+
+  data.counter++;
+  setData(data);
+  // Updating userStats
+  updateUserStats(authUserId, 'msgs', 'add', newMessage.timeSent);
+  // Updating workspace
+  updateWorkSpace('msgs', 'add', newMessage.timeSent);
+  return { messageId: messageId };
 }
 
 export {
