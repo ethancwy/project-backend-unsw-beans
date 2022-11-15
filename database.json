@@ -1,5 +1,38 @@
 {
-  "users": [],
+  "users": [
+    {
+      "uId": 0,
+      "nameFirst": "Peter",
+      "nameLast": "File",
+      "email": "p.file@gmail.com",
+      "password": "-1618246164",
+      "handleStr": "peterfile",
+      "isGlobalOwner": true,
+      "isRemoved": false,
+      "tokens": [],
+      "userStats": {
+        "channelsJoined": [
+          {
+            "numChannelsJoined": 0,
+            "timeStamp": 0
+          }
+        ],
+        "dmsJoined": [
+          {
+            "numDmsJoined": 0,
+            "timeStamp": 0
+          }
+        ],
+        "messagesSent": [
+          {
+            "numMessagesSent": 0,
+            "timeStamp": 0
+          }
+        ],
+        "involvementRate": 0
+      }
+    }
+  ],
   "channels": [],
   "dms": [],
   "sessionIds": [],

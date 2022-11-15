@@ -1,7 +1,7 @@
 import {
   authRegister, authLogout, userProfile, clear,
   usersAll, userSetName, userSetEmail, userSetHandle, channelsCreate, channelJoin, dmCreate,
-  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave
+  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave, adminUserRemove
 } from './testhelpers';
 
 clear();
@@ -55,7 +55,7 @@ describe('Error checking userProfileV3', () => {
 });
 
 describe('Testing usersAllV1', () => {
-  test('Returns list of all users and their details', () => {
+  test('Returns list of all users and their details, and test admin remove', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
@@ -78,6 +78,21 @@ describe('Testing usersAllV1', () => {
         },
       ],
     });
+
+    adminUserRemove(member1.token, member2.authUserId);
+
+    expect(usersAll(member1.token)).toStrictEqual({
+      users: [
+        {
+          uId: member1.authUserId,
+          email: 'foo@bar.com',
+          nameFirst: 'James',
+          nameLast: 'Charles',
+          handleStr: expect.any(String),
+        },
+      ],
+    });
+
   });
 });
 
@@ -451,11 +466,3 @@ describe('Error checking usersStatsV1', () => {
     expect(userStats(invalidToken)).toStrictEqual(403);
   });
 });
-
-// describe('Testing user/uploadphoto/v1', () => {
-//   test('Uploading image', () => {
-//     clear();
-//     const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-//     expect(userUploadPhoto(member.token,))
-//   });
-// });

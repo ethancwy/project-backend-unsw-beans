@@ -427,34 +427,35 @@ export function isDmMember(uid: number, dmId: number) {
 // and function(ie add, remove)
 export function updateUserStats(uId: number, categ: string, func: string, time: number) {
   const data = getData();
+  const userIndex = data.users.findIndex((userobj: userType) => userobj.uId === uId);
 
   if (categ === 'channels') {
     if (func === 'add') { // Joining a channel
-      data.users[uId].userStats.channelsJoined.push({
-        numChannelsJoined: data.users[uId].userStats.channelsJoined.length,
+      data.users[userIndex].userStats.channelsJoined.push({
+        numChannelsJoined: data.users[userIndex].userStats.channelsJoined.length,
         timeStamp: requestTimeStamp(),
       });
     } else { // Leaving a channel
-      data.users[uId].userStats.channelsJoined.push({
-        numChannelsJoined: data.users[uId].userStats.channelsJoined.length - 2,
+      data.users[userIndex].userStats.channelsJoined.push({
+        numChannelsJoined: data.users[userIndex].userStats.channelsJoined.length - 2,
         timeStamp: requestTimeStamp(),
       });
     }
   } else if (categ === 'dms') {
     if (func === 'add') { // Joining a dm
-      data.users[uId].userStats.dmsJoined.push({
-        numDmsJoined: data.users[uId].userStats.dmsJoined.length,
+      data.users[userIndex].userStats.dmsJoined.push({
+        numDmsJoined: data.users[userIndex].userStats.dmsJoined.length,
         timeStamp: requestTimeStamp(),
       });
     } else { // Leaving a dm
-      data.users[uId].userStats.dmsJoined.push({
-        numDmsJoined: data.users[uId].userStats.dmsJoined.length - 2,
+      data.users[userIndex].userStats.dmsJoined.push({
+        numDmsJoined: data.users[userIndex].userStats.dmsJoined.length - 2,
         timeStamp: requestTimeStamp(),
       });
     }
   } else if (categ === 'msgs') { // Creating a message
-    data.users[uId].userStats.messagesSent.push({
-      numMessagesSent: data.users[uId].userStats.messagesSent.length,
+    data.users[userIndex].userStats.messagesSent.push({
+      numMessagesSent: data.users[userIndex].userStats.messagesSent.length,
       timeStamp: time,
     });
   }
