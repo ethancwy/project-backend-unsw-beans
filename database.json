@@ -1,10 +1,26 @@
 {
-  "users": [],
+  "users": [
+    {
+      "uId": 0,
+      "nameFirst": "James",
+      "nameLast": "Charles",
+      "email": "foo@bar.com",
+      "password": "372730123",
+      "handleStr": "jamescharles",
+      "isGlobalOwner": true,
+      "isRemoved": false,
+      "tokens": [
+        "-1255773472"
+      ]
+    }
+  ],
   "channels": [],
   "dms": [],
-  "sessionIds": [],
+  "sessionIds": [
+    "-1255773472"
+  ],
   "messageDetails": [],
   "inviteDetails": [],
   "reactDetails": [],
-  "counter": 15
+  "counter": 0
 }

@@ -6,6 +6,7 @@ import { user as userType } from './dataStore';
 import { token } from 'morgan';
 import internal from 'stream';
 import { Token } from 'typescript';
+import HTTPError from 'http-errors';
 const SERVER_URL = `${url}:${port}`;
 
 // const OK = 200;
@@ -447,6 +448,9 @@ export function requestHelper(method: HttpVerb, path: string, payload: object, t
 
   const res = request(method, SERVER_URL + path, { qs, json, headers });
   if (res.statusCode !== 200) {
+    if (path === '/user/profile/uploadphoto/v1') {
+      throw HTTPError(400, 'Error when retrieving image');
+    }
     // Return error code number instead of object in case of error.
     return res.statusCode;
   }
@@ -573,7 +577,7 @@ export function userSetEmail(token: string, email: string) {
 export function userSetHandle(token: string, handleStr: string) {
   return requestHelper('PUT', '/user/profile/sethandle/v2', { handleStr }, token);
 }
-export function userUploadPhoto(token: string, imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number) {
+export function userUploadPhoto(token: string, imgUrl: URL, xStart: number, yStart: number, xEnd: number, yEnd: number) {
   return requestHelper('POST', '/user/profile/uploadphoto/v1', { imgUrl, xStart, yStart, xEnd, yEnd }, token);
 }
 // ============================ New Iteration 3 function wrappers ================================//
