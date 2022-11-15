@@ -500,12 +500,12 @@ describe('Testing errors for user/profile/uploadphoto/v1', () => {
     expect(userUploadPhoto(member1.token, A, 0, 0, 100, -100)).toStrictEqual(400);
   });
 
-  //test('Error when retrieving image', () => {
+  // test('Error when retrieving image', () => {
   //  clear();
   //  const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
   //  const baseURL = 'http://d1jyxxz9imt9yb.cloud.net/medialib/396/image/s768x1300/PhotoCredit-Ashwati_Vipin_Giraffe_DSC_0215a.jpg';
   //  const A = new URL(baseURL);
 //
   //  expect(userUploadPhoto(member1.token, A, 0, 0, 100, 200)).toStrictEqual(400);
-  //});
+  // });
 });
