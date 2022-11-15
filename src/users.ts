@@ -5,8 +5,11 @@ import {
   isValidHandleLength, anotherUserHandle, hashOf
 } from './global';
 import HTTPError from 'http-errors';
-// import { arrayBuffer } from 'stream/consumers';
-// import { channel } from 'diagnostics_channel';
+import getImageSize from 'image-size-from-url';
+import { port } from './config.json';
+import request from 'sync-request';
+import fs from 'fs';
+const Jimp = require('jimp') ;
 
 /**
   * For a valid user, returns information about their user ID, email,
@@ -247,4 +250,81 @@ function usersStatsV1 (token: string) {
   return obj;
 }
 
-export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2, userStatsV1, usersStatsV1 };
+function userUploadPhotoV1(token: string, imgUrl: URL, xStart: number, yStart: number, xEnd: number, yEnd: number) {
+  // Error throwing
+  // Invalid token
+  if (!isValidToken(token)) {
+    throw HTTPError(403, 'Invalid token');
+  }
+  //  File is not a .jpg file
+  if (!(/\.jpg$/.test(`${imgUrl}`))) {
+    throw HTTPError(400, 'File is not a jpg file');
+  }
+  // Calls getDim function for more error testing
+  //let num = appDim(imgUrl, xStart, yStart, xEnd, yEnd);
+  //num.try(
+  //  console.log(2);
+  //).catch(
+  //  console.log(3);
+  //)
+
+  // Getting the image
+  const ogImg = request(
+    'GET',
+    `${imgUrl}`
+  );
+
+  // Returning error if status not 200
+  //if (ogImg.statusCode !== 200) {
+  //  throw HTTPError(400, 'Error when retrieving image');
+  //}
+
+  // Saving image in static folder
+  const body = ogImg.getBody();
+  fs.writeFileSync('static/img.jpg', body, { flag: 'w' });
+
+  // Getting the uId for later use when storing data
+  const uId = getUserId(token);
+  crop(xStart, yStart, xEnd, yEnd, uId);
+
+  return {};  
+}
+
+//async function appDim(url: URL, xStart: number, yStart: number, xEnd: number, yEnd: number) {
+//  const {width, height} = await getImageSize(`${url}`);
+//  // Crop inputs aren't within dimensions
+//  if (xStart > width || yStart > height || xEnd > width || yEnd > height) {
+//    return false;  
+//  }
+//  return true;
+//}
+
+// Generate random string
+function generateString(length) {
+  let result = '';
+  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+  return result;
+}
+
+async function crop(xStart, yStart, xEnd, yEnd, uId) { // Function name is same as of file name
+  const data = getData();
+  // Reading Image
+  const image = await Jimp.read
+  ('static/img.jpg');
+  // Generating random string for url
+  const randostr = generateString(20);
+  // Cropping image and saving it to static folder
+  image.crop(xStart, yStart, xEnd, yEnd)
+  .write(`static/profilepics/${randostr}.jpg`);
+  // Assigining users .profileImgUrl to the url generated
+  data.users[uId].profileImgUrl = `https://localhost:${port}/static/profilepics/${randostr}.jpg`;
+  setData(data);
+  return;
+}
+
+export { userProfileV3, usersAllV2, userSetNameV2, userSetEmailV2, userSetHandleV2, userStatsV1, usersStatsV1, userUploadPhotoV1 };

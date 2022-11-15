@@ -1,5 +1,7 @@
 import { getData, setData } from './dataStore';
 import { getUserId, isValidToken } from './global';
+const fs = require("fs");
+const path = require("path");
 
 import HTTPError from 'http-errors';
 
@@ -21,7 +23,25 @@ function clearV1() {
     counter: 0,
   };
   setData(data);
+
+  // Removes files from static/profilepics
+  removeFiles();
   return {};
+}
+
+function removeFiles() {
+  const directory = 'static/profilepics';
+
+  fs.readdir(directory, (err, files) => {
+    if (err) throw err;
+  
+    for (const file of files) {
+      fs.unlink(path.join(directory, file), (err) => {
+        if (err) throw err;
+      });
+    }
+  });
+  return;
 }
 
 function searchV1(token: string, queryStr: string) {

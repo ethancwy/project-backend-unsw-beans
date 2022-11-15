@@ -2,14 +2,16 @@
   "users": [
     {
       "uId": 0,
-      "nameFirst": "Peter",
-      "nameLast": "File",
-      "email": "p.file@gmail.com",
-      "password": "-1618246164",
-      "handleStr": "peterfile",
+      "nameFirst": "James",
+      "nameLast": "Charles",
+      "email": "foo@bar.com",
+      "password": "372730123",
+      "handleStr": "jamescharles",
       "isGlobalOwner": true,
       "isRemoved": false,
-      "tokens": [],
+      "tokens": [
+        "-1255773472"
+      ],
       "userStats": {
         "channelsJoined": [
           {
@@ -31,11 +33,70 @@
         ],
         "involvementRate": 0
       }
+    },
+    {
+      "uId": 1,
+      "nameFirst": "Willy",
+      "nameLast": "Wonka",
+      "email": "chocolate@bar.com",
+      "password": "-1311629592",
+      "handleStr": "willywonka",
+      "isGlobalOwner": false,
+      "isRemoved": false,
+      "tokens": [
+        "-368269791"
+      ],
+      "userStats": {
+        "channelsJoined": [
+          {
+            "numChannelsJoined": 0,
+            "timeStamp": 0
+          },
+          {
+            "numChannelsJoined": 1,
+            "timeStamp": 1668509099
+          }
+        ],
+        "dmsJoined": [
+          {
+            "numDmsJoined": 0,
+            "timeStamp": 0
+          }
+        ],
+        "messagesSent": [
+          {
+            "numMessagesSent": 0,
+            "timeStamp": 0
+          }
+        ],
+        "involvementRate": 0
+      }
     }
   ],
-  "channels": [],
+  "channels": [
+    {
+      "channelId": 0,
+      "name": "testingTagging",
+      "isPublic": true,
+      "ownerIds": [
+        1
+      ],
+      "memberIds": [
+        1
+      ],
+      "channelmessages": [],
+      "standupDetails": {
+        "isActiveStandup": false,
+        "standupMessages": [],
+        "timeFinish": null
+      }
+    }
+  ],
   "dms": [],
-  "sessionIds": [],
+  "sessionIds": [
+    "-1255773472",
+    "-368269791"
+  ],
   "messageDetails": [],
   "inviteDetails": [],
   "reactDetails": [],
@@ -44,6 +105,10 @@
       {
         "numChannelsExist": 0,
         "timeStamp": 0
+      },
+      {
+        "numChannelsExist": 1,
+        "timeStamp": 1668509099
       }
     ],
     "dmsExist": [
