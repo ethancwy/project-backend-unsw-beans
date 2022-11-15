@@ -36,9 +36,7 @@ function removeFiles() {
     if (err) throw err;
 
     for (const file of files) {
-      if (file === 'default') {
-        
-      } else {
+      if (file !== 'default') {
         fs.unlink(path.join(directory, file), (err: any) => {
           if (err) throw err;
         });
