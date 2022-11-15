@@ -384,36 +384,36 @@ describe('Testing userStatsV1', () => {
     });
   });
 
-  test('Test with standups', () => {
-    clear();
-    const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-    const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
+  // test('Test with standups', () => {
+  //   clear();
+  //   const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+  //   const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
 
-    standupStart(globalOwnerId.token, channel.channelId, 1);
+  //   standupStart(globalOwnerId.token, channel.channelId, 1);
 
-    const request = requestTime();
-    expect(standupSend(globalOwnerId.token, channel.channelId, 'hellothere!')).toEqual({});
-    expect(standupSend(globalOwnerId.token, channel.channelId, 'bye!')).toEqual({});
+  //   const request = requestTime();
+  //   expect(standupSend(globalOwnerId.token, channel.channelId, 'hellothere!')).toEqual({});
+  //   expect(standupSend(globalOwnerId.token, channel.channelId, 'bye!')).toEqual({});
 
-    while (requestTime() <= request + 1) {
-      continue;
-    }
+  //   while (requestTime() <= request + 1) {
+  //     continue;
+  //   }
 
-    expect(userStats(globalOwnerId.token)).toStrictEqual({
-      channelsJoined: [
-        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
-        { numChannelsJoined: 1, timeStamp: expect.any(Number) },
-      ],
-      dmsJoined: [
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-      ],
-      messagesSent: [
-        { numMessagesSent: 0, timeStamp: expect.any(Number) },
-        { numMessagesSent: 1, timeStamp: expect.any(Number) },
-      ],
-      involvementRate: 1,
-    });
-  });
+  //   expect(userStats(globalOwnerId.token)).toStrictEqual({
+  //     channelsJoined: [
+  //       { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+  //       { numChannelsJoined: 1, timeStamp: expect.any(Number) },
+  //     ],
+  //     dmsJoined: [
+  //       { numDmsJoined: 0, timeStamp: expect.any(Number) },
+  //     ],
+  //     messagesSent: [
+  //       { numMessagesSent: 0, timeStamp: expect.any(Number) },
+  //       { numMessagesSent: 1, timeStamp: expect.any(Number) },
+  //     ],
+  //     involvementRate: 1,
+  //   });
+  // });
 
   test('Testing user/stats with channelleave and dmremove/leave', () => {
     clear();
