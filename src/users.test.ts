@@ -1,7 +1,7 @@
 import {
   authRegister, authLogout, userProfile, clear,
   usersAll, userSetName, userSetEmail, userSetHandle, channelsCreate, channelJoin, dmCreate,
-  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave
+  userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave, adminUserRemove
 } from './testhelpers';
 
 clear();
@@ -55,7 +55,7 @@ describe('Error checking userProfileV3', () => {
 });
 
 describe('Testing usersAllV1', () => {
-  test('Returns list of all users and their details', () => {
+  test('Returns list of all users and their details, and test admin remove', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const member2 = authRegister('chicken@bar.com', 'goodpassword', 'Ronald', 'Mcdonald');
@@ -74,6 +74,20 @@ describe('Testing usersAllV1', () => {
           email: 'chicken@bar.com',
           nameFirst: 'Ronald',
           nameLast: 'Mcdonald',
+          handleStr: expect.any(String),
+        },
+      ],
+    });
+
+    adminUserRemove(member1.token, member2.authUserId);
+
+    expect(usersAll(member1.token)).toStrictEqual({
+      users: [
+        {
+          uId: member1.authUserId,
+          email: 'foo@bar.com',
+          nameFirst: 'James',
+          nameLast: 'Charles',
           handleStr: expect.any(String),
         },
       ],
@@ -367,6 +381,37 @@ describe('Testing userStatsV1', () => {
     });
   });
 
+  // test('Test with standups', () => {
+  //   clear();
+  //   const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+  //   const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
+
+  //   standupStart(globalOwnerId.token, channel.channelId, 1);
+
+  //   const request = requestTime();
+  //   expect(standupSend(globalOwnerId.token, channel.channelId, 'hellothere!')).toEqual({});
+  //   expect(standupSend(globalOwnerId.token, channel.channelId, 'bye!')).toEqual({});
+
+  //   while (requestTime() <= request + 1) {
+  //     continue;
+  //   }
+
+  //   expect(userStats(globalOwnerId.token)).toStrictEqual({
+  //     channelsJoined: [
+  //       { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+  //       { numChannelsJoined: 1, timeStamp: expect.any(Number) },
+  //     ],
+  //     dmsJoined: [
+  //       { numDmsJoined: 0, timeStamp: expect.any(Number) },
+  //     ],
+  //     messagesSent: [
+  //       { numMessagesSent: 0, timeStamp: expect.any(Number) },
+  //       { numMessagesSent: 1, timeStamp: expect.any(Number) },
+  //     ],
+  //     involvementRate: 1,
+  //   });
+  // });
+
   test('Testing user/stats with channelleave and dmremove/leave', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
@@ -451,11 +496,3 @@ describe('Error checking usersStatsV1', () => {
     expect(userStats(invalidToken)).toStrictEqual(403);
   });
 });
-
-// describe('Testing user/uploadphoto/v1', () => {
-//   test('Uploading image', () => {
-//     clear();
-//     const member = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-//     expect(userUploadPhoto(member.token,))
-//   });
-// });

@@ -232,18 +232,20 @@ describe('/message/edit/v1 success', () => {
 });
 
 describe('Testing errors for /message/edit/v1', () => {
-  test('Testing length of message - length > 1000', () => {
+  test('Testing length of message > 1000', () => {
     clear();
     const auth = authRegister('wateryeung0805@gmail.com', 'waterYYds1', 'Water', 'Yeung');
-    const token = auth.token;
-    const channelId = channelsCreate(token, 'Waterrr', true);
-    const messageId = messageSend(token, channelId.channelId, 'happy');
-    const invalidMessage = [];
-    while (invalidMessage.length < 1001) {
-      invalidMessage.push('1y389rh891hd89ho98jdsbsiajbkaibdsoianlasbdnsaiobaolb');
-    }
-    const check = messageEdit(token, messageId.messageId, invalidMessage.toString());
-    expect(check).toStrictEqual(400);
+    const channelId = channelsCreate(auth.token, 'Waterrr', true);
+    const dm = dmCreate(auth.token, []);
+    const messageId = messageSend(auth.token, channelId.channelId, 'happy');
+    const messageIdDm = messageSendDm(auth.token, dm.dmId, 'lolerbears');
+
+    const invalidMessage = 'h';
+
+    const check1 = messageEdit(auth.token, messageId.messageId, invalidMessage.repeat(1001));
+    expect(check1).toStrictEqual(400);
+    const check2 = messageEdit(auth.token, messageIdDm.messageId, invalidMessage.repeat(1001));
+    expect(check2).toStrictEqual(400);
   });
 
   test('Global owner cannot edit member message in DM', () => {
@@ -346,7 +348,7 @@ describe('Error checking /message/remove/v1', () => {
     expect(messageRemove(auth.token, invalidMessageId)).toStrictEqual(400);
   });
 
-  test('Testing message was not send by authorised user making the request', () => {
+  test('user making the request not in channel', () => {
     clear();
     const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
     const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
@@ -389,6 +391,27 @@ describe('Error checking /message/remove/v1', () => {
     expect(messageRemove(invalidToken, message.messageId)).toStrictEqual(403);
     clear();
   });
+
+  test('user not in dm', () => {
+    clear();
+    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
+
+    const dm = dmCreate(auth1.token, []);
+    const message = messageSendDm(auth1.token, dm.dmId, 'ntu band');
+    expect(messageRemove(auth2.token, message.messageId)).toStrictEqual(400);
+  });
+
+  test('error 403: authorised user does not have owner perms in channel, msg not sent by them', () => {
+    clear();
+    const auth1 = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
+    const auth2 = authRegister('Ericchen@icloud.com', 'Ntu123456', 'Eric', 'Chen');
+
+    const channelId = channelsCreate(auth1.token, 'channel', true);
+    channelJoin(auth2.token, channelId.channelId);
+    const message = messageSend(auth1.token, channelId.channelId, 'ntu band');
+    expect(messageRemove(auth2.token, message.messageId)).toStrictEqual(403);
+  });
 });
 
 // Testing for message/share/v1 failed cases
@@ -411,7 +434,7 @@ describe('/message/share/v1 failes', () => {
     expect(messageShare(auth.token, -1000, '', channelId.channelId, -1)).toStrictEqual(400);
   });
 
-  test('authuser not in ogmessage channel/dm', () => {
+  test('user cannot share FROM/TO unjoined channel/dm', () => {
     clear();
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const member = authRegister('Nina10803@icloud.com', 'Nina011803', 'Ni111na', '11Yeh');
@@ -420,10 +443,14 @@ describe('/message/share/v1 failes', () => {
     const dmId = dmCreate(auth.token, []);
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
     const dmMsgId = messageSendDm(auth.token, dmId.dmId, 'helloo');
+    // member not in ogmessage channel
     expect(messageShare(member.token, messageId.messageId, '', channel2.channelId, -1)).toStrictEqual(400);
+    // member not in sharing message dm
     expect(messageShare(member.token, messageId.messageId, '', -1, dmId.dmId)).toStrictEqual(403);
+    // member not in sharing message channel
     expect(messageShare(member.token, dmMsgId.messageId, '', channelId.channelId, -1)).toStrictEqual(403);
-    expect(messageShare(auth.token, messageId.messageId, '', channel2.channelId, -1)).toStrictEqual(403);
+    // member not in ogmessage dm
+    expect(messageShare(member.token, dmMsgId.messageId, '', channel2.channelId, -1)).toStrictEqual(400);
   });
 
   test('message length > 1000', () => {
@@ -513,9 +540,14 @@ describe('failed cases', () => {
     expect(messageReact(auth.token, messageId.messageId, 1)).toStrictEqual({});
     expect(messageUnreact(auth.token, messageId.messageId, 123)).toStrictEqual(400);
     expect(messageReact(auth.token, messageId.messageId, 1)).toStrictEqual(400);
+
     const dm = dmCreate(auth.token, []);
     const dmMessageId = messageSendDm(auth.token, dm.dmId, 'helloo');
+    expect(messageUnreact(auth.token, dmMessageId.messageId, 1)).toStrictEqual(400);
+
     expect(messageReact(auth.token, dmMessageId.messageId, 1)).toStrictEqual({});
+    expect(messageReact(auth.token, dmMessageId.messageId, 1)).toStrictEqual(400);
+
     expect(messageUnreact(nonmember.token, messageId.messageId, 1)).toStrictEqual(400);
     expect(messageUnreact(nonmember.token, dmMessageId.messageId, 1)).toStrictEqual(400);
   });

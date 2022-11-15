@@ -1,6 +1,5 @@
 import request, { HttpVerb } from 'sync-request';
 import { port, url } from './config.json';
-// import { timeStamp } from 'console';
 const SERVER_URL = `${url}:${port}`;
 
 // ================================ WRAPPER HELPER FUNCTIONS ============================== //
@@ -22,16 +21,19 @@ export function requestHelper(method: HttpVerb, path: string, payload: object, t
     // Return error code number instead of object in case of error.
     return res.statusCode;
   }
-  // expect(res.statusCode).toBe(OK);
+
   return JSON.parse(res.getBody() as string);
 }
 
-// ============================ Iteration 1 function wrappers ================================//
+// ===============================================================================================//
 export function authLogin(email: string, password: string) {
   return requestHelper('POST', '/auth/login/v3', { email, password });
 }
 export function authRegister(email: string, password: string, nameFirst: string, nameLast: string) {
   return requestHelper('POST', '/auth/register/v3', { email, password, nameFirst, nameLast });
+}
+export function authLogout(token: string) {
+  return requestHelper('POST', '/auth/logout/v2', {}, token);
 }
 // ===========================================================================================//
 export function channelsCreate(token: string, name: string, isPublic: boolean) {
@@ -65,10 +67,6 @@ export function clear() {
   return requestHelper('DELETE', '/clear/v1', {});
 }
 
-// ============================ New Iteration 2 function wrappers ================================//
-export function authLogout(token: string) {
-  return requestHelper('POST', '/auth/logout/v2', {}, token);
-}
 // ===============================================================================================//
 export function channelLeave(token: string, channelId: number) {
   return requestHelper('POST', '/channel/leave/v2', { channelId }, token);
@@ -132,6 +130,7 @@ export function dmMessages(token: string, dmId: number, start: number) {
 export function messageSendDm(token: string, dmId: number, message: string) {
   return requestHelper('POST', '/message/senddm/v2', { dmId, message }, token);
 }
+
 // ===============================================================================================//
 export function usersAll(token: string) {
   return requestHelper('GET', '/users/all/v2', {}, token);
@@ -145,20 +144,20 @@ export function userSetEmail(token: string, email: string) {
 export function userSetHandle(token: string, handleStr: string) {
   return requestHelper('PUT', '/user/profile/sethandle/v2', { handleStr }, token);
 }
-// Iteration 3 user/users functions
 export function userStats(token: string) {
   return requestHelper('GET', '/user/stats/v1', {}, token);
 }
 export function usersStats(token: string) {
   return requestHelper('GET', '/users/stats/v1', {}, token);
 }
-// export function userUploadPhoto(token: string) {
-//   return requestHelper('POST', '/user/profile/uploadphoto/v1', { xStart, yStart, xEnd, yEnd }, token);
-// }
-// ============================ New Iteration 3 function wrappers ================================//
+// ===============================================================================================//
 export function getNotifications(token: string) {
   return requestHelper('GET', '/notifications/get/v1', {}, token);
 }
+export function search(token: string, queryStr: string) {
+  return requestHelper('GET', '/search/v1', { queryStr }, token);
+}
+// ===============================================================================================//
 export function standupStart(token: string, channelId: number, length: number) {
   return requestHelper('POST', '/standup/start/v1', { channelId, length }, token);
 }
@@ -168,15 +167,14 @@ export function standupActive(token: string, channelId: number) {
 export function standupSend(token: string, channelId: number, message: string) {
   return requestHelper('POST', '/standup/send/v1', { channelId, message }, token);
 }
+// ===============================================================================================//
 export function adminUserRemove(token: string, uId: number) {
   return requestHelper('DELETE', '/admin/user/remove/v1', { uId }, token);
 }
 export function adminUserpermissionChange(token: string, uId: number, permissionId: number) {
   return requestHelper('POST', '/admin/userpermission/change/v1', { uId, permissionId }, token);
 }
-export function search(token: string, queryStr: string) {
-  return requestHelper('GET', '/search/v1', { queryStr }, token);
-}
+// ===============================================================================================//
 export function authPasswordRequest(email: string) {
   return requestHelper('POST', '/auth/passwordreset/request/v1', { email });
 }
