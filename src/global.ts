@@ -1,11 +1,6 @@
 import { getData, MessageDetails, channel, setData } from './dataStore';
-
 import validator from 'validator';
-import request, { HttpVerb } from 'sync-request';
-import { port, url } from './config.json';
 import { user as userType } from './dataStore';
-// import { timeStamp } from 'console';
-const SERVER_URL = `${url}:${port}`;
 const requestTimeStamp = () => Math.floor((new Date()).getTime() / 1000);
 
 // const OK = 200;
