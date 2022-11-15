@@ -4,8 +4,6 @@ import {
   userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave, adminUserRemove
 } from './testhelpers';
 
-const requestTime = () => Math.floor((new Date()).getTime() / 1000);
-
 clear();
 describe('Testing userProfileV3', () => {
   test('Testing for valid user', () => {
