@@ -169,6 +169,8 @@ function messageRemoveV2(token: string, messageId: number) {
   data.messageDetails.splice(index, 1);
 
   setData(data);
+
+  updateWorkSpace('msgs', 'remove', requestTimesent(), 1);
   return {};
 }
 

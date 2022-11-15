@@ -1,7 +1,6 @@
 import { getData, MessageDetails, channel, setData } from './dataStore';
 import validator from 'validator';
 import { user as userType } from './dataStore';
-const requestTimeStamp = () => Math.floor((new Date()).getTime() / 1000);
 
 // const OK = 200;
 
@@ -430,32 +429,35 @@ export function updateUserStats(uId: number, categ: string, func: string, time: 
   const userIndex = data.users.findIndex((userobj: userType) => userobj.uId === uId);
 
   if (categ === 'channels') {
+    const lastIndex = data.users[userIndex].userStats.channelsJoined.length - 1;
     if (func === 'add') { // Joining a channel
       data.users[userIndex].userStats.channelsJoined.push({
-        numChannelsJoined: data.users[userIndex].userStats.channelsJoined.length,
-        timeStamp: requestTimeStamp(),
+        numChannelsJoined: data.users[userIndex].userStats.channelsJoined[lastIndex].numChannelsJoined + 1,
+        timeStamp: time,
       });
     } else { // Leaving a channel
       data.users[userIndex].userStats.channelsJoined.push({
-        numChannelsJoined: data.users[userIndex].userStats.channelsJoined.length - 2,
-        timeStamp: requestTimeStamp(),
+        numChannelsJoined: data.users[userIndex].userStats.channelsJoined[lastIndex].numChannelsJoined - 1,
+        timeStamp: time,
       });
     }
   } else if (categ === 'dms') {
+    const lastIndex = data.users[userIndex].userStats.dmsJoined.length - 1;
     if (func === 'add') { // Joining a dm
       data.users[userIndex].userStats.dmsJoined.push({
-        numDmsJoined: data.users[userIndex].userStats.dmsJoined.length,
-        timeStamp: requestTimeStamp(),
+        numDmsJoined: data.users[userIndex].userStats.dmsJoined[lastIndex].numDmsJoined + 1,
+        timeStamp: time,
       });
     } else { // Leaving a dm
       data.users[userIndex].userStats.dmsJoined.push({
-        numDmsJoined: data.users[userIndex].userStats.dmsJoined.length - 2,
-        timeStamp: requestTimeStamp(),
+        numDmsJoined: data.users[userIndex].userStats.dmsJoined[lastIndex].numDmsJoined - 1,
+        timeStamp: time,
       });
     }
   } else if (categ === 'msgs') { // Creating a message
+    const lastIndex = data.users[userIndex].userStats.messagesSent.length - 1;
     data.users[userIndex].userStats.messagesSent.push({
-      numMessagesSent: data.users[userIndex].userStats.messagesSent.length,
+      numMessagesSent: data.users[userIndex].userStats.messagesSent[lastIndex].numMessagesSent + 1,
       timeStamp: time,
     });
   }
@@ -463,38 +465,49 @@ export function updateUserStats(uId: number, categ: string, func: string, time: 
   setData(data);
 }
 
-export function updateWorkSpace(categ: string, func: string, time: number) {
+export function updateWorkSpace(categ: string, func: string, time: number, num?: number) {
   const data = getData();
 
   if (categ === 'channels') {
+    const lastIndex = data.workspaceStats.channelsExist.length - 1;
     if (func === 'add') {
       data.workspaceStats.channelsExist.push({
-        numChannelsExist: data.workspaceStats.channelsExist.length,
-        timeStamp: requestTimeStamp(),
+        numChannelsExist: data.workspaceStats.channelsExist[lastIndex].numChannelsExist + 1,
+        timeStamp: time,
       });
     } else {
       data.workspaceStats.channelsExist.push({
-        numChannelsExist: data.workspaceStats.channelsExist.length - 2,
-        timeStamp: requestTimeStamp(),
+        numChannelsExist: data.workspaceStats.channelsExist[lastIndex].numChannelsExist + 1,
+        timeStamp: time,
       });
     }
   } else if (categ === 'dms') {
+    const lastIndex = data.workspaceStats.dmsExist.length - 1;
     if (func === 'add') {
       data.workspaceStats.dmsExist.push({
-        numDmsExist: data.workspaceStats.dmsExist.length,
-        timeStamp: requestTimeStamp(),
+        numDmsExist: data.workspaceStats.dmsExist[lastIndex].numDmsExist + 1,
+        timeStamp: time,
       });
     } else {
       data.workspaceStats.dmsExist.push({
-        numDmsExist: data.workspaceStats.dmsExist.length - 2,
-        timeStamp: requestTimeStamp(),
+        numDmsExist: data.workspaceStats.dmsExist[lastIndex].numDmsExist - 1,
+        timeStamp: time,
       });
     }
   } else if (categ === 'msgs') {
-    data.workspaceStats.messagesExist.push({
-      numMessagesExist: data.workspaceStats.messagesExist.length,
-      timeStamp: time,
-    });
+    const lastIndex = data.workspaceStats.messagesExist.length - 1;
+
+    if (func === 'remove') {
+      data.workspaceStats.messagesExist.push({
+        numMessagesExist: data.workspaceStats.messagesExist[lastIndex].numMessagesExist - num,
+        timeStamp: time,
+      });
+    } else {
+      data.workspaceStats.messagesExist.push({
+        numMessagesExist: data.workspaceStats.messagesExist[lastIndex].numMessagesExist + 1,
+        timeStamp: time,
+      });
+    }
   }
 
   setData(data);
