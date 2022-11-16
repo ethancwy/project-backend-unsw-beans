@@ -20,7 +20,7 @@ const sizeOf = require('image-size');
   * @param {integer} uId - a valid uId from dataStore
   *
   * @returns {Object {uId: integer, email: string, nameFirst: string,
- * nameLast: string, handleStr: string} } - object user details
+ * nameLast: string, handleStr: string, profileImgUrl: string} } - object user details
  *
  * @returns {error} - return error object in invalid cases
 */
@@ -41,6 +41,7 @@ function userProfileV3(token: string, uId: number) {
           nameFirst: user.nameFirst,
           nameLast: user.nameLast,
           handleStr: user.handleStr,
+          profileImgUrl: user.profileImgUrl
         }
       };
     }
@@ -54,7 +55,7 @@ function userProfileV3(token: string, uId: number) {
   * @param {string} token - a valid token
   *
   * @returns {Array<user>: {uId: integer, email: string, nameFirst: string,
- * nameLast: string, handleStr: string} } - object user details
+ * nameLast: string, handleStr: string, profileImgUrl: string} } - object user details
  *
  * @returns {error} - return error object in invalid cases
 */
@@ -77,6 +78,7 @@ function usersAllV2(token: string) {
       nameFirst: user.nameFirst,
       nameLast: user.nameLast,
       handleStr: user.handleStr,
+      profileImgUrl: user.profileImgUrl
     });
   }
 
@@ -309,7 +311,7 @@ async function crop(xStart: number, yStart: number, xEnd: number, yEnd: number, 
   image.crop(xStart, yStart, xEnd, yEnd)
     .write(`static/${randostr}.jpg`);
   // Assigining users .profileImgUrl to the url generated
-  data.users[uId].profileImgUrl = `https://localhost:${port}/static/${randostr}.jpg`;
+  data.users[uId].profileImgUrl = `http://localhost:${port}/static/${randostr}.jpg`;
   setData(data);
 }
 

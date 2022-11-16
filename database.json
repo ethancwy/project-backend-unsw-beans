@@ -1,8 +1,46 @@
 {
-  "users": [],
+  "users": [
+    {
+      "uId": 0,
+      "nameFirst": "James",
+      "nameLast": "Charles",
+      "email": "foo@bar.com",
+      "password": "372730123",
+      "handleStr": "jamescharles",
+      "isGlobalOwner": true,
+      "isRemoved": false,
+      "tokens": [
+        "-1255773472"
+      ],
+      "userStats": {
+        "channelsJoined": [
+          {
+            "numChannelsJoined": 0,
+            "timeStamp": 0
+          }
+        ],
+        "dmsJoined": [
+          {
+            "numDmsJoined": 0,
+            "timeStamp": 0
+          }
+        ],
+        "messagesSent": [
+          {
+            "numMessagesSent": 0,
+            "timeStamp": 0
+          }
+        ],
+        "involvementRate": 0
+      },
+      "profileImgUrl": "http://localhost:3205/static/default/default.jpg"
+    }
+  ],
   "channels": [],
   "dms": [],
-  "sessionIds": [],
+  "sessionIds": [
+    "-1255773472"
+  ],
   "messageDetails": [],
   "inviteDetails": [],
   "reactDetails": [],
