@@ -2,6 +2,7 @@ import { getData, setData } from './dataStore';
 import { validEmail, validName, isValidToken, hashOf } from './global';
 import { user as userType } from './dataStore';
 import HTTPError from 'http-errors';
+import port from './config.json';
 
 /**
 * Allows user to login with email and password that they have registered
@@ -79,6 +80,7 @@ function authRegisterV3(email: string, password: string, nameFirst: string, name
       messagesSent: [{ numMessagesSent: 0, timeStamp: 0 }],
       involvementRate: 0,
     },
+    profileImgUrl: `http://localhost/${port}/static/default/default.jpg`,
   });
 
   if (data.users.length === 1) {

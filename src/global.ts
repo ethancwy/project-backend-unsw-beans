@@ -509,6 +509,5 @@ export function updateWorkSpace(categ: string, func: string, time: number, num?:
       });
     }
   }
-
   setData(data);
 }

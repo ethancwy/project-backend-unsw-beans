@@ -150,6 +150,9 @@ export function userStats(token: string) {
 export function usersStats(token: string) {
   return requestHelper('GET', '/users/stats/v1', {}, token);
 }
+export function userUploadPhoto(token: string, imgUrl: URL, xStart: number, yStart: number, xEnd: number, yEnd: number) {
+  return requestHelper('POST', '/user/profile/uploadphoto/v1', { imgUrl, xStart, yStart, xEnd, yEnd }, token);
+}
 // ===============================================================================================//
 export function getNotifications(token: string) {
   return requestHelper('GET', '/notifications/get/v1', {}, token);
