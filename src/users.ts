@@ -254,32 +254,38 @@ function usersStatsV1(token: string) {
   return obj;
 }
 
-function userUploadPhotoV1(token: string, imgUrl: URL, xStart: number, yStart: number, xEnd: number, yEnd: number) {
+function userUploadPhotoV1(token: string, imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number) {
   // Error throwing
   // Invalid token
   if (!isValidToken(token)) {
     throw HTTPError(403, 'Invalid token');
   }
   //  File is not a .jpg file
-  if (!(/\.jpg$/.test(`${imgUrl}`))) {
+  if (!(/\.jpg$/.test(imgUrl))) {
     throw HTTPError(400, 'File is not a jpg file');
   }
 
   // Getting the image
   const ogImg = request(
     'GET',
-    `${imgUrl}`
+    imgUrl
   );
+  // Error if there is issue retrieving image
+  if (ogImg.statusCode !== 200) {
+    throw HTTPError(400, 'Error when retrieving image');
+  }
 
   // Saving image in static folder
   const body = ogImg.getBody();
   fs.writeFileSync('static/img.jpg', body, { flag: 'w' });
 
+  // Getting image height to check error of crop dimensions
   const dimensions = sizeOf('static/img.jpg');
+
   // console.log(dimensions.width, dimensions.height);
   if (xStart > dimensions.width || xEnd > dimensions.width || yStart > dimensions.width || yEnd > dimensions.width ||
     xStart < 0 || xEnd < 0 || yStart < 0 || yEnd < 0 || xEnd <= xStart || yEnd <= yStart) {
-    throw HTTPError(400, 'Inavlid crop dimensions');
+    throw HTTPError(400, 'Invalid crop dimensions');
   }
 
   // Getting the uId for later use when storing data
@@ -301,17 +307,19 @@ function generateString(length: number) {
   return result;
 }
 
-async function crop(xStart: number, yStart: number, xEnd: number, yEnd: number, uId: number) { // Function name is same as of file name
+async function crop(xStart: number, yStart: number, xEnd: number,
+  yEnd: number, uId: number) {
   const data = getData();
-  // Reading Image
-  const image = await Jimp.read('static/img.jpg');
-  // Generating random string for url
-  const randostr = generateString(20);
+  const image = await Jimp.read('static/img.jpg'); // Reading Image
+  const randostr = generateString(20); // Generating random string for url
   // Cropping image and saving it to static folder
   image.crop(xStart, yStart, xEnd, yEnd)
     .write(`static/${randostr}.jpg`);
   // Assigining users .profileImgUrl to the url generated
-  data.users[uId].profileImgUrl = `http://localhost:${port}/static/${randostr}.jpg`;
+
+  const generatedurl = `https://localhost:${port}/static/${randostr}.jpg`;
+  data.users[uId].profileImgUrl = generatedurl;
+
   setData(data);
 }
 

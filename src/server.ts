@@ -182,10 +182,6 @@ app.post('/user/profile/uploadphoto/v1', (req: Request, res: Response) => {
   return res.json(userUploadPhotoV1(token, imgUrl, xStart, yStart, xEnd, yEnd));
 });
 
-// const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
-// const A = new URL(baseURL);
-// userUploadPhotoV1('sdfsdf', A, 0, 0, 100, 200);
-
 app.post('/dm/create/v2', (req: Request, res: Response) => {
   const token = req.header('token');
   const uIds = req.body.uIds as number[];
