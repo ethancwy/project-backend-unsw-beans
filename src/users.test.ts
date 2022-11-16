@@ -519,11 +519,11 @@ describe('Testing usersStatsV1', () => {
     const stats = usersStats(member1.token);
     expect(stats.messagesExist).toStrictEqual(
       [{ numMessagesExist: 0, timeStamp: expect.any(Number) },
-      { numMessagesExist: 1, timeStamp: expect.any(Number) },
-      { numMessagesExist: 2, timeStamp: expect.any(Number) },
-      { numMessagesExist: 0, timeStamp: expect.any(Number) },
-      { numMessagesExist: 1, timeStamp: expect.any(Number) },
-      { numMessagesExist: 0, timeStamp: expect.any(Number) }]
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 2, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) }]
     );
 
     // message edited to removed tracked
@@ -532,13 +532,13 @@ describe('Testing usersStatsV1', () => {
     const stats2 = usersStats(member1.token);
     expect(stats2.messagesExist).toStrictEqual(
       [{ numMessagesExist: 0, timeStamp: expect.any(Number) },
-      { numMessagesExist: 1, timeStamp: expect.any(Number) },
-      { numMessagesExist: 2, timeStamp: expect.any(Number) },
-      { numMessagesExist: 0, timeStamp: expect.any(Number) },
-      { numMessagesExist: 1, timeStamp: expect.any(Number) },
-      { numMessagesExist: 0, timeStamp: expect.any(Number) },
-      { numMessagesExist: 1, timeStamp: expect.any(Number) },
-      { numMessagesExist: 0, timeStamp: expect.any(Number) }]
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 2, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) },
+        { numMessagesExist: 1, timeStamp: expect.any(Number) },
+        { numMessagesExist: 0, timeStamp: expect.any(Number) }]
     );
   });
 });

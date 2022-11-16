@@ -455,7 +455,7 @@ describe('/message/share/v1 failes', () => {
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
 
-    const invalidMessage = 'h'
+    const invalidMessage = 'h';
     expect(messageShare(auth.token, messageId.messageId, invalidMessage.repeat(1001), channelId.channelId, -1)).toStrictEqual(400);
   });
 
@@ -711,7 +711,7 @@ describe('/message/sendlater fails', () => {
     expect(messageSendlater(auth.token, channelId.channelId, invalidMessage, requestTime() + 1)).toStrictEqual(400);
     expect(messageSendlaterdm(member.token, dm.dmId, invalidMessage, requestTime() + 1)).toStrictEqual(400);
 
-    invalidMessage = 'h'
+    invalidMessage = 'h';
     expect(messageSendlater(auth.token, channelId.channelId, invalidMessage.repeat(1001), requestTime() + 1)).toStrictEqual(400);
     expect(messageSendlaterdm(member.token, dm.dmId, invalidMessage.repeat(1001), requestTime() + 1)).toStrictEqual(400);
   });
