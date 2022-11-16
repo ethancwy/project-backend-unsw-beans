@@ -278,7 +278,7 @@ function userUploadPhotoV1(token: string, imgUrl: URL, xStart: number, yStart: n
   const dimensions = sizeOf('static/img.jpg');
   // console.log(dimensions.width, dimensions.height);
   if (xStart > dimensions.width || xEnd > dimensions.width || yStart > dimensions.width || yEnd > dimensions.width ||
-    xStart < 0 || xEnd < 0 || yStart < 0 || yEnd < 0) {
+    xStart < 0 || xEnd < 0 || yStart < 0 || yEnd < 0 || xEnd <= xStart || yEnd <= yStart) {
     throw HTTPError(400, 'Inavlid crop dimensions');
   }
 

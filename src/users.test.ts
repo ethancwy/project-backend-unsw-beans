@@ -519,11 +519,11 @@ describe('Testing usersStatsV1', () => {
     const stats = usersStats(member1.token);
     expect(stats.messagesExist).toStrictEqual(
       [{ numMessagesExist: 0, timeStamp: expect.any(Number) },
-        { numMessagesExist: 1, timeStamp: expect.any(Number) },
-        { numMessagesExist: 2, timeStamp: expect.any(Number) },
-        { numMessagesExist: 0, timeStamp: expect.any(Number) },
-        { numMessagesExist: 1, timeStamp: expect.any(Number) },
-        { numMessagesExist: 0, timeStamp: expect.any(Number) }]
+      { numMessagesExist: 1, timeStamp: expect.any(Number) },
+      { numMessagesExist: 2, timeStamp: expect.any(Number) },
+      { numMessagesExist: 0, timeStamp: expect.any(Number) },
+      { numMessagesExist: 1, timeStamp: expect.any(Number) },
+      { numMessagesExist: 0, timeStamp: expect.any(Number) }]
     );
 
     // message edited to removed tracked
@@ -532,13 +532,13 @@ describe('Testing usersStatsV1', () => {
     const stats2 = usersStats(member1.token);
     expect(stats2.messagesExist).toStrictEqual(
       [{ numMessagesExist: 0, timeStamp: expect.any(Number) },
-        { numMessagesExist: 1, timeStamp: expect.any(Number) },
-        { numMessagesExist: 2, timeStamp: expect.any(Number) },
-        { numMessagesExist: 0, timeStamp: expect.any(Number) },
-        { numMessagesExist: 1, timeStamp: expect.any(Number) },
-        { numMessagesExist: 0, timeStamp: expect.any(Number) },
-        { numMessagesExist: 1, timeStamp: expect.any(Number) },
-        { numMessagesExist: 0, timeStamp: expect.any(Number) }]
+      { numMessagesExist: 1, timeStamp: expect.any(Number) },
+      { numMessagesExist: 2, timeStamp: expect.any(Number) },
+      { numMessagesExist: 0, timeStamp: expect.any(Number) },
+      { numMessagesExist: 1, timeStamp: expect.any(Number) },
+      { numMessagesExist: 0, timeStamp: expect.any(Number) },
+      { numMessagesExist: 1, timeStamp: expect.any(Number) },
+      { numMessagesExist: 0, timeStamp: expect.any(Number) }]
     );
   });
 });
@@ -551,13 +551,7 @@ describe('Testing user/profile/uploadphoto/v1', () => {
     const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
     const A = new URL(baseURL);
 
-    // const before = userProfile(member1.token, member1.authUserId);
-
     expect(userUploadPhoto(member1.token, A, 0, 0, 100, 200)).toStrictEqual({});
-
-    const after = userProfile(member1.token, member1.authUserId);
-    // console.log(after.user.profileImgUrl);
-    expect(after.profileImgUrl).not.toEqual(`http://localhost:${port}/static/default/default.jpg`);
   });
 });
 
@@ -587,14 +581,24 @@ describe('Testing errors for user/profile/uploadphoto/v1', () => {
     const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
     const A = new URL(baseURL);
 
-    expect(userUploadPhoto(member1.token, A, 1000, 0, 100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, 0, 1000, 100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, 0, 0, 1000, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, 0, 0, 100, 2000)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, -100, 0, 100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, 0, -100, 100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, 0, 0, -100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, 0, 0, 100, -100)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, A, -1000, 0, 0, 0)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, A, 0, -1000, 0, 0)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, A, 0, 0, -1000, 0)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, A, 0, 0, 0, -1000)).toStrictEqual(400);
+
+    // xEnd <= xStart
+    expect(userUploadPhoto(member1.token, A, 200, 100, 100, 200)).toStrictEqual(400);
+    // yEnd <= yStart
+    expect(userUploadPhoto(member1.token, A, 100, 200, 100, 100)).toStrictEqual(400);
+
+    // expect(userUploadPhoto(member1.token, A, 1000, 0, 100, 200)).toStrictEqual(400);
+    // expect(userUploadPhoto(member1.token, A, 0, 1000, 100, 200)).toStrictEqual(400);
+    // expect(userUploadPhoto(member1.token, A, 0, 0, 1000, 200)).toStrictEqual(400);
+    // expect(userUploadPhoto(member1.token, A, 0, 0, 100, 2000)).toStrictEqual(400);
+    // expect(userUploadPhoto(member1.token, A, -100, 0, 100, 200)).toStrictEqual(400);
+    // expect(userUploadPhoto(member1.token, A, 0, -100, 100, 200)).toStrictEqual(400);
+    // expect(userUploadPhoto(member1.token, A, 0, 0, -100, 200)).toStrictEqual(400);
+    // expect(userUploadPhoto(member1.token, A, 0, 0, 100, -100)).toStrictEqual(400);
   });
 
   // test('Error when retrieving image', () => {
