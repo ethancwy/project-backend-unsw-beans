@@ -45,20 +45,6 @@ function removeFiles() {
   });
 }
 
-// function removeFiles() {
-//   const directory = 'static/profilepics';
-//
-//   fs.readdir(directory, (err, files) => {
-//     if (err) throw err;
-//
-//     for (const file of files) {
-//       fs.unlink(path.join(directory, file), (err) => {
-//         if (err) throw err;
-//       });
-//     }
-//   });
-// }
-
 function searchV1(token: string, queryStr: string) {
   const data = getData();
 

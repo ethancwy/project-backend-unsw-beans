@@ -535,9 +535,8 @@ describe('Testing user/profile/uploadphoto/v1', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
-    const A = new URL(baseURL);
 
-    expect(userUploadPhoto(member1.token, A, 0, 0, 100, 200)).toStrictEqual({});
+    expect(userUploadPhoto(member1.token, baseURL, 0, 0, 100, 200)).toStrictEqual({});
   });
 });
 
@@ -547,42 +546,38 @@ describe('Testing errors for user/profile/uploadphoto/v1', () => {
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const fakeToken = member1.token + 'yup';
     const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
-    const A = new URL(baseURL);
 
-    expect(userUploadPhoto(fakeToken, A, 0, 0, 100, 200)).toStrictEqual(403);
+    expect(userUploadPhoto(fakeToken, baseURL, 0, 0, 100, 200)).toStrictEqual(403);
   });
 
   test('File not a jpg', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.png';
-    const A = new URL(baseURL);
 
-    expect(userUploadPhoto(member1.token, A, 0, 0, 100, 200)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, 0, 0, 100, 200)).toStrictEqual(400);
   });
 
   test('Cropping is not within appropriate dimensions', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
-    const A = new URL(baseURL);
 
-    expect(userUploadPhoto(member1.token, A, 1000, 0, 100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, 0, 1000, 100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, 0, 0, 1000, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, 0, 0, 100, 2000)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, -100, 0, 100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, 0, -100, 100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, 0, 0, -100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, A, 0, 0, 100, -100)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, 1000, 0, 100, 200)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, 0, 1000, 100, 200)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, 0, 0, 1000, 200)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, 0, 0, 100, 2000)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, -100, 0, 100, 200)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, 0, -100, 100, 200)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, 0, 0, -100, 200)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, 0, 0, 100, -100)).toStrictEqual(400);
   });
 
   // test('Error when retrieving image', () => {
   //  clear();
   //  const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
   //  const baseURL = 'http://d1jyxxz9imt9yb.cloud.net/medialib/396/image/s768x1300/PhotoCredit-Ashwati_Vipin_Giraffe_DSC_0215a.jpg';
-  //  const A = new URL(baseURL);
 //
-  //  expect(userUploadPhoto(member1.token, A, 0, 0, 100, 200)).toStrictEqual(400);
+  //  expect(userUploadPhoto(member1.token, baseURL, 0, 0, 100, 200)).toStrictEqual(400);
   // });
 });
