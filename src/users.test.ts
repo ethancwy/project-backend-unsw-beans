@@ -388,37 +388,6 @@ describe('Testing userStatsV1', () => {
     });
   });
 
-  // test('Test with standups', () => {
-  //   clear();
-  //   const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-  //   const channel = channelsCreate(globalOwnerId.token, 'testingStandup', true);
-
-  //   standupStart(globalOwnerId.token, channel.channelId, 1);
-
-  //   const request = requestTime();
-  //   expect(standupSend(globalOwnerId.token, channel.channelId, 'hellothere!')).toEqual({});
-  //   expect(standupSend(globalOwnerId.token, channel.channelId, 'bye!')).toEqual({});
-
-  //   while (requestTime() <= request + 1) {
-  //     continue;
-  //   }
-
-  //   expect(userStats(globalOwnerId.token)).toStrictEqual({
-  //     channelsJoined: [
-  //       { numChannelsJoined: 0, timeStamp: expect.any(Number) },
-  //       { numChannelsJoined: 1, timeStamp: expect.any(Number) },
-  //     ],
-  //     dmsJoined: [
-  //       { numDmsJoined: 0, timeStamp: expect.any(Number) },
-  //     ],
-  //     messagesSent: [
-  //       { numMessagesSent: 0, timeStamp: expect.any(Number) },
-  //       { numMessagesSent: 1, timeStamp: expect.any(Number) },
-  //     ],
-  //     involvementRate: 1,
-  //   });
-  // });
-
   test('Testing user/stats with channelleave and dmremove/leave', () => {
     clear();
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
@@ -519,11 +488,11 @@ describe('Testing usersStatsV1', () => {
     const stats = usersStats(member1.token);
     expect(stats.messagesExist).toStrictEqual(
       [{ numMessagesExist: 0, timeStamp: expect.any(Number) },
-        { numMessagesExist: 1, timeStamp: expect.any(Number) },
-        { numMessagesExist: 2, timeStamp: expect.any(Number) },
-        { numMessagesExist: 0, timeStamp: expect.any(Number) },
-        { numMessagesExist: 1, timeStamp: expect.any(Number) },
-        { numMessagesExist: 0, timeStamp: expect.any(Number) }]
+      { numMessagesExist: 1, timeStamp: expect.any(Number) },
+      { numMessagesExist: 2, timeStamp: expect.any(Number) },
+      { numMessagesExist: 0, timeStamp: expect.any(Number) },
+      { numMessagesExist: 1, timeStamp: expect.any(Number) },
+      { numMessagesExist: 0, timeStamp: expect.any(Number) }]
     );
 
     // message edited to removed tracked
@@ -532,13 +501,13 @@ describe('Testing usersStatsV1', () => {
     const stats2 = usersStats(member1.token);
     expect(stats2.messagesExist).toStrictEqual(
       [{ numMessagesExist: 0, timeStamp: expect.any(Number) },
-        { numMessagesExist: 1, timeStamp: expect.any(Number) },
-        { numMessagesExist: 2, timeStamp: expect.any(Number) },
-        { numMessagesExist: 0, timeStamp: expect.any(Number) },
-        { numMessagesExist: 1, timeStamp: expect.any(Number) },
-        { numMessagesExist: 0, timeStamp: expect.any(Number) },
-        { numMessagesExist: 1, timeStamp: expect.any(Number) },
-        { numMessagesExist: 0, timeStamp: expect.any(Number) }]
+      { numMessagesExist: 1, timeStamp: expect.any(Number) },
+      { numMessagesExist: 2, timeStamp: expect.any(Number) },
+      { numMessagesExist: 0, timeStamp: expect.any(Number) },
+      { numMessagesExist: 1, timeStamp: expect.any(Number) },
+      { numMessagesExist: 0, timeStamp: expect.any(Number) },
+      { numMessagesExist: 1, timeStamp: expect.any(Number) },
+      { numMessagesExist: 0, timeStamp: expect.any(Number) }]
     );
   });
 });
@@ -588,12 +557,11 @@ describe('Testing errors for user/profile/uploadphoto/v1', () => {
     expect(userUploadPhoto(member1.token, baseURL, 100, 200, 100, 100)).toStrictEqual(400);
   });
 
-  // test('Error when retrieving image', () => {
-  //  clear();
-  //  const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
-  //  const baseURL = 'http://d1jyxxz9imt9yb.cloud.net/medialib/396/image/s768x1300/PhotoCredit-Ashwati_Vipin_Giraffe_DSC_0215a.jpg';
-
-  //  expect(userUploadPhoto(member1.token, baseURL, 0, 0, 100, 200)).toStrictEqual(400);
-
-  // });
+  test('Error when retrieving image', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    // correct domain, bad route
+    const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/articleLeadwide.620x349.h1pq27.png/1596176460725.jpg';
+    expect(userUploadPhoto(member1.token, baseURL, 0, 0, 100, 200)).toStrictEqual(400);
+  });
 });
