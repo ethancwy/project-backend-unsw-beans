@@ -64,6 +64,8 @@ function adminUserRemoveV1(token: string, uId: number) {
   removedUser.isRemoved = true;
   removedUser.nameFirst = 'Removed';
   removedUser.nameLast = 'user';
+  removedUser.email = '';
+  removedUser.handleStr = '';
 
   setData(data);
   return {};

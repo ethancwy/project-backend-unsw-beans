@@ -2,8 +2,9 @@ import {
   authRegister, channelsCreate, dmCreate,
   clear, channelMessages, dmMessages,
   adminUserRemove, messageSend, channelInvite,
-  adminUserpermissionChange, messageSendDm
+  adminUserpermissionChange, messageSendDm, userProfile, usersAll
 } from './testhelpers';
+import { port } from './config.json';
 
 // test failed cases for adminuserremove
 describe('/admin/user/remove/v1 failed cases', () => {
@@ -38,7 +39,7 @@ describe('/admin/user/remove/v1 failed cases', () => {
 });
 
 // test success cases for adminuserremove
-describe('/admin/user/remove/v1 non failed cases', () => {
+describe('/admin/user/remove/v1 success cases', () => {
   test('global owner removing normal user', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
@@ -50,35 +51,8 @@ describe('/admin/user/remove/v1 non failed cases', () => {
     const dm1 = dmCreate(user1.token, [globalOwnerId.authUserId]);
     const dmMsgId = messageSendDm(user1.token, dm1.dmId, 'msgtodel');
 
-    expect(channelMessages(globalOwnerId.token, channel1.channelId, 0)).toStrictEqual({
-      messages: [
-        {
-          messageId: msgId.messageId,
-          uId: user1.authUserId,
-          message: '@willywonka@jamescharles hello!',
-          timeSent: expect.any(Number),
-          reacts: [],
-          isPinned: false,
-        }
-      ],
-      start: 0,
-      end: -1,
-    });
-    expect(dmMessages(globalOwnerId.token, dm1.dmId, 0)).toStrictEqual({
-      messages: [
-        {
-          messageId: dmMsgId.messageId,
-          uId: user1.authUserId,
-          message: 'msgtodel',
-          timeSent: expect.any(Number),
-          reacts: [],
-          isPinned: false,
-        }
-      ],
-      start: 0,
-      end: -1,
-    });
     expect(adminUserRemove(globalOwnerId.token, user1.authUserId)).toStrictEqual({});
+
     expect(channelMessages(globalOwnerId.token, channel1.channelId, 0)).toStrictEqual({
       messages: [
         {
@@ -108,6 +82,28 @@ describe('/admin/user/remove/v1 non failed cases', () => {
       end: -1,
     });
     expect(channelsCreate(user1.token, 'cannot exist channel', true)).toStrictEqual(403);
+    expect(userProfile(globalOwnerId.token, user1.authUserId)).toStrictEqual({
+      user: {
+        uId: user1.authUserId,
+        email: '',
+        nameFirst: 'Removed',
+        nameLast: 'user',
+        handleStr: '',
+        profileImgUrl: `http://localhost:${port}/static/default/default.jpg`,
+      }
+    });
+    expect(usersAll(globalOwnerId.token)).toStrictEqual({
+      users: [
+        {
+          uId: globalOwnerId.authUserId,
+          email: 'foo@bar.com',
+          nameFirst: 'James',
+          nameLast: 'Charles',
+          handleStr: expect.any(String),
+          profileImgUrl: `http://localhost:${port}/static/default/default.jpg`,
+        }
+      ]
+    });
   });
 
   test('global owner removing another global owner', () => {
@@ -160,7 +156,7 @@ describe('/admin/userpermission/change/v1 failed cases', () => {
 });
 
 // test success cases for adminuserremove
-describe('/admin/userpermission/change/v1 non failed cases', () => {
+describe('/admin/userpermission/change/v1 success cases', () => {
   test('global owner promoting normal user and then demoting him self', () => {
     clear();
     const globalOwnerId = authRegister('foo@bar.com', 'password', 'James', 'Charles');
