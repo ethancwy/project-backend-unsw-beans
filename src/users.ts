@@ -20,7 +20,7 @@ const sizeOf = require('image-size');
   * @param {integer} uId - a valid uId from dataStore
   *
   * @returns {Object {uId: integer, email: string, nameFirst: string,
- * nameLast: string, handleStr: string} } - object user details
+ * nameLast: string, handleStr: string, profileImgUrl: string} } - object user details
  *
  * @returns {error} - return error object in invalid cases
 */
@@ -41,6 +41,7 @@ function userProfileV3(token: string, uId: number) {
           nameFirst: user.nameFirst,
           nameLast: user.nameLast,
           handleStr: user.handleStr,
+          profileImgUrl: user.profileImgUrl
         }
       };
     }
@@ -54,7 +55,7 @@ function userProfileV3(token: string, uId: number) {
   * @param {string} token - a valid token
   *
   * @returns {Array<user>: {uId: integer, email: string, nameFirst: string,
- * nameLast: string, handleStr: string} } - object user details
+ * nameLast: string, handleStr: string, profileImgUrl: string} } - object user details
  *
  * @returns {error} - return error object in invalid cases
 */
@@ -77,6 +78,7 @@ function usersAllV2(token: string) {
       nameFirst: user.nameFirst,
       nameLast: user.nameLast,
       handleStr: user.handleStr,
+      profileImgUrl: user.profileImgUrl
     });
   }
 
@@ -279,10 +281,11 @@ function userUploadPhotoV1(token: string, imgUrl: string, xStart: number, yStart
 
   // Getting image height to check error of crop dimensions
   const dimensions = sizeOf('static/img.jpg');
-  if (xStart > dimensions.width || xEnd > dimensions.width ||
-    yStart > dimensions.width || yEnd > dimensions.width || xStart < 0 ||
-    xEnd < 0 || yStart < 0 || yEnd < 0) {
-    throw HTTPError(400, 'Inavlid crop dimensions');
+
+  // console.log(dimensions.width, dimensions.height);
+  if (xStart > dimensions.width || xEnd > dimensions.width || yStart > dimensions.width || yEnd > dimensions.width ||
+    xStart < 0 || xEnd < 0 || yStart < 0 || yEnd < 0 || xEnd <= xStart || yEnd <= yStart) {
+    throw HTTPError(400, 'Invalid crop dimensions');
   }
 
   // Getting the uId for later use when storing data
@@ -313,8 +316,10 @@ async function crop(xStart: number, yStart: number, xEnd: number,
   image.crop(xStart, yStart, xEnd, yEnd)
     .write(`static/${randostr}.jpg`);
   // Assigining users .profileImgUrl to the url generated
+
   const generatedurl = `https://localhost:${port}/static/${randostr}.jpg`;
   data.users[uId].profileImgUrl = generatedurl;
+
   setData(data);
 }
 

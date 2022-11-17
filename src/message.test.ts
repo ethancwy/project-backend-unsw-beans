@@ -69,11 +69,9 @@ describe('Testing errors for /message/send/v1', () => {
     const token = auth.token;
     const channelId = channelsCreate(token, 'Water is smart', true);
 
-    const invalidMessage = [];
-    for (let i = 0; i < 1001; i++) {
-      invalidMessage.push('1');
-    }
-    const check = messageSend(token, channelId.channelId, invalidMessage.toString());
+    const invalidMessage = 'h';
+
+    const check = messageSend(token, channelId.channelId, invalidMessage.repeat(1001));
     expect(check).toStrictEqual(400);
   });
 
@@ -148,11 +146,9 @@ describe('Error checking message/senddm/v1', () => {
     const auth = authRegister('Tonyyeung0905@gmail.com', 'HKnumber1', 'Tony', 'Yeung');
     const dm = dmCreate(auth.token, []);
 
-    const invalidMessage = [];
-    for (let i = 0; i < 1005; i++) {
-      invalidMessage.push('1');
-    }
-    const check = messageSendDm(auth.token, dm.dmId, invalidMessage.toString());
+    const invalidMessage = 'h';
+
+    const check = messageSendDm(auth.token, dm.dmId, invalidMessage.repeat(1001));
     expect(check).toStrictEqual(400);
   });
 
@@ -458,11 +454,9 @@ describe('/message/share/v1 failes', () => {
     const auth = authRegister('Nina0803@icloud.com', 'Nina0803', 'Nina', 'Yeh');
     const channelId = channelsCreate(auth.token, 'Dog Channel', true);
     const messageId = messageSend(auth.token, channelId.channelId, 'helloo');
-    let longList = '';
-    while (longList.length < 1005) {
-      longList += 'hahahahahahahahahahahahalol';
-    }
-    expect(messageShare(auth.token, messageId.messageId, longList, channelId.channelId, -1)).toStrictEqual(400);
+
+    const invalidMessage = 'h';
+    expect(messageShare(auth.token, messageId.messageId, invalidMessage.repeat(1001), channelId.channelId, -1)).toStrictEqual(400);
   });
 
   test('valid channel/dm but auth user not in channel/dm', () => {
@@ -716,11 +710,10 @@ describe('/message/sendlater fails', () => {
     let invalidMessage = '';
     expect(messageSendlater(auth.token, channelId.channelId, invalidMessage, requestTime() + 1)).toStrictEqual(400);
     expect(messageSendlaterdm(member.token, dm.dmId, invalidMessage, requestTime() + 1)).toStrictEqual(400);
-    while (invalidMessage.length < 1005) {
-      invalidMessage += 'ethanchew';
-    }
-    expect(messageSendlater(auth.token, channelId.channelId, invalidMessage, requestTime() + 1)).toStrictEqual(400);
-    expect(messageSendlaterdm(member.token, dm.dmId, invalidMessage, requestTime() + 1)).toStrictEqual(400);
+
+    invalidMessage = 'h';
+    expect(messageSendlater(auth.token, channelId.channelId, invalidMessage.repeat(1001), requestTime() + 1)).toStrictEqual(400);
+    expect(messageSendlaterdm(member.token, dm.dmId, invalidMessage.repeat(1001), requestTime() + 1)).toStrictEqual(400);
   });
 
   test('invalid time(time passed)', () => {
@@ -745,7 +738,7 @@ describe('/message/sendlater success', () => {
     const dm = dmCreate(member.token, []);
     messageSendDm(member.token, dm.dmId, 'helloo');
 
-    const timeSend = requestTime() + 2;
+    const timeSend = requestTime() + 1;
     const msgChannel = messageSendlater(auth.token, channelId.channelId, 'invalidMessage', timeSend);
     const msgDm = messageSendlaterdm(member.token, dm.dmId, 'invalidMessage', timeSend + 1);
     expect(msgChannel).toStrictEqual({ messageId: expect.any(Number) });

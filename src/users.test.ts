@@ -4,6 +4,7 @@ import {
   userStats, usersStats, messageSend, messageSendDm, channelLeave, dmLeave, adminUserRemove,
   userUploadPhoto
 } from './testhelpers';
+import { port } from './config.json';
 
 clear();
 describe('Testing userProfileV3', () => {
@@ -19,6 +20,7 @@ describe('Testing userProfileV3', () => {
         nameFirst: 'Ronald',
         nameLast: 'Mcdonald',
         handleStr: expect.any(String),
+        profileImgUrl: `http://localhost:${port}/static/default/default.jpg`,
       }
     });
   });
@@ -48,6 +50,7 @@ describe('Error checking userProfileV3', () => {
         nameFirst: 'Peter',
         nameLast: 'File',
         handleStr: expect.any(String),
+        profileImgUrl: `http://localhost:${port}/static/default/default.jpg`,
       }
     });
     expect(authLogout(user.token)).toStrictEqual({});
@@ -69,6 +72,7 @@ describe('Testing usersAllV1', () => {
           nameFirst: 'James',
           nameLast: 'Charles',
           handleStr: expect.any(String),
+          profileImgUrl: `http://localhost:${port}/static/default/default.jpg`,
         },
         {
           uId: member2.authUserId,
@@ -76,6 +80,7 @@ describe('Testing usersAllV1', () => {
           nameFirst: 'Ronald',
           nameLast: 'Mcdonald',
           handleStr: expect.any(String),
+          profileImgUrl: `http://localhost:${port}/static/default/default.jpg`
         },
       ],
     });
@@ -90,6 +95,7 @@ describe('Testing usersAllV1', () => {
           nameFirst: 'James',
           nameLast: 'Charles',
           handleStr: expect.any(String),
+          profileImgUrl: `http://localhost:${port}/static/default/default.jpg`
         },
       ],
     });
@@ -119,6 +125,7 @@ describe('Testing userSetNameV1', () => {
         nameFirst: 'Jamie',
         nameLast: 'Charlie',
         handleStr: expect.any(String),
+        profileImgUrl: `http://localhost:${port}/static/default/default.jpg`
       }
     });
   });
@@ -135,6 +142,7 @@ describe('Testing userSetNameV1', () => {
         nameFirst: 'Jamie',
         nameLast: 'Charles',
         handleStr: expect.any(String),
+        profileImgUrl: `http://localhost:${port}/static/default/default.jpg`
       }
     });
   });
@@ -150,6 +158,7 @@ describe('Testing userSetNameV1', () => {
         nameFirst: 'James',
         nameLast: 'Charlie',
         handleStr: expect.any(String),
+        profileImgUrl: `http://localhost:${port}/static/default/default.jpg`
       }
     });
   });
@@ -165,6 +174,7 @@ describe('Testing userSetNameV1', () => {
         nameFirst: 'h',
         nameLast: 'i',
         handleStr: expect.any(String),
+        profileImgUrl: `http://localhost:${port}/static/default/default.jpg`
       }
     });
   });
@@ -181,6 +191,7 @@ describe('Testing userSetNameV1', () => {
         nameFirst: 'dsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsds',
         nameLast: 'blalalallalalalalallalalalallalalalallalalalalalal',
         handleStr: expect.any(String),
+        profileImgUrl: `http://localhost:${port}/static/default/default.jpg`
       }
     });
   });
@@ -229,6 +240,7 @@ describe('Testing userSetEmailV1', () => {
           nameFirst: 'James',
           nameLast: 'Charles',
           handleStr: expect.any(String),
+          profileImgUrl: `http://localhost:${port}/static/default/default.jpg`
         },
       ],
     });
@@ -276,6 +288,7 @@ describe('Testing userSetHandleV1', () => {
           nameFirst: 'James',
           nameLast: 'Charles',
           handleStr: 'ja3',
+          profileImgUrl: `http://localhost:${port}/static/default/default.jpg`
         },
         {
           uId: member2.authUserId,
@@ -283,6 +296,7 @@ describe('Testing userSetHandleV1', () => {
           nameFirst: 'Ronald',
           nameLast: 'Mcdonald',
           handleStr: 'ronalddddddddddddddd',
+          profileImgUrl: `http://localhost:${port}/static/default/default.jpg`
         },
       ],
     });
@@ -563,21 +577,23 @@ describe('Testing errors for user/profile/uploadphoto/v1', () => {
     const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
     const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/image.related.articleLeadwide.620x349.h1pq27.png/1596176460724.jpg';
 
-    expect(userUploadPhoto(member1.token, baseURL, 1000, 0, 100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, baseURL, 0, 1000, 100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, baseURL, 0, 0, 1000, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, baseURL, 0, 0, 100, 2000)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, baseURL, -100, 0, 100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, baseURL, 0, -100, 100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, baseURL, 0, 0, -100, 200)).toStrictEqual(400);
-    expect(userUploadPhoto(member1.token, baseURL, 0, 0, 100, -100)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, -1000, 0, 0, 0)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, 0, -1000, 0, 0)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, 0, 0, -1000, 0)).toStrictEqual(400);
+    expect(userUploadPhoto(member1.token, baseURL, 0, 0, 0, -1000)).toStrictEqual(400);
+
+    // xEnd <= xStart
+    expect(userUploadPhoto(member1.token, baseURL, 200, 100, 100, 200)).toStrictEqual(400);
+    // yEnd <= yStart
+    expect(userUploadPhoto(member1.token, baseURL, 100, 200, 100, 100)).toStrictEqual(400);
   });
 
   // test('Error when retrieving image', () => {
   //  clear();
   //  const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
   //  const baseURL = 'http://d1jyxxz9imt9yb.cloud.net/medialib/396/image/s768x1300/PhotoCredit-Ashwati_Vipin_Giraffe_DSC_0215a.jpg';
-//
+
   //  expect(userUploadPhoto(member1.token, baseURL, 0, 0, 100, 200)).toStrictEqual(400);
+
   // });
 });
