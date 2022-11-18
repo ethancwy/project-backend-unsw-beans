@@ -16,8 +16,13 @@ const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
   * @param {integer} uId - an array of uIds from dataStore
   *
   * @returns { dmId:
-  *             } - returns an object containing dmId
- * @returns {error} - return error object in invalid cases
+  *             } - returns an object containing dmId 
+  * @throws
+  *   error 400 on
+  *     -> invalid userId
+  *     -> userId appears twice
+  *   error 403 on 
+  *     -> invalid token
 **/
 
 function dmCreateV2(token: string, uIds: number[]) {
@@ -106,7 +111,9 @@ function dmCreateV2(token: string, uIds: number[]) {
   * @returns { dms
   *             } - returns an object containing an array
   *              of {dmId: , name: }
-  * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 403 on
+  *     -> invalid token
 */
 
 function dmListV2(token: string) {
@@ -143,7 +150,13 @@ function dmListV2(token: string) {
   * @param {integer} dmId - a valid dmId from dataStore
   *
   * @returns {} - returns empty object on success
-  * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 400 on
+  *     -> invalid dmId
+  *   error 403 on
+  *     -> invalid token
+  *     -> authuser is not a member of the dm
+  *     -> authuser is not the owner of the dm
 */
 
 function dmRemoveV2(token: string, dmId: number) {
@@ -204,7 +217,12 @@ function dmRemoveV2(token: string, dmId: number) {
   *           members
   *           } - returns object containing
   *                       dm name and dm members
-  * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 400 on
+  *     -> invalid dmId
+  *   error 403 on
+  *     -> invalid token
+  *     -> authuser is not a member of the dm
 */
 
 function dmDetailsV2(token: string, dmId: number) {
@@ -254,7 +272,7 @@ function dmDetailsV2(token: string, dmId: number) {
   * @param {integer} dmId - a valid dmId from dataStore
   *
   * @returns {} - returns empty object
-  * @returns {error} - return error object in invalid cases
+  * @throws
 */
 
 function dmLeaveV2(token: string, dmId: number) {
