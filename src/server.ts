@@ -338,9 +338,13 @@ app.use(errorHandler());
 app.use(morgan('dev'));
 
 // start server
-const server = app.listen(PORT, HOST, () => {
-  // DO NOT CHANGE THIS LINE
-  console.log(`⚡️ Server listening on port ${PORT} at ${HOST}`);
+// const server = app.listen(PORT, HOST, () => {
+//   // DO NOT CHANGE THIS LINE
+//   console.log(`⚡️ Server listening on port ${PORT} at ${HOST}`);
+// });
+
+const server = app.listen(parseInt(process.env.PORT || config.port), process.env.IP, () => {
+  console.log(`⚡️ Server listening on port ${process.env.PORT || config.port}`);
 });
 
 // For coverage, handle Ctrl+C gracefully
