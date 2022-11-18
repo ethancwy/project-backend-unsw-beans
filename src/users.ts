@@ -96,7 +96,7 @@ function usersAllV2(token: string) {
   * @param {string} nameFirst - a valid nameFirst
   * @param {string} nameLast - a valid nameLast
   *
-  * @returns {} - empty object
+  * @returns {{}} - empty object
   * @throws
   *   error 400 on 
   *     -> length of nameFirst is not between 1 and 50 characters inclusive
@@ -135,7 +135,7 @@ function userSetNameV2(token: string, nameFirst: string, nameLast: string) {
   * @param {string} token - a valid token
   * @param {string} email - a valid email
   *
-  * @returns {} - empty object
+  * @returns {{}} - empty object
   * @throws
   *   error 400 on
   *     -> email entered is invalid
@@ -170,7 +170,7 @@ function userSetEmailV2(token: string, email: string) {
   * @param {string} token - a valid token
   * @param {string} handleStr - a valid handle string
   *
-  * @returns {} - empty object
+  * @returns {{}} - empty object
   * @throws
   *   error 400 on
   *     -> length of handleStr not between 3 and 20 characters inclusive
@@ -315,7 +315,7 @@ function usersStatsV1(token: string) {
   * @param {number} xEnd - an ending x-coordinate
   * @param {number} yEnd - an ending y-coordinate
   *
-  * @returns {} - Empty object on success
+  * @returns {{}} - Empty object on success
   * @throws
   *   error 400 on
   *     -> imgUrl returns HTTP status other than 200
