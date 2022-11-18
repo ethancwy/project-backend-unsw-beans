@@ -231,7 +231,8 @@ function userStatsV1(token: string) {
 
   // Calculating involvement
   // sum(numChannelsJoined, numDmsJoined, numMsgsSent) / sum(numChannels, numDms, numMsgs)
-  const denom = data.channels.length + data.dms.length + data.workspaceStats.messagesExist.length - 1;
+  const msgsLength = data.workspaceStats.messagesExist.length - 1
+  const denom = data.channels.length + data.dms.length + data.workspaceStats.messagesExist[msgsLength].numMessagesExist;
   let involvement = 0;
   // Calculating involvement if denom != 0
   if (denom) {
@@ -250,9 +251,9 @@ function userStatsV1(token: string) {
   }
 
   // Setting involvement to 1 if greater than 1
-  if (involvement > 1) {
-    involvement = 1;
-  }
+  //if (involvement > 1) {
+  //  involvement = 1;
+  //}
 
   const obj = {
     channelsJoined: data.users[userIndex].userStats.channelsJoined,

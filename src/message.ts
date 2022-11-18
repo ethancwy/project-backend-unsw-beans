@@ -48,7 +48,7 @@ function messageSendV2(token: string, channelId: number, message: string) {
   * @param {number} messageId - a valid messageId from datadata
   * @param {string} message - string send by authorised user
   *
-  * @returns {} - return empty
+  * @returns {{}} - return empty
   * @returns {error: error} - return error object in invalid cases
 */
 
@@ -121,7 +121,7 @@ function messageEditV2(token: string, messageId: number, message: string) {
   * @param {number} messageId - a valid messageId from datadata
   *
   *
-  * @returns {} - return empty
+  * @returns {{}} - return empty
   * @returns {error: error} - return error object in invalid cases
 */
 

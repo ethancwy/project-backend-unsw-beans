@@ -423,6 +423,31 @@ describe('Testing userStatsV1', () => {
       involvementRate: 1 / 5,
     });
   });
+
+  test('Test when involvement > 1', () => {
+    clear();
+    const member1 = authRegister('foo@bar.com', 'password', 'James', 'Charles');
+    const channel1 = channelsCreate(member1.token, 'channel1', true);
+    const msg1 = messageSend(member1.token, channel1.channelId, 'hello there1');
+    messageSend(member1.token, channel1.channelId, 'hello there2');
+    messageRemove(member1.token, msg1.messageId);
+
+    expect(userStats(member1.token)).toStrictEqual({
+      channelsJoined: [
+        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 1, timeStamp: expect.any(Number) },
+      ],
+      dmsJoined: [
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+      ],
+      messagesSent: [
+        { numMessagesSent: 0, timeStamp: expect.any(Number) },
+        { numMessagesSent: 1, timeStamp: expect.any(Number) },
+        { numMessagesSent: 2, timeStamp: expect.any(Number) },
+      ],
+      involvementRate: 3 / 2,
+    })
+  });
 });
 
 describe('Error checking userStatsV1', () => {
