@@ -36,9 +36,6 @@ app.use(json());
 // Use middleware that allows for access from other domains
 app.use(cors());
 
-const PORT: number = parseInt(process.env.PORT || config.port);
-const HOST: string = process.env.IP || 'localhost';
-
 // Example get request
 app.get('/echo', (req: Request, res: Response, next) => {
   try {
