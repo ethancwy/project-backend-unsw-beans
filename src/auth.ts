@@ -259,17 +259,6 @@ function sameEmail(email: string) {
   return false;
 }
 
-// When given an email address, check for email and return user object
-// return null if email is not being used by a user
-// function getEmail(email: string) {
-//   const data = getData();
-//   for (const user of data.users) {
-//     if (user.email === email) {
-//       return user;
-//     }
-//   }
-//   return null;
-// }
 // Generates a random string with a length of 20
 function genRandomStr() {
   const char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';

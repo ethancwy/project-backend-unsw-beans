@@ -7,6 +7,20 @@ import { dmLeaveV2 } from './dm';
 
 import { message, user } from './dataStore';
 
+/**
+* Given a user by their uId, removes them from the Beans.
+*
+* @param {String} token - a valid token
+* @param {number} uId - a valid uId to be removed
+*
+* @returns {} - Success returns empty object
+* @throws
+*   error 400 on
+*     -> uId not valid uID
+*     -> uID refers to the only global owner
+*   error 403 on
+*     -> the authorised user is not a global owner
+*/
 function adminUserRemoveV1(token: string, uId: number) {
   const data = getData();
 
@@ -71,6 +85,25 @@ function adminUserRemoveV1(token: string, uId: number) {
   return {};
 }
 
+/**
+* Given a user by their uID, sets their permissions to new permissions
+* described by permissionId.
+*
+* @param {String} token - a valid token
+* @param {number} uId - a valid uId to be removed
+* @param {number} permissionId - a valid permissionId (1 for owner perms,
+*  2 for member perms)
+*
+* @returns {} - Success returns empty object
+* @throws
+*   error 400 on
+*     -> uId does not refer to a valid user
+*     -> uId refers to a user who is the only global owner and they are being demoted to a user
+*     -> permissionId is invalid
+*     -> the user already has the permissions level of permissionId
+*   error 403 on
+*     -> the authorised user is not a global owner
+*/
 function adminUserpermissionChangeV1(token: string, uId: number, permissionId: number) {
   const data = getData();
 
