@@ -477,7 +477,7 @@ export function updateWorkSpace(categ: string, func: string, time: number, num?:
       });
     } else {
       data.workspaceStats.channelsExist.push({
-        numChannelsExist: data.workspaceStats.channelsExist[lastIndex].numChannelsExist + 1,
+        numChannelsExist: data.workspaceStats.channelsExist[lastIndex].numChannelsExist - 1,
         timeStamp: time,
       });
     }
