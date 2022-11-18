@@ -2,8 +2,9 @@ import {
   authRegister, authLogout, channelsCreate, channelDetails,
   channelJoin, channelInvite, clear,
   channelMessages, channelLeave, channelAddOwner,
-  channelRemoveOwner, messageSend
+  channelRemoveOwner, messageSend, standupStart
 } from './testhelpers';
+const requestTime = () => Math.floor((new Date()).getTime() / 1000);
 
 clear();
 
@@ -428,6 +429,17 @@ describe('Error checking channelLeaveV1', () => {
     expect(channelLeave(channelOwnerId.token, invalidChannelId)).toStrictEqual(400); // invalid channel
     expect(channelLeave(invalidToken, channelId.channelId)).toStrictEqual(403); // invalid token
     expect(channelLeave(nonMember.token, channelId.channelId)).toStrictEqual(403); // nonMember
+  });
+  test('Authorised user is starter of active standup in channel', () => {
+    clear();
+    const channelOwnerId = authRegister('chocolate@bar.com', 'g00dpassword', 'Willy', 'Wonka');
+    const channelId = channelsCreate(channelOwnerId.token, 'Boost', true);
+    const time = standupStart(channelOwnerId.token, channelId.channelId, 1);
+    expect(channelLeave(channelOwnerId.token, channelId.channelId)).toStrictEqual(400);
+    while (time.timeFinish >= requestTime()) {
+      continue;
+    }
+    expect(channelLeave(channelOwnerId.token, channelId.channelId)).toStrictEqual({});
   });
 });
 
