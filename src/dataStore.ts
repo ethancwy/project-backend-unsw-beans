@@ -88,6 +88,7 @@ export type channel = {
   memberIds: Array<number>;
   channelmessages: Array<message>;
   standupDetails: {
+    authUserId: number; // starter of standup
     isActiveStandup: boolean;
     standupMessages: Array<string>;
     timeFinish: number;
