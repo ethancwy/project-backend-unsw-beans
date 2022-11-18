@@ -248,6 +248,9 @@ function dmDetailsV2(token: string, dmId: number) {
   const memberArray = [];
 
   for (const uids of data.dms[dmId].members) {
+    if (!isValidUser(uids)) {
+      continue;
+    }
     memberArray.push({
       uId: data.users[uids].uId,
       email: data.users[uids].email,
