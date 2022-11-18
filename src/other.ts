@@ -59,7 +59,7 @@ function removeFiles() {
   * @param {string} token - a valid token from datStore
   * @param {string} queryStr - a query string
   *
-  * @returns {Object: Messages: {messageId, uId, message, timeSent}
+  * @returns {Object: Messages: {messageId, uId, message, timeSent}}
 **/
 
 function searchV1(token: string, queryStr: string) {
