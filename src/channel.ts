@@ -14,7 +14,13 @@ const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
   * @param {integer} channelId - a valid channelId from dataStore
   *
   * @returns {} - return empty
-  * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 400 when
+  *     -> channelId does not refer to a valid channel
+  *     -> the authorised user is already a member of the channel
+  *   error 403 when
+  *     -> channelId refers to a channel that is private and the authorised
+  *        user is not already a channel member and is not a global owner
 */
 
 function channelJoinV3(token: string, channelId: number) {
@@ -59,7 +65,13 @@ function channelJoinV3(token: string, channelId: number) {
   * @param {integer} uId - a valid uId from dataStore
   *
   * @returns {} - return empty
-  * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 400 when
+  *     -> channelId does not refer to a valid channel
+  *     -> uId does not refer to a valid user
+  *     -> uId refers to a user who is already a member of the channel
+  *   error 403 when
+  *     -> channelId is valid and the authorised user is not a member of the channel
 */
 
 function channelInviteV3(token: string, channelId: number, uId: number) {
@@ -127,7 +139,12 @@ function channelInviteV3(token: string, channelId: number, uId: number) {
   *            end:
   *           } - returns array of objects containing
   *               message details, start integer and end integer
-  * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 400 when
+  *     -> channelId does not refer to a valid channel
+  *     -> start is greater than the total number of messages in the channel
+  *   error 403 when
+  *     -> channelId is valid and the authorised user is not a member of the channel
 */
 
 function channelMessagesV3(token: string, channelId: number, start: number) {
@@ -225,7 +242,11 @@ function channelMessagesV3(token: string, channelId: number, start: number) {
   *            ownerMembers:
   *            allMembers:
   *          } - returns basic channel info
-  * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 400 when
+  *     -> channelId does not refer to a valid channel
+  *   error 403 when
+  *     -> channelId is valid and the authorised user is not a member of the channel
 */
 
 function channelDetailsV3(token: string, channelId: number) {
@@ -296,7 +317,12 @@ function channelDetailsV3(token: string, channelId: number) {
   * @param {integer} channelId - a valid channelId from dataStore
   *
   * @returns {} - return empty
-  * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 400 when
+  *     -> channelId does not refer to a valid channel
+  *     -> the authorised user is the starter of an active standup in the channel
+  *   error 403 when
+  *     -> channelId is valid and the authorised user is not a member of the channel
 */
 
 function channelLeaveV2(token: string, channelId: number) {
@@ -315,6 +341,9 @@ function channelLeaveV2(token: string, channelId: number) {
   // if normal member, remove from memberids
   for (const channel of data.channels) {
     if (channelId === channel.channelId) {
+      if (channel.standupDetails.authUserId === uId) {
+        throw HTTPError(400, 'Auth user is starter of active standup in this channel');
+      }
       for (const index in channel.ownerIds) {
         if (channel.ownerIds[index] === uId) {
           channel.ownerIds.splice(parseInt(index), 1);

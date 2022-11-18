@@ -13,6 +13,9 @@ const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
   *
   *
   * @returns {integer} - channelId of the channel created
+  *  @throws
+  *   error 400 when
+  *     -> length of name is less than 1 or more than 20 characters
 */
 
 function channelsCreateV3(token: string, name: string, isPublic: boolean) {
@@ -38,6 +41,7 @@ function channelsCreateV3(token: string, name: string, isPublic: boolean) {
     memberIds: [authUserId],
     channelmessages: [],
     standupDetails: {
+      authUserId: null,
       isActiveStandup: false,
       standupMessages: [],
       timeFinish: null,
@@ -56,14 +60,16 @@ function channelsCreateV3(token: string, name: string, isPublic: boolean) {
   *
   * Provides an array of all channels (and their associated details) that the authorised user is part of
   *
-  * @param {integer} authUserId - a valid userId in dataStore
+  * @param {String} token - a valid token
   * ...
   *
   * @returns {channels:
   *             channelId:
   *             name:
   *           } - if authuserId is valid
-  *
+  * @throws
+  *   error 400 when
+  *     -> length of name is less than 1 or more than 20 characters
 */
 
 function channelsListV3(token: string) {
@@ -74,10 +80,6 @@ function channelsListV3(token: string) {
   }
 
   const authUserId = getUserId(token);
-
-  // if (!isValidUser(authUserId)) {
-  //   return { error: 'error' };
-  // }
 
   const channelList = [];
 
@@ -100,14 +102,13 @@ function channelsListV3(token: string) {
   *
   * Provides an array of all channels, including private channels (and their associated details)
   *
-  * @param {integer} authUserId - a valid userId in dataStore
-  * ...
+  * @param {String} token - a valid token
   *
   * @returns {channels:
- *             channelId:
- *             name:
- *           } - if authUserId is valid
- *
+  *             channelId:
+  *             name:
+  *           } - if authUserId is valid
+  *
 */
 
 function channelsListAllV3(token: string) {

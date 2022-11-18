@@ -41,6 +41,7 @@ export function standupStartV1(token: string, channelId: number, length: number)
   }
 
   const index = data.channels.indexOf(channel);
+  data.channels[index].standupDetails.authUserId = uId;
   data.channels[index].standupDetails.isActiveStandup = true;
   data.channels[index].standupDetails.timeFinish = finishTime;
   setData(data);
@@ -176,6 +177,7 @@ function sendMessagesToChannel(channelId: number, index: number, uId: number) {
     });
   }
   // no longer active
+  standupChannel.authUserId = null;
   standupChannel.isActiveStandup = false;
   standupChannel.standupMessages = [];
   standupChannel.timeFinish = null;
