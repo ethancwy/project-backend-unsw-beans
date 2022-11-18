@@ -446,7 +446,7 @@ describe('Testing userStatsV1', () => {
         { numMessagesSent: 2, timeStamp: expect.any(Number) },
       ],
       involvementRate: 3 / 2,
-    })
+    });
   });
 });
 

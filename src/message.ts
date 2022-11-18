@@ -17,7 +17,13 @@ const requestTimesent = () => Math.floor((new Date()).getTime() / 1000);
   * @param {string} message - string send by authorised user
   *
   * @returns {messageId} - the message id from the message sent by
-  * @returns {error: error} - return error object in invalid cases
+  * @throws
+  *   error 400 on
+  *     -> invalid channelId
+  *     -> invalid message length
+  *   error 403 on
+  *     -> invalid token
+  *     -> authorised user is not in channel
 */
 
 function messageSendV2(token: string, channelId: number, message: string) {
@@ -48,8 +54,17 @@ function messageSendV2(token: string, channelId: number, message: string) {
   * @param {number} messageId - a valid messageId from datadata
   * @param {string} message - string send by authorised user
   *
-  * @returns {{}} - return empty
-  * @returns {error: error} - return error object in invalid cases
+  * @returns {{}} - return empty on success or call to messageRemoveV2
+  * @throws
+  *   error 400 on
+  *     -> invalid messageId
+  *     -> user not in channel
+  *     -> invalid message length
+  *     -> user not in dm
+  *   error 403 on
+  *     -> invalid token
+  *     -> user doesn't have permission in the channel
+  *     -> user doesn't have permission in dms
 */
 
 function messageEditV2(token: string, messageId: number, message: string) {
@@ -122,7 +137,14 @@ function messageEditV2(token: string, messageId: number, message: string) {
   *
   *
   * @returns {{}} - return empty
-  * @returns {error: error} - return error object in invalid cases
+  * @throws
+  *   error 400 on
+  *     -> invalid message id
+  *     -> user not in channel
+  *     -> user not in dm
+  *   error 403 on
+  *     -> invalid token
+  *     -> user doesn't have permission to delete messages
 */
 
 function messageRemoveV2(token: string, messageId: number) {
@@ -186,7 +208,13 @@ function messageRemoveV2(token: string, messageId: number) {
   *
   *
   * @returns {messageId} - the message id from the message sent by
-  * @returns {error: error} - return error object in invalid cases
+  * @throws
+  *   error 400 on
+  *     -> invalid dmId
+  *     -> invalid message length
+  *   error 403 on
+  *     -> invalid token
+  *     -> user not in dm
 */
 
 function messageSenddmV2(token: string, dmId: number, message: string) {
@@ -211,21 +239,21 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
 }
 
 /**
-  * ogMessageId is the ID of the original message. channelId is the channel 
+  * ogMessageId is the ID of the original message. channelId is the channel
   * that the message is being shared to, and is -1 if it is being sent to a
-  * DM. dmId is the DM that the message is being shared to, and is -1 if it 
+  * DM. dmId is the DM that the message is being shared to, and is -1 if it
   * is being sent to a channel. message is the optional message in addition
-  * to the shared message, and will be an empty string '' if no message 
+  * to the shared message, and will be an empty string '' if no message
   * is given.
-  * 
-  * A new message containing the contents of both the original message and 
+  *
+  * A new message containing the contents of both the original message and
   * the optional message should be sent to the channel/DM identified by the
-  * channelId/dmId. The format of the new message does not matter as long 
+  * channelId/dmId. The format of the new message does not matter as long
   * as both the original and optional message exist as a substring within the
-  * new message. Once sent, this new message has no link to the original 
-  * message, so if the original message is edited/deleted, no change will 
+  * new message. Once sent, this new message has no link to the original
+  * message, so if the original message is edited/deleted, no change will
   * occur for the new message.
-  * 
+  *
   * @param {string} token - a valid token
   * @param {number} ogMessageId - id of the original message
   * @param {string} message - an optional message
@@ -234,15 +262,14 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   *
   *
   * @returns {sharedMessageId} - the message id from the message sent
-  * 
-  * @throws 
+  * @throws
   *   error 400 on
   *     -> both channelId and dmId are invalid
   *     -> neither dmId nor channelId are -1
   *     -> ogMessagegId does not refer to a valid message within channel/dm
   *        that the authorised user has joined
   *     -> length of optional message is more than 1000 characters
-  *   error 403 on 
+  *   error 403 on
   *     -> the pair of channelId and dmId are valid but the authorised user
   *        has not joined the channel/dm they are sending a message to
   *     -> token is invalid
@@ -299,6 +326,27 @@ function messageShareV1(token: string, ogMessageId: number, message: string, cha
 
   return { sharedMessageId: sharedMessageId };
 }
+
+/**
+  * Given a message within a channel or DM the authorised user is part of, 
+  * adds a "react" to that particular message.
+  *
+  * @param {string} token - a valid token
+  * @param {number} messageId - id of the original message
+  * @param {number} reactId - id of the reaction
+  *
+  *
+  * @returns {{}} - empty object
+  * @throws
+  *   error 400 on
+  *     -> invalid messageId
+  *     -> reactId does not exist
+  *     -> user is not in channel
+  *     -> user already reacted
+  *     -> user not in dm 
+  *   error 403 on
+  *     -> token is invalid
+*/
 
 function messageReactV1(token: string, messageId: number, reactId: number) {
   const data = getData();
@@ -383,6 +431,28 @@ function messageReactV1(token: string, messageId: number, reactId: number) {
   return {};
 }
 
+/**
+  * Given a message within a channel or DM the authorised user is part of, 
+  * removes a "react" to that particular message.
+  *
+  * @param {string} token - a valid token
+  * @param {number} messageId - id of the original message
+  * @param {number} reactId - id of the reaction
+  *
+  *
+  * @returns {{}} - empty object
+  * @throws
+  *   error 400 on
+  *     -> invalid messageId
+  *     -> reactId does not exist
+  *     -> user is not in channel
+  *     -> user already reacted
+  *     -> user not in dm 
+  *     -> user did not react
+  *   error 403 on
+  *     -> token is invalid
+*/
+
 function messageUnreactV1(token: string, messageId: number, reactId: number) {
   const data = getData();
   const uId = getUserId(token);
@@ -431,6 +501,25 @@ function messageUnreactV1(token: string, messageId: number, reactId: number) {
   }
 }
 
+/**
+  * Given a message within a channel or DM, marks it as "pinned".
+  *
+  * @param {string} token - a valid token
+  * @param {number} messageId - id of the original message
+  *
+  *
+  * @returns {{}} - empty object
+  * @throws
+  *   error 400 on
+  *     -> invalid messageId
+  *     -> auth user is not in channel 
+  *     -> auth user is not in dm
+  *     -> message is already pinned
+  *   error 403 on
+  *     -> auth user does not have permission
+  *     -> token is invalid
+*/
+
 function messagePinV1(token: string, messageId: number) {
   const data = getData();
 
@@ -472,6 +561,25 @@ function messagePinV1(token: string, messageId: number) {
     return {};
   }
 }
+
+/**
+  * Given a message within a channel or DM, removes its mark as "pinned".
+  *
+  * @param {string} token - a valid token
+  * @param {number} messageId - id of the original message
+  *
+  *
+  * @returns {{}} - empty object
+  * @throws
+  *   error 400 on
+  *     -> invalid messageId
+  *     -> auth user is not in channel 
+  *     -> auth user is not in dm
+  *     -> message is not pinned
+  *   error 403 on
+  *     -> auth user does not have permission
+  *     -> token is invalid
+*/
 
 function messageUnpinV1(token: string, messageId: number) {
   const data = getData();
@@ -515,6 +623,30 @@ function messageUnpinV1(token: string, messageId: number) {
   }
 }
 
+/**
+  * Sends a message from the authorised user to the channel specified by 
+  * channelId automatically at a specified time in the future. The returned 
+  * messageId will only be considered valid for other actions 
+  * (editing/deleting/reacting/etc) once it has been 
+  * sent(i.e. after timeSent).
+  *
+  * @param {string} token - a valid token
+  * @param {number} channelId - id of a channel
+  * @param {string} message - message being sent
+  * @param {number} timeSent - The specified time at which the message will
+  *                            be sent
+  *
+  * @returns {{ messageId: number }} - object containing a messageId
+  * @throws
+  *   error 400 on
+  *     -> invalid channelId
+  *     -> invalid message length
+  *     -> timeSent is invalid
+  *   error 403 on
+  *     -> auth user is not in channel
+  *     -> token is invalid
+*/
+
 function messageSendlaterV1(token: string, channelId: number, message: string, timeSent: number) {
   const data = getData();
   if (!isValidToken(token)) {
@@ -541,6 +673,30 @@ function messageSendlaterV1(token: string, channelId: number, message: string, t
   return { messageId: data.messageDetails.length };
 }
 
+/**
+  * Sends a message from the authorised user to the channel specified by 
+  * channelId automatically at a specified time in the future. The returned 
+  * messageId will only be considered valid for other actions 
+  * (editing/deleting/reacting/etc) once it has been 
+  * sent(i.e. after timeSent).
+  *
+  * @param {string} token - a valid token
+  * @param {number} dmId - id of a dm
+  * @param {string} message - message being sent
+  * @param {number} timeSent - The specified time at which the message will
+  *                            be sent
+  *
+  * @returns {{ messageId: number }} - object containing a messageId
+  * @throws
+  *   error 400 on
+  *     -> invalid dmId
+  *     -> invalid message length
+  *     -> timeSent is invalid
+  *   error 403 on
+  *     -> auth user is not in dm
+  *     -> token is invalid
+*/
+
 function messageSendlaterdmV1(token: string, dmId: number, message: string, timeSent: number) {
   const data = getData();
   if (!isValidToken(token)) {
@@ -553,7 +709,7 @@ function messageSendlaterdmV1(token: string, dmId: number, message: string, time
   }
 
   if (!isInDm(authUserId, dmId)) {
-    throw HTTPError(403, 'auth user not in channel');
+    throw HTTPError(403, 'auth user not in dm');
   }
 
   if (message.length < 1 || message.length > 1000) {

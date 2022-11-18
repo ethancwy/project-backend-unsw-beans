@@ -22,10 +22,10 @@ const sizeOf = require('image-size');
   * @returns {Object {uId: integer, email: string, nameFirst: string,
   * nameLast: string, handleStr: string, profileImgUrl: string} } - object user details
   * @throws
-  *   error 400 on 
+  *   error 400 on
   *     -> invalid uId
   *   error 403 on
-  *     -> invalid token     
+  *     -> invalid token
 */
 
 function userProfileV3(token: string, uId: number) {
@@ -98,7 +98,7 @@ function usersAllV2(token: string) {
   *
   * @returns {{}} - empty object
   * @throws
-  *   error 400 on 
+  *   error 400 on
   *     -> length of nameFirst is not between 1 and 50 characters inclusive
   *     -> length of nameLast is not between 1 and 50 characters inclusive
   *   error 403 on
@@ -209,9 +209,9 @@ function userSetHandleV2(token: string, handleStr: string) {
   *
   * @returns {Object of shape {
   *   channelsJoined: [{numChannelsJoined, timeStamp}],
-  *   dmsJoined: [{numDmsJoined, timeStamp}], 
-  *   messagesSent: [{numMessagesSent, timeStamp}], 
-  *   involvementRate 
+  *   dmsJoined: [{numDmsJoined, timeStamp}],
+  *   messagesSent: [{numMessagesSent, timeStamp}],
+  *   involvementRate
   * }} - object userStats
   *
   * @throws
@@ -231,7 +231,7 @@ function userStatsV1(token: string) {
 
   // Calculating involvement
   // sum(numChannelsJoined, numDmsJoined, numMsgsSent) / sum(numChannels, numDms, numMsgs)
-  const msgsLength = data.workspaceStats.messagesExist.length - 1
+  const msgsLength = data.workspaceStats.messagesExist.length - 1;
   const denom = data.channels.length + data.dms.length + data.workspaceStats.messagesExist[msgsLength].numMessagesExist;
   let involvement = 0;
   // Calculating involvement if denom != 0
@@ -251,9 +251,9 @@ function userStatsV1(token: string) {
   }
 
   // Setting involvement to 1 if greater than 1
-  //if (involvement > 1) {
+  // if (involvement > 1) {
   //  involvement = 1;
-  //}
+  // }
 
   const obj = {
     channelsJoined: data.users[userIndex].userStats.channelsJoined,
@@ -270,10 +270,10 @@ function userStatsV1(token: string) {
   * @param {string} token - a valid token
   *
   * @returns {Object of shape {
-  *   channelsExist: [{numChannelsExist, timeStamp}], 
-  *   dmsExist: [{numDmsExist, timeStamp}], 
-  *   messagesExist: [{numMessagesExist, timeStamp}], 
-  *   utilizationRate 
+  *   channelsExist: [{numChannelsExist, timeStamp}],
+  *   dmsExist: [{numDmsExist, timeStamp}],
+  *   messagesExist: [{numMessagesExist, timeStamp}],
+  *   utilizationRate
   * }} - object workspaceStats
   *
   * @throws
