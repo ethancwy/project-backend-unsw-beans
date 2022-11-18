@@ -210,6 +210,44 @@ function messageSenddmV2(token: string, dmId: number, message: string) {
   return sendMsg(token, -1, dmId, message);
 }
 
+/**
+  * ogMessageId is the ID of the original message. channelId is the channel 
+  * that the message is being shared to, and is -1 if it is being sent to a
+  * DM. dmId is the DM that the message is being shared to, and is -1 if it 
+  * is being sent to a channel. message is the optional message in addition
+  * to the shared message, and will be an empty string '' if no message 
+  * is given.
+  * 
+  * A new message containing the contents of both the original message and 
+  * the optional message should be sent to the channel/DM identified by the
+  * channelId/dmId. The format of the new message does not matter as long 
+  * as both the original and optional message exist as a substring within the
+  * new message. Once sent, this new message has no link to the original 
+  * message, so if the original message is edited/deleted, no change will 
+  * occur for the new message.
+  * 
+  * @param {string} token - a valid token
+  * @param {number} ogMessageId - id of the original message
+  * @param {string} message - an optional message
+  * @param {number} channelId - id of channel that the msg is being shared to
+  * @param {number} dmId - id of dm that the msg is being shared to
+  *
+  *
+  * @returns {sharedMessageId} - the message id from the message sent
+  * 
+  * @throws 
+  *   error 400 on
+  *     -> both channelId and dmId are invalid
+  *     -> neither dmId nor channelId are -1
+  *     -> ogMessagegId does not refer to a valid message within channel/dm
+  *        that the authorised user has joined
+  *     -> length of optional message is more than 1000 characters
+  *   error 403 on 
+  *     -> the pair of channelId and dmId are valid but the authorised user
+  *        has not joined the channel/dm they are sending a message to
+  *     -> token is invalid
+*/
+
 function messageShareV1(token: string, ogMessageId: number, message: string, channelId: number, dmId: number) {
   const data = getData();
   const uId = getUserId(token);

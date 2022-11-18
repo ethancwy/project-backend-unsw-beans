@@ -20,9 +20,12 @@ const sizeOf = require('image-size');
   * @param {integer} uId - a valid uId from dataStore
   *
   * @returns {Object {uId: integer, email: string, nameFirst: string,
- * nameLast: string, handleStr: string, profileImgUrl: string} } - object user details
- *
- * @returns {error} - return error object in invalid cases
+  * nameLast: string, handleStr: string, profileImgUrl: string} } - object user details
+  * @throws
+  *   error 400 on 
+  *     -> invalid uId
+  *   error 403 on
+  *     -> invalid token     
 */
 
 function userProfileV3(token: string, uId: number) {
@@ -55,9 +58,10 @@ function userProfileV3(token: string, uId: number) {
   * @param {string} token - a valid token
   *
   * @returns {Array<user>: {uId: integer, email: string, nameFirst: string,
- * nameLast: string, handleStr: string, profileImgUrl: string} } - object user details
- *
- * @returns {error} - return error object in invalid cases
+  * nameLast: string, handleStr: string, profileImgUrl: string} } - object user details
+  * @throws
+  *   error 403 on
+  *     -> invalid token
 */
 
 function usersAllV2(token: string) {
@@ -93,8 +97,12 @@ function usersAllV2(token: string) {
   * @param {string} nameLast - a valid nameLast
   *
   * @returns {} - empty object
- *
- * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 400 on 
+  *     -> length of nameFirst is not between 1 and 50 characters inclusive
+  *     -> length of nameLast is not between 1 and 50 characters inclusive
+  *   error 403 on
+  *     -> invalid token
 */
 
 function userSetNameV2(token: string, nameFirst: string, nameLast: string) {
@@ -128,8 +136,12 @@ function userSetNameV2(token: string, nameFirst: string, nameLast: string) {
   * @param {string} email - a valid email
   *
   * @returns {} - empty object
- *
- * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 400 on
+  *     -> email entered is invalid
+  *     -> email is already being used by another user
+  *   error 403 on
+  *     -> invalid token
 */
 
 function userSetEmailV2(token: string, email: string) {
@@ -159,8 +171,13 @@ function userSetEmailV2(token: string, email: string) {
   * @param {string} handleStr - a valid handle string
   *
   * @returns {} - empty object
- *
- * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 400 on
+  *     -> length of handleStr not between 3 and 20 characters inclusive
+  *     -> handleStr contains non-alphanumeric characters
+  *     -> handleStr is already used by another user
+  *   error 403 on
+  *     -> invalid token
 */
 
 function userSetHandleV2(token: string, handleStr: string) {
@@ -188,7 +205,7 @@ function userSetHandleV2(token: string, handleStr: string) {
 /**
   * Fetches the required statistics about this user's use of UNSW Beans.
   *
-  * @param {String} token - a valid token
+  * @param {string} token - a valid token
   *
   * @returns {Object of shape {
   *   channelsJoined: [{numChannelsJoined, timeStamp}],
@@ -249,7 +266,7 @@ function userStatsV1(token: string) {
 /**
   * Fetches the required statistics about the workspace's use of UNSW Beans.
   *
-  * @param {String} token - a valid token
+  * @param {string} token - a valid token
   *
   * @returns {Object of shape {
   *   channelsExist: [{numChannelsExist, timeStamp}], 
@@ -291,15 +308,14 @@ function usersStatsV1(token: string) {
 /**
   * Fetches the required statistics about the workspace's use of UNSW Beans.
   *
-  * @param {String} token - a valid token
-  * @param {String} imgUrl - a url as a string
-  * @param {Number} xStart - a starting x-coordinate
-  * @param {Number} yStart - a starting y-coordinate
-  * @param {Number} xEnd - an ending x-coordinate
-  * @param {Number} yEnd - an ending y-coordinate
+  * @param {string} token - a valid token
+  * @param {string} imgUrl - a url as a string
+  * @param {number} xStart - a starting x-coordinate
+  * @param {number} yStart - a starting y-coordinate
+  * @param {number} xEnd - an ending x-coordinate
+  * @param {number} yEnd - an ending y-coordinate
   *
   * @returns {} - Empty object on success
-  *
   * @throws
   *   error 400 on
   *     -> imgUrl returns HTTP status other than 200
