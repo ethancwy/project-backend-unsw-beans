@@ -17,6 +17,14 @@ const requestTime = () => Math.floor((new Date()).getTime() / 1000);
   * @param {number} length - length of standup
   *
   * @returns {timeFinish: number} - the time that standup finishes
+  * @throws
+  *   error 400 on
+  *     -> invalid channelId
+  *     -> length <= 0
+  *     -> active standup currently running
+  *   error 403 on
+  *     -> invalid token
+  *     -> auth user is not apart of the channel
 */
 
 export function standupStartV1(token: string, channelId: number, length: number) {
@@ -64,6 +72,12 @@ export function standupStartV1(token: string, channelId: number, length: number)
   *           timeFinish: number
   *           } - if the standup is active AND
   *             - the time that standup finishes
+  * @throws
+  *   error 400 on
+  *     -> invalid channel id
+  *   error 403 on
+  *     -> invalid token
+  *     -> auth user not in channel
 */
 
 export function standupActiveV1(token: string, channelId: number) {
@@ -98,7 +112,15 @@ export function standupActiveV1(token: string, channelId: number) {
   * @param {number} channelId - a valid channelId
   * @param {string} message - a valid message
   *
-  * @returns {} - empty object
+  * @returns {{}} - empty object
+  * @throws
+  *   error 400 on
+  *     -> invalid channelId
+  *     -> length over 1000 characters
+  *     -> no active standup currently running
+  *   error 403 on
+  *     -> authorised user is not a member of the channel
+  *     -> invalid token
 */
 
 export function standupSendV1(token: string, channelId: number, message: string) {
