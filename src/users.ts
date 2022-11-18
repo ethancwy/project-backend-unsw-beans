@@ -214,7 +214,8 @@ function userStatsV1(token: string) {
 
   // Calculating involvement
   // sum(numChannelsJoined, numDmsJoined, numMsgsSent) / sum(numChannels, numDms, numMsgs)
-  const denom = data.channels.length + data.dms.length + data.workspaceStats.messagesExist.length - 1;
+  const msgsLen = data.workspaceStats.messagesExist.length - 1;
+  const denom = data.channels.length + data.dms.length + data.workspaceStats.messagesExist[msgsLen].numMessagesExist;
   let involvement = 0;
   // Calculating involvement if denom != 0
   if (denom) {

@@ -274,6 +274,9 @@ function channelDetailsV3(token: string, channelId: number) {
   const arrayOwners = [];
   for (const membs of data.channels[channelPos].ownerIds) {
     for (const users of data.users) {
+      if (users.isRemoved) {
+        continue;
+      }
       if (users.uId === membs) {
         arrayOwners.push({
           uId: users.uId,
@@ -289,6 +292,9 @@ function channelDetailsV3(token: string, channelId: number) {
   const arrayMemb = [];
   for (const membs of data.channels[channelPos].memberIds) {
     for (const users of data.users) {
+      if (users.isRemoved) {
+        continue;
+      }
       if (users.uId === membs) {
         arrayMemb.push({
           uId: users.uId,
