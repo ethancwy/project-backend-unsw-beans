@@ -185,6 +185,23 @@ function userSetHandleV2(token: string, handleStr: string) {
   return {};
 }
 
+/**
+  * Fetches the required statistics about this user's use of UNSW Beans.
+  *
+  * @param {String} token - a valid token
+  *
+  * @returns {Object of shape {
+  *   channelsJoined: [{numChannelsJoined, timeStamp}],
+  *   dmsJoined: [{numDmsJoined, timeStamp}], 
+  *   messagesSent: [{numMessagesSent, timeStamp}], 
+  *   involvementRate 
+  * }} - object userStats
+  *
+  * @throws
+  *   error 403 on
+  *     -> invalid token
+*/
+
 function userStatsV1(token: string) {
   const data = getData();
   // invalid token
@@ -229,6 +246,23 @@ function userStatsV1(token: string) {
   return obj;
 }
 
+/**
+  * Fetches the required statistics about the workspace's use of UNSW Beans.
+  *
+  * @param {String} token - a valid token
+  *
+  * @returns {Object of shape {
+  *   channelsExist: [{numChannelsExist, timeStamp}], 
+  *   dmsExist: [{numDmsExist, timeStamp}], 
+  *   messagesExist: [{numMessagesExist, timeStamp}], 
+  *   utilizationRate 
+  * }} - object workspaceStats
+  *
+  * @throws
+  *   error 403 on
+  *     -> invalid token
+*/
+
 function usersStatsV1(token: string) {
   const data = getData();
 
@@ -253,6 +287,28 @@ function usersStatsV1(token: string) {
   };
   return obj;
 }
+
+/**
+  * Fetches the required statistics about the workspace's use of UNSW Beans.
+  *
+  * @param {String} token - a valid token
+  * @param {String} imgUrl - a url as a string
+  * @param {Number} xStart - a starting x-coordinate
+  * @param {Number} yStart - a starting y-coordinate
+  * @param {Number} xEnd - an ending x-coordinate
+  * @param {Number} yEnd - an ending y-coordinate
+  *
+  * @returns {} - Empty object on success
+  *
+  * @throws
+  *   error 400 on
+  *     -> imgUrl returns HTTP status other than 200
+  *     -> xStart, yStart, xEnd, yEnd are not within dimensions at image url
+  *     -> xEnd <= xStart or yEnd <= yStart
+  *     -> image uploaded is not a jpg
+  *   error 403 on
+  *     -> invalid token
+*/
 
 function userUploadPhotoV1(token: string, imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number) {
   // Error throwing
