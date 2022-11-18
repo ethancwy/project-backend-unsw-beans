@@ -373,7 +373,14 @@ function channelLeaveV2(token: string, channelId: number) {
   * @param {integer} channelId - a valid channelId from dataStore
   *
   * @returns {} - return empty
-  * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 400 when
+  *     -> channelId does not refer to a valid channel
+  *     -> uId does not refer to a valid user
+  *     -> uId refers to a user who is not a member of the channel
+  *     -> uId refers to a user who is already an owner of the channel
+  *   error 403 when
+  *     -> channelId is valid and the authorised user does not have owner permissions in the channel
 */
 
 function channelAddOwnerV2(token: string, channelId: number, uId: number) {
@@ -414,7 +421,14 @@ function channelAddOwnerV2(token: string, channelId: number, uId: number) {
   * @param {integer} channelId - a valid channelId from dataStore
   *
   * @returns {} - return empty
-  * @returns {error} - return error object in invalid cases
+  * @throws
+  *   error 400 when
+  *     -> channelId does not refer to a valid channel
+  *     -> uId does not refer to a valid user
+  *     -> uId refers to a user who is not an owner of the channel
+  *     -> uId refers to a user who is currently the only owner of the channel
+  *   error 403 when
+  *     -> channelId is valid and the authorised user does not have owner permissions in the channel
 */
 
 function channelRemoveOwnerV2(token: string, channelId: number, uId: number) {
