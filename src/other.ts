@@ -5,6 +5,12 @@ const path = require('path');
 
 import HTTPError from 'http-errors';
 
+/**
+  * Resets the internal data of the application to its initial state.
+
+  * @returns {}
+**/
+
 function clearV1() {
   let data = getData();
   data = {
@@ -45,6 +51,17 @@ function removeFiles() {
   });
 }
 
+/**
+  * Given a query substring, returns a collection of messages in all
+  * of the channels/DMs that the user has joined that contain the query
+  * (case-insensitive). There is no expected order for these messages.
+  *
+  * @param {string} token - a valid token from datStore
+  * @param {string} queryStr - a query string
+  *
+  * @returns {Object: Messages: {messageId, uId, message, timeSent}
+**/
+
 function searchV1(token: string, queryStr: string) {
   const data = getData();
 
@@ -73,17 +90,6 @@ function searchV1(token: string, queryStr: string) {
       }
     }
   }
-  // const msgList = data.channels.filter(channel => {
-  //   if (channel.memberIds.includes(authUserId)) {
-  //     if (channel.channelmessages.uId === authUserId) {
-  //       if (channel.channelmessages.message.includes(queryStr)) {
-  //         let message = channel.channelmessages;
-  //         delete message.tags;
-  //         return message;
-  //       }
-  //     }
-  //   }
-  // });
 
   // checking dms
   for (const dm of data.dms) {
