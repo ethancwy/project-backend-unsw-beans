@@ -192,9 +192,9 @@ function userSetHandleV2(token: string, handleStr: string) {
   *
   * @returns {Object of shape {
   *   channelsJoined: [{numChannelsJoined, timeStamp}],
-  *   dmsJoined: [{numDmsJoined, timeStamp}], 
-  *   messagesSent: [{numMessagesSent, timeStamp}], 
-  *   involvementRate 
+  *   dmsJoined: [{numDmsJoined, timeStamp}],
+  *   messagesSent: [{numMessagesSent, timeStamp}],
+  *   involvementRate
   * }} - object userStats
   *
   * @throws
@@ -252,10 +252,10 @@ function userStatsV1(token: string) {
   * @param {String} token - a valid token
   *
   * @returns {Object of shape {
-  *   channelsExist: [{numChannelsExist, timeStamp}], 
-  *   dmsExist: [{numDmsExist, timeStamp}], 
-  *   messagesExist: [{numMessagesExist, timeStamp}], 
-  *   utilizationRate 
+  *   channelsExist: [{numChannelsExist, timeStamp}],
+  *   dmsExist: [{numDmsExist, timeStamp}],
+  *   messagesExist: [{numMessagesExist, timeStamp}],
+  *   utilizationRate
   * }} - object workspaceStats
   *
   * @throws
