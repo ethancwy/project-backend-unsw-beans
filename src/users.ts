@@ -317,7 +317,7 @@ async function crop(xStart: number, yStart: number, xEnd: number,
     .write(`static/${randostr}.jpg`);
   // Assigining users .profileImgUrl to the url generated
 
-  const generatedurl = `https://localhost:${port}/static/${randostr}.jpg`;
+  const generatedurl = `http://localhost:${port}/static/${randostr}.jpg`;
   data.users[uId].profileImgUrl = generatedurl;
 
   setData(data);
