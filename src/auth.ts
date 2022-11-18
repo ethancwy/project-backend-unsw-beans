@@ -12,7 +12,10 @@ import { port } from './config.json';
 * @param {String} password - User input password that is >= 6 characters long
 *
 * @returns {Object { authUserId: Number, token: String }} - Returns a valid authUserId and token
-* @returns {{error: 'error'}} - on error
+* @throws
+*   error 400 when
+*     -> email entered does not belong to a user
+*     -> password is not correct
 */
 
 function authLoginV3(email: string, password: string) {
@@ -45,7 +48,13 @@ function authLoginV3(email: string, password: string) {
   * @param {String} nameLast - User input name that's 1-50 characters long
   *
   * @returns {Object { authUserId: Number, token: String }} - Returns a valid authUserId and token
-  * @returns {{error: 'error'}} - on error
+  * @throws
+  *   error 400 when
+  *     -> email entered is not a valid email
+  *     -> email is already being used by another user
+  *     -> length of password is less than 6 characters
+  *     -> length of nameFirst is not between 1 and 50 characters inclusive
+  *     -> length of nameLast is not between 1 and 50 characters inclusive
 */
 
 function authRegisterV3(email: string, password: string, nameFirst: string, nameLast: string) {
@@ -259,17 +268,6 @@ function sameEmail(email: string) {
   return false;
 }
 
-// When given an email address, check for email and return user object
-// return null if email is not being used by a user
-// function getEmail(email: string) {
-//   const data = getData();
-//   for (const user of data.users) {
-//     if (user.email === email) {
-//       return user;
-//     }
-//   }
-//   return null;
-// }
 // Generates a random string with a length of 20
 function genRandomStr() {
   const char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
