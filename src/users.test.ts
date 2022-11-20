@@ -354,37 +354,41 @@ describe('Testing userStatsV1', () => {
 
     // Testing user stats of member 1
     expect(userStats(member1.token)).toStrictEqual({
-      channelsJoined: [
-        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
-        { numChannelsJoined: 1, timeStamp: expect.any(Number) },
-        { numChannelsJoined: 2, timeStamp: expect.any(Number) },
-      ],
-      dmsJoined: [
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-        { numDmsJoined: 1, timeStamp: expect.any(Number) },
-      ],
-      messagesSent: [
-        { numMessagesSent: 0, timeStamp: expect.any(Number) },
-        { numMessagesSent: 1, timeStamp: expect.any(Number) },
-      ],
-      involvementRate: 4 / 5,
+      userStats: {
+        channelsJoined: [
+          { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+          { numChannelsJoined: 1, timeStamp: expect.any(Number) },
+          { numChannelsJoined: 2, timeStamp: expect.any(Number) },
+        ],
+        dmsJoined: [
+          { numDmsJoined: 0, timeStamp: expect.any(Number) },
+          { numDmsJoined: 1, timeStamp: expect.any(Number) },
+        ],
+        messagesSent: [
+          { numMessagesSent: 0, timeStamp: expect.any(Number) },
+          { numMessagesSent: 1, timeStamp: expect.any(Number) },
+        ],
+        involvementRate: 4 / 5,
+      }
     });
 
     // Testing user stats of member 2
     expect(userStats(member2.token)).toStrictEqual({
-      channelsJoined: [
-        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
-        { numChannelsJoined: 1, timeStamp: expect.any(Number) },
-      ],
-      dmsJoined: [
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-        { numDmsJoined: 1, timeStamp: expect.any(Number) },
-      ],
-      messagesSent: [
-        { numMessagesSent: 0, timeStamp: expect.any(Number) },
-        { numMessagesSent: 1, timeStamp: expect.any(Number) }
-      ],
-      involvementRate: 3 / 5,
+      userStats: {
+        channelsJoined: [
+          { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+          { numChannelsJoined: 1, timeStamp: expect.any(Number) },
+        ],
+        dmsJoined: [
+          { numDmsJoined: 0, timeStamp: expect.any(Number) },
+          { numDmsJoined: 1, timeStamp: expect.any(Number) },
+        ],
+        messagesSent: [
+          { numMessagesSent: 0, timeStamp: expect.any(Number) },
+          { numMessagesSent: 1, timeStamp: expect.any(Number) }
+        ],
+        involvementRate: 3 / 5,
+      }
     });
   });
 
@@ -406,21 +410,23 @@ describe('Testing userStatsV1', () => {
     dmLeave(member2.token, dm.dmId);
 
     expect(userStats(member2.token)).toStrictEqual({
-      channelsJoined: [
-        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
-        { numChannelsJoined: 1, timeStamp: expect.any(Number) },
-        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
-      ],
-      dmsJoined: [
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-        { numDmsJoined: 1, timeStamp: expect.any(Number) },
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-      ],
-      messagesSent: [
-        { numMessagesSent: 0, timeStamp: expect.any(Number) },
-        { numMessagesSent: 1, timeStamp: expect.any(Number) }
-      ],
-      involvementRate: 1 / 5,
+      userStats: {
+        channelsJoined: [
+          { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+          { numChannelsJoined: 1, timeStamp: expect.any(Number) },
+          { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+        ],
+        dmsJoined: [
+          { numDmsJoined: 0, timeStamp: expect.any(Number) },
+          { numDmsJoined: 1, timeStamp: expect.any(Number) },
+          { numDmsJoined: 0, timeStamp: expect.any(Number) },
+        ],
+        messagesSent: [
+          { numMessagesSent: 0, timeStamp: expect.any(Number) },
+          { numMessagesSent: 1, timeStamp: expect.any(Number) }
+        ],
+        involvementRate: 1 / 5,
+      }
     });
   });
 });
@@ -449,15 +455,17 @@ describe('Testing usersStatsV1', () => {
 
     // Testing user stats of member 1
     expect(usersStats(member1.token)).toStrictEqual({
-      channelsExist: [
-        { numChannelsExist: 0, timeStamp: expect.any(Number) },
-        { numChannelsExist: 1, timeStamp: expect.any(Number) },
-        { numChannelsExist: 2, timeStamp: expect.any(Number) }],
-      dmsExist: [
-        { numDmsExist: 0, timeStamp: expect.any(Number) },
-        { numDmsExist: 1, timeStamp: expect.any(Number) }],
-      messagesExist: [{ numMessagesExist: 0, timeStamp: expect.any(Number) }],
-      utilizationRate: 1,
+      workspaceStats: {
+        channelsExist: [
+          { numChannelsExist: 0, timeStamp: expect.any(Number) },
+          { numChannelsExist: 1, timeStamp: expect.any(Number) },
+          { numChannelsExist: 2, timeStamp: expect.any(Number) }],
+        dmsExist: [
+          { numDmsExist: 0, timeStamp: expect.any(Number) },
+          { numDmsExist: 1, timeStamp: expect.any(Number) }],
+        messagesExist: [{ numMessagesExist: 0, timeStamp: expect.any(Number) }],
+        utilizationRate: 1,
+      }
     });
 
     // messageSendDm, DmRemove tracked
@@ -466,27 +474,29 @@ describe('Testing usersStatsV1', () => {
     dmRemove(member1.token, dm.dmId);
 
     expect(usersStats(member1.token)).toStrictEqual({
-      channelsExist: [
-        { numChannelsExist: 0, timeStamp: expect.any(Number) },
-        { numChannelsExist: 1, timeStamp: expect.any(Number) },
-        { numChannelsExist: 2, timeStamp: expect.any(Number) }],
-      dmsExist: [
-        { numDmsExist: 0, timeStamp: expect.any(Number) },
-        { numDmsExist: 1, timeStamp: expect.any(Number) },
-        { numDmsExist: 0, timeStamp: expect.any(Number) }],
-      messagesExist: [
-        { numMessagesExist: 0, timeStamp: expect.any(Number) },
-        { numMessagesExist: 1, timeStamp: expect.any(Number) },
-        { numMessagesExist: 2, timeStamp: expect.any(Number) },
-        { numMessagesExist: 0, timeStamp: expect.any(Number) }],
-      utilizationRate: 1,
+      workspaceStats: {
+        channelsExist: [
+          { numChannelsExist: 0, timeStamp: expect.any(Number) },
+          { numChannelsExist: 1, timeStamp: expect.any(Number) },
+          { numChannelsExist: 2, timeStamp: expect.any(Number) }],
+        dmsExist: [
+          { numDmsExist: 0, timeStamp: expect.any(Number) },
+          { numDmsExist: 1, timeStamp: expect.any(Number) },
+          { numDmsExist: 0, timeStamp: expect.any(Number) }],
+        messagesExist: [
+          { numMessagesExist: 0, timeStamp: expect.any(Number) },
+          { numMessagesExist: 1, timeStamp: expect.any(Number) },
+          { numMessagesExist: 2, timeStamp: expect.any(Number) },
+          { numMessagesExist: 0, timeStamp: expect.any(Number) }],
+        utilizationRate: 1,
+      }
     });
 
     // message removed tracked
     const msg = messageSend(member1.token, channel1.channelId, 'hello');
     messageRemove(member1.token, msg.messageId);
     const stats = usersStats(member1.token);
-    expect(stats.messagesExist).toStrictEqual(
+    expect(stats.workspaceStats.messagesExist).toStrictEqual(
       [{ numMessagesExist: 0, timeStamp: expect.any(Number) },
         { numMessagesExist: 1, timeStamp: expect.any(Number) },
         { numMessagesExist: 2, timeStamp: expect.any(Number) },
@@ -499,7 +509,7 @@ describe('Testing usersStatsV1', () => {
     const msg2 = messageSend(member1.token, channel1.channelId, 'hello');
     messageEdit(member1.token, msg2.messageId, '');
     const stats2 = usersStats(member1.token);
-    expect(stats2.messagesExist).toStrictEqual(
+    expect(stats2.workspaceStats.messagesExist).toStrictEqual(
       [{ numMessagesExist: 0, timeStamp: expect.any(Number) },
         { numMessagesExist: 1, timeStamp: expect.any(Number) },
         { numMessagesExist: 2, timeStamp: expect.any(Number) },
@@ -563,5 +573,6 @@ describe('Testing errors for user/profile/uploadphoto/v1', () => {
     // correct domain, bad route
     const baseURL = 'http://www.traveller.com.au/content/dam/images/h/1/p/q/1/k/articleLeadwide.620x349.h1pq27.png/1596176460725.jpg';
     expect(userUploadPhoto(member1.token, baseURL, 0, 0, 100, 200)).toStrictEqual(400);
+    clear();
   });
 });

@@ -244,7 +244,7 @@ function userStatsV1(token: string) {
     messagesSent: data.users[userIndex].userStats.messagesSent,
     involvementRate: involvement,
   };
-  return obj;
+  return { userStats: obj };
 }
 
 /**
@@ -286,7 +286,7 @@ function usersStatsV1(token: string) {
     messagesExist: data.workspaceStats.messagesExist,
     utilizationRate: util,
   };
-  return obj;
+  return { workspaceStats: obj };
 }
 
 /**
